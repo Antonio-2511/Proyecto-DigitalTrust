@@ -14,18 +14,5 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-  app:
-    build: .
-    container_name: digitaltrust-app
-    depends_on:
-      - db
-    environment:
-      DB_URL: jdbc:mariadb://db:3306/digitaltrust
-      DB_USER: mae
-      DB_PASSWORD: 1967JABE$
-      DB_DRIVER: org.mariadb.jdbc.Driver
-    ports:
-      - "8080:8080"
-
 volumes:
   db_data:
