@@ -5,10 +5,10 @@ services:
     image: mariadb:12
     container_name: digitaltrust-db
     environment:
-      MYSQL_ROOT_PASSWORD: 2511
+      MYSQL_ROOT_PASSWORD: 1967JABE$
       MYSQL_DATABASE: digitaltrust
-      MYSQL_USER: aov
-      MYSQL_PASSWORD: 2511
+      MYSQL_USER: mae
+      MYSQL_PASSWORD: 1967JABE$
     ports:
       - "3306:3306"
     volumes:
@@ -21,8 +21,8 @@ services:
       - db
     environment:
       DB_URL: jdbc:mariadb://db:3306/digitaltrust
-      DB_USER: aov
-      DB_PASSWORD: 2511
+      DB_USER: mae
+      DB_PASSWORD: 1967JABE$
       DB_DRIVER: org.mariadb.jdbc.Driver
     ports:
       - "8080:8080"
