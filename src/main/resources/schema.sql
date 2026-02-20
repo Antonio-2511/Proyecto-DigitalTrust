@@ -17,9 +17,9 @@ CREATE TABLE Plan (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------
--- User
+-- users (ANTES User)
 -- -----------------------------------------------------
-CREATE TABLE `User` (
+CREATE TABLE users (
   username VARCHAR(45) NOT NULL,
   Contrasenia VARCHAR(100),
   Fecha_creacion DATETIME,
@@ -27,8 +27,8 @@ CREATE TABLE `User` (
   Gmail VARCHAR(100),
   Plan_Nombre_plan VARCHAR(45) NOT NULL,
   PRIMARY KEY (username),
-  INDEX fk_User_Plan1_idx (Plan_Nombre_plan),
-  CONSTRAINT fk_User_Plan1
+  INDEX fk_users_Plan1_idx (Plan_Nombre_plan),
+  CONSTRAINT fk_users_Plan1
     FOREIGN KEY (Plan_Nombre_plan)
     REFERENCES Plan (Nombre_plan)
     ON DELETE CASCADE
@@ -45,12 +45,12 @@ CREATE TABLE Advertencia (
   Descripcion VARCHAR(255),
   Fecha_de_envio DATETIME,
   Es_emergencia TINYINT,
-  User_username VARCHAR(45) NOT NULL,
+  users_username VARCHAR(45) NOT NULL,
   PRIMARY KEY (Id),
-  INDEX fk_Advertencia_User1_idx (User_username),
-  CONSTRAINT fk_Advertencia_User1
-    FOREIGN KEY (User_username)
-    REFERENCES `User` (username)
+  INDEX fk_Advertencia_users1_idx (users_username),
+  CONSTRAINT fk_Advertencia_users1
+    FOREIGN KEY (users_username)
+    REFERENCES users (username)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -85,14 +85,14 @@ CREATE TABLE Mensaje (
   Nivel_riesgo VARCHAR(45),
   Resultado_analisis VARCHAR(45),
   fecha_analisis DATETIME,
-  User_username VARCHAR(45) NOT NULL,
+  users_username VARCHAR(45) NOT NULL,
   Fuente_Confiable_Id_Fuente INT NOT NULL,
   PRIMARY KEY (Id_mensaje),
-  INDEX fk_Mensaje_User1_idx (User_username),
+  INDEX fk_Mensaje_users1_idx (users_username),
   INDEX fk_Mensaje_Fuente_Confiable1_idx (Fuente_Confiable_Id_Fuente),
-  CONSTRAINT fk_Mensaje_User1
-    FOREIGN KEY (User_username)
-    REFERENCES `User` (username)
+  CONSTRAINT fk_Mensaje_users1
+    FOREIGN KEY (users_username)
+    REFERENCES users (username)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_Mensaje_Fuente_Confiable1
@@ -110,12 +110,12 @@ CREATE TABLE Reporte (
   Titulo VARCHAR(100),
   Descripcion VARCHAR(255),
   Fecha_reporte DATETIME,
-  User_username VARCHAR(45) NOT NULL,
+  users_username VARCHAR(45) NOT NULL,
   PRIMARY KEY (Id_reporte),
-  INDEX fk_Reporte_User1_idx (User_username),
-  CONSTRAINT fk_Reporte_User1
-    FOREIGN KEY (User_username)
-    REFERENCES `User` (username)
+  INDEX fk_Reporte_users1_idx (users_username),
+  CONSTRAINT fk_Reporte_users1
+    FOREIGN KEY (users_username)
+    REFERENCES users (username)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB;

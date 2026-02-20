@@ -1,39 +1,35 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "plan")
-@Data
+@Table(name = "Plan")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Plan {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "nombre_plan", nullable = false, length = 100)
+    @Column(name = "Nombre_plan", length = 45)
     private String nombrePlan;
 
-    @Column(nullable = false, length = 500)
+    @Column(name = "Beneficios", length = 100)
     private String beneficios;
 
-    @Column(nullable = false)
+    @Column(name = "Precio")
     private Double precio;
 
-    @Column(name = "fecha_inicio", nullable = false)
-    private LocalDate fechaInicio;
+    @Column(name = "Fecha_inicio")
+    private LocalDateTime fechaInicio;
 
-    @Column(name = "fecha_expiracion")
-    private LocalDate fechaExpiracion;
+    @Column(name = "Fecha_expiracion")
+    private LocalDateTime fechaExpiracion;
 
     @OneToMany(mappedBy = "plan")
-    private List<User> reportes;
+    private List<User> users;
 }

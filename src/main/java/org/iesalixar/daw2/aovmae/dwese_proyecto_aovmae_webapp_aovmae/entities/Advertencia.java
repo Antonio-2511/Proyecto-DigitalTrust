@@ -1,51 +1,47 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "advertencia")
-@Data
+@Table(name = "Advertencia")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Advertencia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id")
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "Titulo", length = 100)
     private String titulo;
 
-    @Column(name = "nivel_criticidad", nullable = false)
-    private Integer nivelCriticidad;
+    @Column(name = "Nivel_Criticidad", length = 45)
+    private String nivelCriticidad;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "Descripcion", length = 255)
     private String descripcion;
 
-    @Column(name = "fecha_envio", nullable = false)
+    @Column(name = "Fecha_de_envio")
     private LocalDateTime fechaEnvio;
 
-    @Column(name = "es_emergencia", nullable = false)
-    private boolean esEmergencia;
+    @Column(name = "Es_emergencia")
+    private Boolean esEmergencia;
 
-
-    // Advertencia es enviada por un usuario (N:1)
     @ManyToOne
-    @JoinColumn(name = "usuario", nullable = false)
+    @JoinColumn(
+            name = "users_username",
+            referencedColumnName = "username",
+            nullable = false
+    )
     private User user;
 
-    // Advertencia es generada por una fuente confiable (N:1)
-    @ManyToOne
-    @JoinColumn(name = "fuente_confiable_id", nullable = false)
-    private FuenteConfiable fuenteConfiable;
-
-    public void setMensaje(Mensaje mensaje) {
-    }
+    @OneToMany(mappedBy = "advertencia")
+    private List<FuenteConfiable> fuentes;
 }
-
-

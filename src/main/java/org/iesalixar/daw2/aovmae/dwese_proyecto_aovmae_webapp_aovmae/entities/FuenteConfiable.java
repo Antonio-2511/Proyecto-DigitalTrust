@@ -1,42 +1,46 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Table(name = "FuenteConfiable")
-@Data
+@Table(name = "Fuente_Confiable")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FuenteConfiable {
 
     @Id
-    @Column(name = "id_fuente")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "Id_Fuente")
     private Long idFuente;
 
-    @Column(name = "nombre_entidad", nullable = false, length = 150)
+    @Column(name = "Nombre_entidad", length = 100)
     private String nombreEntidad;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "Tipo", length = 45)
     private String tipo;
 
-    @Column(length = 15)
+    @Column(name = "Telefono", length = 15)
     private String telefono;
 
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(name = "Email", length = 100)
     private String email;
 
-    @Column(length = 150)
+    @Column(name = "Dominio", length = 45)
     private String dominio;
 
-    @OneToMany(mappedBy = "fuenteConfiable")
-    private List<Advertencia> advertencias;
+    @ManyToOne
+    @JoinColumn(
+            name = "Advertencia_Id",
+            referencedColumnName = "Id",
+            nullable = false
+    )
+    private Advertencia advertencia;
 
-    // Usuario envía muchos mensajes
     @OneToMany(mappedBy = "fuenteConfiable")
     private List<Mensaje> mensajes;
 }
