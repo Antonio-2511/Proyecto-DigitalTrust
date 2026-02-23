@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detector de Mensajes Sospechosos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        label { display: block; margin-top: 20px; font-weight: bold; }
+        textarea { width: 100%; height: 100px; }
+        button { margin-top: 10px; padding: 10px 20px; }
+        .resultado { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+        .ALTO { color: red; }
+        .MEDIO { color: orange; }
+        .BAJO { color: yellowgreen; }
+        .SEGURO { color: green; }
+        table { margin-top: 30px; width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: left; }
+    </style>
+</head>
+<body>
+<h1>Detector de Mensajes Sospechosos</h1>
+
+<form id="mensajeForm">
+    <label for="contenidoTexto">Escribe el mensaje:</label>
+    <textarea id="contenidoTexto" required></textarea>
+    <button type="submit">Analizar</button>
+</form>
+
+<div id="resultado" class="resultado" style="display:none;">
+    <p><strong>Nivel de riesgo:</strong> <span id="nivelRiesgo"></span></p>
+    <p><strong>Resultado del análisis:</strong> <span id="resultadoAnalisis"></span></p>
+</div>
+
+<h2>Mensajes analizados previamente</h2>
+<table id="mensajesTabla">
+    <thead>
+    <tr>
+        <th>Mensaje</th>
+        <th>Nivel de riesgo</th>
+        <th>Resultado del análisis</th>
+        <th>Fecha</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    const form = document.getElementById('mensajeForm');
+    const resultadoDiv = document.getElementById('resultado');
+    const nivelRiesgoSpan = document.getElementById('nivelRiesgo');
+    const resultadoAnalisisSpan = document.getElementById('resultadoAnalisis');
+    const mensajesTablaBody = document.querySelector('#mensajesTabla tbody');
+
+    async function cargarMensajes() {
+        try {
+            const resp = await fetch('/api/mensajes/todos');
+            const mensajes = await resp.json();
+
+            mensajesTablaBody.innerHTML = '';
+            mensajes.forEach(msg => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${msg.contenidoTexto}</td>
+                    <td class="${msg.nivelRiesgo}">${msg.nivelRiesgo}</td>
+                    <td>${msg.resultadoAnalisis}</td>
+                    <td>${new Date(msg.fechaAnalisis).toLocaleString()}</td>
+                `;
+                mensajesTablaBody.appendChild(fila);
+            });
+        } catch (error) {
+            console.error('Error cargando mensajes:', error);
+        }
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const texto = document.getElementById('contenidoTexto').value;
+
+        try {
+            const response = await fetch('/api/mensajes/analizar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                body: JSON.stringify(texto)
+            });
+
+            const data = await response.json();
+
+            nivelRiesgoSpan.textContent = data.nivelRiesgo;
+            resultadoAnalisisSpan.textContent = data.resultadoAnalisis;
+            resultadoDiv.className = 'resultado ' + data.nivelRiesgo;
+            resultadoDiv.style.display = 'block';
+
+            cargarMensajes();
+            form.reset();
+        } catch (error) {
+            console.error('Error al analizar el mensaje:', error);
+        }
+    });
+
+    // cargar mensajes al abrir la página
+    cargarMensajes();
+</script>
+</body>
+</html>
