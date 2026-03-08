@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +23,6 @@ public class FuenteConfiableDTO {
 
     private String dominio;
 
-    private String tituloAdvertencia;
-
-    private Long advertenciaId;
+    // Relación con advertencias
+    private List<Long> advertenciasIds;
 }

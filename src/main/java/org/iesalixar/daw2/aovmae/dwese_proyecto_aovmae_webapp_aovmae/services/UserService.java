@@ -13,16 +13,16 @@ public interface UserService {
 
     Page<UserDTO> list(Pageable pageable);
 
-    UserUpdateDTO getForEdit(Long id);
+    UserUpdateDTO getForEdit(String username);
 
     void create(UserCreateDTO dto);
 
     void update(UserUpdateDTO dto);
 
-    void delete(Long id);
+    void delete(String username);
 
-    UserDetailDTO getDetail(Long id);
-
+    UserDetailDTO getDetail(String username);
 
     User getAuthenticatedUser();
+
 }

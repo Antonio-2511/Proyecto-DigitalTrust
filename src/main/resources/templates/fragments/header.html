@@ -1,10 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
+
+<header th:fragment="header">
+
+    <div class="navbar">
+
+        <div class="logo">
+            Digital Trust
+        </div>
+
+        <nav>
+            <a th:href="@{/}">INICIO</a>
+            <a th:href="@{/plan}">PLAN</a>
+            <a th:href="@{/reportes}">REPORTES</a>
+            <a th:href="@{/mensajes}">MENSAJES</a>
+            <a th:href="@{/contacto}">CONTÁCTANOS</a>
+        </nav>
+
+        <div class="icons">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+    </div>
+
+</header>
 
 </body>
 </html>

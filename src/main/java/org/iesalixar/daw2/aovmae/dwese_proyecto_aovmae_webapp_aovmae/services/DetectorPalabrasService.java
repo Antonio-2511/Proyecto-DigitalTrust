@@ -23,5 +23,6 @@ public interface DetectorPalabrasService {
     /**
      * Determina el nivel de riesgo en formato String
      */
-    String determinarNivel(int riesgo);
+    Integer determinarNivel(int riesgo);
+
 }

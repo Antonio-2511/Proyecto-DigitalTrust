@@ -1,6 +1,5 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.mappers;
 
-
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteCreateDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteDetailDTO;
@@ -11,7 +10,6 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.Us
 import java.util.List;
 
 public class ReporteMapper {
-
 
     public static ReporteDTO toDTO(Reporte entity) {
         if (entity == null) return null;
@@ -33,8 +31,6 @@ public class ReporteMapper {
         return entities.stream().map(ReporteMapper::toDTO).toList();
     }
 
-
-
     public static ReporteDetailDTO toDetailDTO(Reporte entity) {
         if (entity == null) return null;
 
@@ -52,6 +48,16 @@ public class ReporteMapper {
         return dto;
     }
 
+    public static ReporteUpdateDTO toUpdateDTO(Reporte entity) {
+        if (entity == null) return null;
+
+        ReporteUpdateDTO dto = new ReporteUpdateDTO();
+        dto.setId(entity.getId());
+        dto.setTitulo(entity.getTitulo());
+        dto.setDescripcion(entity.getDescripcion());
+
+        return dto;
+    }
 
     public static Reporte toEntity(ReporteCreateDTO dto, User usuario) {
         if (dto == null) return null;
@@ -71,4 +77,3 @@ public class ReporteMapper {
         entity.setDescripcion(dto.getDescripcion());
     }
 }
-

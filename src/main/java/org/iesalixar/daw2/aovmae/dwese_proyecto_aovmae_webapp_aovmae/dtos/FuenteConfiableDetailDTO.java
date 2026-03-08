@@ -23,9 +23,8 @@ public class FuenteConfiableDetailDTO {
 
     private String dominio;
 
-    private Long advertenciaId;
+    // Información detallada de advertencias asociadas
+    private List<Long> advertenciasIds;
 
-    private String tituloAdvertencia;
-
-    private List<String> mensajes; // opcional: lista de contenidos de mensajes asociados
+    private List<String> titulosAdvertencias;
 }

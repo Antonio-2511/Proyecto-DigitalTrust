@@ -1,6 +1,5 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services;
 
-
 import jakarta.transaction.Transactional;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.UserCreateDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.UserDTO;
@@ -16,7 +15,6 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositorie
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,10 +35,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserUpdateDTO getForEdit(Long id) {
-        User usuario = userRepository.findById(id)
+    public UserUpdateDTO getForEdit(String username) {
+
+        User usuario = userRepository.findById(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("usuario", "id", id)
+                        new ResourceNotFoundException("usuario", "username", username)
                 );
 
         return UserMapper.toUpdateDTO(usuario);
@@ -73,9 +72,9 @@ public class UserServiceImpl implements UserService {
             throw new DuplicateResourceException("usuario", "email", dto.getEmail());
         }
 
-        User usuario = userRepository.findById(dto.getId())
+        User usuario = userRepository.findById(dto.getUsername())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("usuario", "id", dto.getId())
+                        new ResourceNotFoundException("usuario", "username", dto.getUsername())
                 );
 
         Plan plan = planRepository.findById(dto.getPlanId())
@@ -88,18 +87,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new ResourceNotFoundException("usuario", "id", id);
+    public void delete(String username) {
+
+        if (!userRepository.existsById(username)) {
+            throw new ResourceNotFoundException("usuario", "username", username);
         }
-        userRepository.deleteById(id);
+
+        userRepository.deleteById(username);
     }
 
     @Override
-    public UserDetailDTO getDetail(Long id) {
-        User usuario = userRepository.findById(id)
+    public UserDetailDTO getDetail(String username) {
+
+        User usuario = userRepository.findById(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("usuario", "id", id)
+                        new ResourceNotFoundException("usuario", "username", username)
                 );
 
         return UserMapper.toDetailDTO(usuario);

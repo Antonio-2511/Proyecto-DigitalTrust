@@ -5,29 +5,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FuenteConfiableCreateDTO {
 
     @NotBlank
-    @Size(max = 100)
+    @Size(max = 150)
     private String nombreEntidad;
 
     @NotBlank
-    @Size(max = 45)
+    @Size(max = 50)
     private String tipo;
 
     @Size(max = 15)
     private String telefono;
 
     @Email
-    @Size(max = 100)
+    @Size(max = 150)
     private String email;
 
-    @Size(max = 45)
+    @Size(max = 150)
     private String dominio;
 
-    @NotNull
-    private Long advertenciaId;
+    // Asociación opcional con advertencias
+    private List<Long> advertenciasIds;
 }

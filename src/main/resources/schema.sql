@@ -41,7 +41,7 @@ CREATE TABLE users (
 CREATE TABLE Advertencia (
   Id INT AUTO_INCREMENT,
   Titulo VARCHAR(100),
-  Nivel_Criticidad VARCHAR(45),
+  Nivel_Criticidad INTEGER,
   Descripcion VARCHAR(255),
   Fecha_de_envio DATETIME,
   Es_emergencia TINYINT,

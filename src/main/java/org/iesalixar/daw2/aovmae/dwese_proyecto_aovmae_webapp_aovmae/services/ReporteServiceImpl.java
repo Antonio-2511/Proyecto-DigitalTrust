@@ -16,17 +16,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 @Transactional
 public class ReporteServiceImpl implements ReporteService {
 
     @Autowired
-    private ReporteRepository reporteRepository;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    private ReporteRepository reporteRepository;
 
     @Override
     public Page<ReporteDTO> list(Pageable pageable) {
@@ -37,16 +35,13 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Override
     public ReporteUpdateDTO getForEdit(Long id) {
+
         Reporte reporte = reporteRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("reporte", "id", id)
                 );
 
-        ReporteUpdateDTO dto = new ReporteUpdateDTO();
-        dto.setId(reporte.getId());
-        dto.setTitulo(reporte.getTitulo());
-        dto.setDescripcion(reporte.getDescripcion());
-        return dto;
+        return ReporteMapper.toUpdateDTO(reporte);
     }
 
     @Override
@@ -55,12 +50,8 @@ public class ReporteServiceImpl implements ReporteService {
         User usuario = userService.getAuthenticatedUser();
 
         Reporte reporte = ReporteMapper.toEntity(dto, usuario);
-        reporte.setFechaReporte(LocalDateTime.now());
-
         reporteRepository.save(reporte);
     }
-
-
 
     @Override
     public void update(ReporteUpdateDTO dto) {
@@ -76,14 +67,17 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Override
     public void delete(Long id) {
+
         if (!reporteRepository.existsById(id)) {
             throw new ResourceNotFoundException("reporte", "id", id);
         }
+
         reporteRepository.deleteById(id);
     }
 
     @Override
     public ReporteDetailDTO getDetail(Long id) {
+
         Reporte reporte = reporteRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("reporte", "id", id)

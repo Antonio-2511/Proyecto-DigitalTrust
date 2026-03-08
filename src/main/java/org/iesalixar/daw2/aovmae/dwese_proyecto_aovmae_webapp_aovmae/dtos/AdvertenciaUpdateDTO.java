@@ -20,7 +20,7 @@ public class AdvertenciaUpdateDTO {
     @NotNull
     @Min(1)
     @Max(5)
-    private String nivelCriticidad;
+    private Integer nivelCriticidad;
 
     @NotBlank
     private String descripcion;

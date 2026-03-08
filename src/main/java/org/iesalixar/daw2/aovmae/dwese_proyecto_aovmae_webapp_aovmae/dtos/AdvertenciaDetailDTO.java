@@ -13,13 +13,19 @@ import java.util.List;
 public class AdvertenciaDetailDTO {
 
     private Long id;
+
     private String titulo;
-    private String nivelCriticidad;
+
+    private Integer nivelCriticidad;
+
     private String descripcion;
+
     private boolean esEmergencia;
+
     private LocalDateTime fechaEnvio;
 
     private String nombreUsuario;
+
     private String emailUsuario;
 
     private List<String> nombresFuentesConfiables;

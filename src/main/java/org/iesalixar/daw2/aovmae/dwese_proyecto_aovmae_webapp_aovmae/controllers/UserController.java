@@ -1,6 +1,5 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.controllers;
 
-
 import jakarta.validation.Valid;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.UserCreateDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.UserDTO;
@@ -81,13 +80,13 @@ public class UserController {
     }
 
     @GetMapping("/edit")
-    public String showEdit(@RequestParam Long id,
+    public String showEdit(@RequestParam String username,
                            Model model,
                            RedirectAttributes redirectAttributes,
                            Locale locale) {
 
         try {
-            model.addAttribute("usuario", userService.getForEdit(id));
+            model.addAttribute("usuario", userService.getForEdit(username));
             model.addAttribute("planes", planRepository.findAll());
             return "views/usuarios/usuario-form";
 
@@ -122,17 +121,17 @@ public class UserController {
                     "errorMessage",
                     messageSource.getMessage("msg.usuario.duplicate", null, locale)
             );
-            return "redirect:/usuarios/edit?id=" + dto.getId();
+            return "redirect:/usuarios/edit?username=" + dto.getUsername();
         }
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam Long id,
+    public String delete(@RequestParam String username,
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
 
         try {
-            userService.delete(id);
+            userService.delete(username);
             return "redirect:/usuarios";
 
         } catch (ResourceNotFoundException ex) {
@@ -145,13 +144,13 @@ public class UserController {
     }
 
     @GetMapping("/detail")
-    public String detail(@RequestParam Long id,
+    public String detail(@RequestParam String username,
                          Model model,
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
 
         try {
-            model.addAttribute("usuario", userService.getDetail(id));
+            model.addAttribute("usuario", userService.getDetail(username));
             return "views/usuarios/usuario-detail";
 
         } catch (ResourceNotFoundException ex) {

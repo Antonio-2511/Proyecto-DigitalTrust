@@ -22,8 +22,8 @@ public class Advertencia {
     @Column(name = "Titulo", length = 100)
     private String titulo;
 
-    @Column(name = "Nivel_Criticidad", length = 45)
-    private String nivelCriticidad;
+    @Column(name = "Nivel_Criticidad")
+    private Integer nivelCriticidad;
 
     @Column(name = "Descripcion", length = 255)
     private String descripcion;
@@ -42,6 +42,11 @@ public class Advertencia {
     )
     private User user;
 
-    @OneToMany(mappedBy = "advertencia")
+    @ManyToMany
+    @JoinTable(
+            name = "advertencia_fuente",
+            joinColumns = @JoinColumn(name = "advertencia_id"),
+            inverseJoinColumns = @JoinColumn(name = "fuente_id")
+    )
     private List<FuenteConfiable> fuentes;
 }

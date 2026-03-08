@@ -19,8 +19,13 @@ public class FuenteConfiableMapper {
         dto.setEmail(entity.getEmail());
         dto.setDominio(entity.getDominio());
 
-        if (entity.getAdvertencia() != null) {
-            dto.setAdvertenciaId(entity.getAdvertencia().getId());
+        if (entity.getAdvertencias() != null && !entity.getAdvertencias().isEmpty()) {
+            dto.setAdvertenciasIds(
+                    entity.getAdvertencias()
+                            .stream()
+                            .map(Advertencia::getId)
+                            .toList()
+            );
         }
 
         return dto;
@@ -44,18 +49,19 @@ public class FuenteConfiableMapper {
         dto.setEmail(entity.getEmail());
         dto.setDominio(entity.getDominio());
 
-        if (entity.getAdvertencia() != null) {
-            dto.setAdvertenciaId(entity.getAdvertencia().getId());
-            dto.setTituloAdvertencia(entity.getAdvertencia().getTitulo());
+        if (entity.getAdvertencias() != null && !entity.getAdvertencias().isEmpty()) {
+            dto.setTitulosAdvertencias(
+                    entity.getAdvertencias()
+                            .stream()
+                            .map(Advertencia::getTitulo)
+                            .toList()
+            );
         }
 
         return dto;
     }
 
-    public static FuenteConfiable toEntity(
-            FuenteConfiableCreateDTO dto,
-            Advertencia advertencia) {
-
+    public static FuenteConfiable toEntity(FuenteConfiableCreateDTO dto) {
         if (dto == null) return null;
 
         FuenteConfiable entity = new FuenteConfiable();
@@ -64,15 +70,13 @@ public class FuenteConfiableMapper {
         entity.setTelefono(dto.getTelefono());
         entity.setEmail(dto.getEmail());
         entity.setDominio(dto.getDominio());
-        entity.setAdvertencia(advertencia);
 
         return entity;
     }
 
     public static void copyToExistingEntity(
             FuenteConfiableUpdateDTO dto,
-            FuenteConfiable entity,
-            Advertencia advertencia) {
+            FuenteConfiable entity) {
 
         if (dto == null || entity == null) return;
 
@@ -81,6 +85,5 @@ public class FuenteConfiableMapper {
         entity.setTelefono(dto.getTelefono());
         entity.setEmail(dto.getEmail());
         entity.setDominio(dto.getDominio());
-        entity.setAdvertencia(advertencia);
     }
 }

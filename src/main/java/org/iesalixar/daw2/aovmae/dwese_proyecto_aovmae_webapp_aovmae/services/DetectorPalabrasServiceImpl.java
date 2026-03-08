@@ -1,4 +1,5 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services;
+
 import org.springframework.stereotype.Service;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.AdvertenciaDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.Advertencia;
@@ -21,7 +22,6 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
     public DetectorPalabrasServiceImpl(AdvertenciaRepository advertenciaRepository) {
         this.advertenciaRepository = advertenciaRepository;
 
-        // Diccionario de palabras y sus riesgos
         palabrasRiesgo.put("compra", 3);
         palabrasRiesgo.put("datos", 5);
         palabrasRiesgo.put("somos", 4);
@@ -44,38 +44,31 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
         return riesgo;
     }
 
+    // Ahora devuelve un NIVEL NUMÉRICO (1–5)
     @Override
-    public String determinarNivel(int riesgo) {
-        if (riesgo >= 8) return "ALTO";
-        if (riesgo >= 4) return "MEDIO";
-        if (riesgo > 0) return "BAJO";
-        return "SEGURO";
+    public Integer determinarNivel(int riesgo) {
+        if (riesgo >= 8) return 5;   // ALTO
+        if (riesgo >= 4) return 3;   // MEDIO
+        if (riesgo > 0)  return 2;   // BAJO
+        return 1;                    // SEGURO
     }
 
     @Override
     public AdvertenciaDTO analizarMensaje(String texto) {
-        int riesgo = analizarTexto(texto);
-        String nivel = determinarNivel(riesgo);
 
-        // Guardamos la advertencia en la base de datos
+        int riesgo = analizarTexto(texto);
+        Integer nivel = determinarNivel(riesgo);
+
         Advertencia advertencia = new Advertencia();
         advertencia.setTitulo("Mensaje Analizado");
         advertencia.setDescripcion(texto);
-        advertencia.setNivelCriticidad(nivel);
+        advertencia.setNivelCriticidad(nivel); // ✅ ahora es Integer
         advertencia.setFechaEnvio(LocalDateTime.now());
-        advertencia.setEsEmergencia(riesgo >= 8);
-
-        // IMPORTANTE: El usuario y fuente deben asignarse según tu sistema
-        // Por ahora podemos usar null si se permite, o un usuario/fuente temporal si tu DB lo requiere
-        // advertencia.setUsuario(usuario);
-        // advertencia.setFuenteConfiable(fuente);
+        advertencia.setEsEmergencia(nivel >= 5);
 
         advertenciaRepository.save(advertencia);
 
-        // Convertimos a DTO
-        AdvertenciaDTO dto = AdvertenciaMapper.toDTO(advertencia);
-        dto.setNivelCriticidad(nivel); // sobrescribimos con el nivel en palabras
-        return dto;
+        return AdvertenciaMapper.toDTO(advertencia);
     }
 
     public List<AdvertenciaDTO> listAll() {

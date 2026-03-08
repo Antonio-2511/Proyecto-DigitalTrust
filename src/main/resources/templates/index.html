@@ -1,22 +1,94 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Indice de Funcionalidades</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { margin-bottom: 20px; }
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 10px; }
-        a { text-decoration: none; color: blue; }
-        a:hover { text-decoration: underline; }
-    </style>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head"></head>
+
 <body>
-<h1>Bienvenido al Proyecto AOVMAE</h1>
-<p>Seleccione una funcionalidad:</p>
-<ul>
-    <li><a href="/detector-mensajes-sospechosos">Detector de Mensajes Sospechosos</a></li>
-</ul>
+
+<!-- HEADER / NAVBAR -->
+<header th:replace="fragments/header :: header"></header>
+
+
+<!-- HERO -->
+<section class="hero">
+
+    <h1>AVANCE, DESARROLLO Y SEGURIDAD</h1>
+
+    <img th:src="@{/images/security.png}" class="hero-img">
+
+    <h3>¡No nos creas a nosotros, cree en la comunidad!</h3>
+
+</section>
+
+
+<!-- REVIEWS -->
+<section class="reviews">
+
+    <div class="review">
+        ⭐⭐⭐⭐⭐
+        <p>Lorem ipsum dolor sit amet...</p>
+    </div>
+
+    <div class="review">
+        ⭐⭐⭐⭐⭐
+        <p>Lorem ipsum dolor sit amet...</p>
+    </div>
+
+    <div class="review">
+        ⭐⭐⭐⭐⭐
+        <p>Lorem ipsum dolor sit amet...</p>
+    </div>
+
+</section>
+
+
+<!-- INFO -->
+<section class="info">
+
+    <p>
+        En la era digital, la información es tu activo más valioso...
+    </p>
+
+    <button class="btn">TIENDA</button>
+
+</section>
+
+
+<!-- PRODUCTOS -->
+<section class="products">
+
+    <h2>DigitalTrust es la única seguridad que necesitas</h2>
+
+    <div class="product-grid">
+
+        <div class="product">
+            <img th:src="@{/images/web.png}">
+            <p>Análisis de enlaces sospechosos</p>
+            <span>23.99€</span>
+        </div>
+
+        <div class="product">
+            <img th:src="@{/images/ad.png}">
+            <p>Escaneo de anuncios falsos</p>
+            <span>39.99€</span>
+        </div>
+
+        <div class="product">
+            <img th:src="@{/images/mobile.png}">
+            <p>Verificación de mensajes</p>
+            <span>29.99€</span>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+<footer th:replace="fragments/footer :: footer"></footer>
+
+<!-- SCRIPTS -->
+<div th:replace="fragments/scripts :: scripts"></div>
+
 </body>
 </html>

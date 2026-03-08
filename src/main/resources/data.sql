@@ -23,10 +23,10 @@ INSERT INTO users (username, Contrasenia, Fecha_creacion, Telefono, Gmail, Plan_
 -- ================================
 INSERT INTO Advertencia 
 (Titulo, Nivel_Criticidad, Descripcion, Fecha_de_envio, Es_emergencia, users_username) VALUES
-('Phishing detectado', 'Alta', 'Correo fraudulento', '2026-01-09 08:00:00', 1, 'juan01'),
-('SMS sospechoso', 'Media', 'Mensaje con enlace', '2026-01-09 09:00:00', 0, 'maria02'),
-('Intento de estafa', 'Alta', 'Llamada falsa', '2026-01-09 10:00:00', 1, 'carlos03'),
-('Web insegura', 'Baja', 'Dominio no confiable', '2026-01-09 11:00:00', 0, 'ana04');
+('Phishing detectado', '3', 'Correo fraudulento', '2026-01-09 08:00:00', 1, 'juan01'),
+('SMS sospechoso', '2', 'Mensaje con enlace', '2026-01-09 09:00:00', 0, 'maria02'),
+('Intento de estafa', '3', 'Llamada falsa', '2026-01-09 10:00:00', 1, 'carlos03'),
+('Web insegura', '1', 'Dominio no confiable', '2026-01-09 11:00:00', 0, 'ana04');
 
 
 -- ================================

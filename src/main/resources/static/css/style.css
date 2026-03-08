@@ -1,0 +1,103 @@
+body{
+font-family: Arial;
+margin:0;
+}
+
+/* NAVBAR */
+
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#22c1a5;
+padding:10px 30px;
+color:white;
+}
+
+.navbar nav a{
+margin:0 10px;
+color:white;
+text-decoration:none;
+font-weight:bold;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+background:#ef5350;
+padding:40px;
+color:black;
+}
+
+.hero-img{
+width:350px;
+margin-top:20px;
+}
+
+/* REVIEWS */
+
+.reviews{
+display:flex;
+justify-content:space-around;
+background:#9ad6cc;
+padding:40px;
+}
+
+.review{
+width:25%;
+text-align:center;
+}
+
+/* INFO */
+
+.info{
+background:#4fd1c5;
+padding:30px;
+text-align:center;
+}
+
+.btn{
+background:#083a4d;
+color:white;
+border:none;
+padding:10px 30px;
+border-radius:20px;
+font-weight:bold;
+}
+
+/* PRODUCTS */
+
+.products{
+padding:40px;
+background:#9ad6cc;
+text-align:center;
+}
+
+.product-grid{
+display:flex;
+justify-content:center;
+gap:40px;
+margin-top:20px;
+}
+
+.product{
+background:white;
+padding:20px;
+border-radius:10px;
+width:200px;
+}
+
+.product img{
+width:100px;
+}
+
+/* FOOTER */
+
+.footer{
+background:#1abc9c;
+color:white;
+padding:20px;
+display:flex;
+justify-content:space-between;
+}

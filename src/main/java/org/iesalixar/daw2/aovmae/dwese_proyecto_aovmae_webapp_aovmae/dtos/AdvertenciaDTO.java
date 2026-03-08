@@ -16,15 +16,13 @@ public class AdvertenciaDTO {
 
     private String titulo;
 
-    private String nivelCriticidad;
+    private Integer nivelCriticidad;
 
     private boolean esEmergencia;
 
     private LocalDateTime fechaEnvio;
 
     private String nombreUsuario;
-
-    private String nombreFuenteConfiable;
 
     private List<String> nombresFuentesConfiables;
 }

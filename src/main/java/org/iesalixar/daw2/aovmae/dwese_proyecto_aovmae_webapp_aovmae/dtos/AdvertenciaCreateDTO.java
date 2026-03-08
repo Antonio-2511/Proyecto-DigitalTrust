@@ -15,7 +15,9 @@ public class AdvertenciaCreateDTO {
     private String titulo;
 
     @NotNull
-    private String nivelCriticidad;
+    @Min(1)
+    @Max(5)
+    private Integer nivelCriticidad;
 
     @NotBlank
     private String descripcion;
@@ -25,5 +27,4 @@ public class AdvertenciaCreateDTO {
 
     @NotNull
     private Long fuenteConfiableId;
-
 }
