@@ -1,0 +1,14 @@
+<tr th:each="a : ${page.content}" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <td th:text="${a.mensaje}"></td>
+
+    <td th:text="${a.fechaEnvio}"></td>
+
+    <td>
+        <a th:href="@{/advertencias/detail(id=${a.id})}">
+            Ver
+        </a>
+
+    </td>
+
+</tr>

@@ -58,13 +58,12 @@ public class UserServiceImpl implements UserService {
 
         Plan plan = planRepository.findById(dto.getPlanId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("plan", "id", dto.getPlanId())
+                        new ResourceNotFoundException("plan", "nombrePlan", dto.getPlanId())
                 );
 
         User usuario = UserMapper.toEntity(dto, plan);
         userRepository.save(usuario);
     }
-
     @Override
     public void update(UserUpdateDTO dto) {
 
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
         Plan plan = planRepository.findById(dto.getPlanId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("plan", "id", dto.getPlanId())
+                        new ResourceNotFoundException("plan", "nombrePlan", dto.getPlanId())
                 );
 
         UserMapper.copyToExistingEntity(dto, usuario, plan);

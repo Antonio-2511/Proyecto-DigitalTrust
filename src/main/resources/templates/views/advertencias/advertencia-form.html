@@ -1,0 +1,8 @@
+<select th:field="*{fuenteId}" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <option th:each="f : ${fuentes}"
+            th:value="${f.id}"
+            th:text="${f.nombre}">
+    </option>
+
+</select>

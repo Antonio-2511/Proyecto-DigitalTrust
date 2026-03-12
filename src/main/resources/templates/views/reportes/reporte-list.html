@@ -1,0 +1,19 @@
+<tr th:each="r : ${page.content}" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <td th:text="${r.titulo}"></td>
+
+    <td th:text="${r.fechaReporte}"></td>
+
+    <td>
+
+        <a th:href="@{/reportes/detail(id=${r.id})}">
+            Ver
+        </a>
+
+        <a th:href="@{/reportes/edit(id=${r.id})}">
+            Editar
+        </a>
+
+    </td>
+
+</tr>

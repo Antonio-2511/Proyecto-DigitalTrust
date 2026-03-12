@@ -1,0 +1,31 @@
+<form th:action="${modo == 'crear'} ? @{/usuarios/insert} : @{/usuarios/update}"
+      th:object="${usuario}"
+      method="post" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <div th:if="${#fields.hasErrors('*')}" style="color:red">
+        <ul>
+            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
+    <input type="text" th:field="*{username}" placeholder="Username">
+
+    <input type="email" th:field="*{email}" placeholder="Email">
+
+    <input type="text" th:field="*{telefono}" placeholder="Telefono">
+
+    <input type="password" th:field="*{password}" placeholder="Password">
+
+    <input type="password" th:field="*{confirmPassword}" placeholder="Confirm Password">
+
+    <select th:field="*{planId}">
+        <option value="">Selecciona plan</option>
+        <option th:each="p : ${planes}"
+                th:value="${p.nombrePlan}"
+                th:text="${p.nombrePlan}">
+        </option>
+    </select>
+
+    <button type="submit">Guardar</button>
+
+</form>

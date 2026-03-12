@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Reporte</title>
+</head>
+
+<body>
+
+<h2>Detalle del Reporte</h2>
+
+<p>ID: <span th:text="${reporte.id}"></span></p>
+
+<p>Título: <span th:text="${reporte.titulo}"></span></p>
+
+<p>Descripción:</p>
+<p th:text="${reporte.descripcion}"></p>
+
+<p>Fecha del reporte:
+    <span th:text="${reporte.fechaReporte}"></span>
+</p>
+
+<p>Nivel de peligro:
+    <span th:text="${reporte.nivelPeligro}"></span>
+</p>
+
+<p>Solucionado:
+    <span th:text="${reporte.solucionado}"></span>
+</p>
+
+<br>
+
+<a th:href="@{/reportes}">Volver a reportes</a>
+
+</body>
+</html>

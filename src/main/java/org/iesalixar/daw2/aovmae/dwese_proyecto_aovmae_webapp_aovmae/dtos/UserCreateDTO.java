@@ -28,5 +28,5 @@ public class UserCreateDTO {
     private String confirmPassword;
 
     @NotNull
-    private Long planId;
+    private String planId;
 }

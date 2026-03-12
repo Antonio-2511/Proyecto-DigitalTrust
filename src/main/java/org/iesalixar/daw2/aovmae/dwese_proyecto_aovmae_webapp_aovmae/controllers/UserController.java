@@ -37,19 +37,23 @@ public class UserController {
 
     @GetMapping
     public String list(
-            @PageableDefault(size = 10, sort = "email", direction = Sort.Direction.ASC)
+            @PageableDefault(size = 10, sort = "gmail", direction = Sort.Direction.ASC)
             Pageable pageable,
             Model model) {
 
         Page<UserDTO> page = userService.list(pageable);
         model.addAttribute("page", page);
+
         return "views/usuarios/usuario-list";
     }
 
     @GetMapping("/new")
     public String showNewForm(Model model) {
+
         model.addAttribute("usuario", new UserCreateDTO());
         model.addAttribute("planes", planRepository.findAll());
+        model.addAttribute("modo", "crear");
+
         return "views/usuarios/usuario-form";
     }
 
@@ -63,18 +67,33 @@ public class UserController {
 
         if (result.hasErrors()) {
             model.addAttribute("planes", planRepository.findAll());
+            model.addAttribute("modo", "crear");
             return "views/usuarios/usuario-form";
         }
 
         try {
+
             userService.create(dto);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    messageSource.getMessage("msg.usuario.created", null, locale)
+            );
+
             return "redirect:/usuarios";
 
         } catch (DuplicateResourceException ex) {
+
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    messageSource.getMessage("msg.usuario.duplicate", null, locale)
+                    messageSource.getMessage(
+                            "msg.usuario.duplicate",
+                            null,
+                            "El usuario o email ya existe",
+                            locale
+                    )
             );
+
             return "redirect:/usuarios/new";
         }
     }
@@ -86,15 +105,25 @@ public class UserController {
                            Locale locale) {
 
         try {
+
             model.addAttribute("usuario", userService.getForEdit(username));
             model.addAttribute("planes", planRepository.findAll());
+            model.addAttribute("modo", "editar");
+
             return "views/usuarios/usuario-form";
 
         } catch (ResourceNotFoundException ex) {
+
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    messageSource.getMessage("msg.usuario.notfound", null, locale)
+                    messageSource.getMessage(
+                            "msg.usuario.notfound",
+                            null,
+                            "Usuario no encontrado",
+                            locale
+                    )
             );
+
             return "redirect:/usuarios";
         }
     }
@@ -109,18 +138,33 @@ public class UserController {
 
         if (result.hasErrors()) {
             model.addAttribute("planes", planRepository.findAll());
+            model.addAttribute("modo", "editar");
             return "views/usuarios/usuario-form";
         }
 
         try {
+
             userService.update(dto);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    messageSource.getMessage("msg.usuario.updated", null, locale)
+            );
+
             return "redirect:/usuarios";
 
         } catch (DuplicateResourceException ex) {
+
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    messageSource.getMessage("msg.usuario.duplicate", null, locale)
+                    messageSource.getMessage(
+                            "msg.usuario.duplicate",
+                            null,
+                            "El usuario o email ya existe",
+                            locale
+                    )
             );
+
             return "redirect:/usuarios/edit?username=" + dto.getUsername();
         }
     }
@@ -131,14 +175,28 @@ public class UserController {
                          Locale locale) {
 
         try {
+
             userService.delete(username);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMessage",
+                    messageSource.getMessage("msg.usuario.deleted", null, locale)
+            );
+
             return "redirect:/usuarios";
 
         } catch (ResourceNotFoundException ex) {
+
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    messageSource.getMessage("msg.usuario.notfound", null, locale)
+                    messageSource.getMessage(
+                            "msg.usuario.notfound",
+                            null,
+                            "Usuario no encontrado",
+                            locale
+                    )
             );
+
             return "redirect:/usuarios";
         }
     }
@@ -150,14 +208,23 @@ public class UserController {
                          Locale locale) {
 
         try {
+
             model.addAttribute("usuario", userService.getDetail(username));
+
             return "views/usuarios/usuario-detail";
 
         } catch (ResourceNotFoundException ex) {
+
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
-                    messageSource.getMessage("msg.usuario.notfound", null, locale)
+                    messageSource.getMessage(
+                            "msg.usuario.notfound",
+                            null,
+                            "Usuario no encontrado",
+                            locale
+                    )
             );
+
             return "redirect:/usuarios";
         }
     }

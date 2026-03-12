@@ -27,7 +27,7 @@ public class User {
     @Column(name = "Telefono", length = 15)
     private String telefono;
 
-    @Column(name = "Gmail", length = 100)
+    @Column(name = "gmail", length = 100)
     private String gmail;
 
     @ManyToOne

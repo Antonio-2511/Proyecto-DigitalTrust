@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Advertencia</title>
+</head>
+
+<body>
+<h2>Detalle de Advertencia</h2>
+
+<p>ID: <span th:text="${advertencia.id}"></span></p>
+
+<p>Mensaje:
+    <span th:text="${advertencia.mensaje}"></span>
+</p>
+<p>Fecha de envío:
+    <span th:text="${advertencia.fechaEnvio}"></span>
+</p>
+
+<p>Fuente confiable:
+    <span th:text="${advertencia.fuenteConfiable.nombre}"></span>
+</p>
+<br>
+<a th:href="@{/advertencias}">Volver a advertencias</a>
+
+</body>
+</html>
