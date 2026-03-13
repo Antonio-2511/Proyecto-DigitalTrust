@@ -1,32 +1,34 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
+<header th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml">
 
-<header th:fragment="header">
+    <nav class="navbar">
 
-    <div class="navbar">
+        <div class="nav-left">
 
-        <div class="logo">
-            Digital Trust
+            <a th:href="@{/}" class="logo">
+                LOGO
+            </a>
+
+            <ul class="nav-links">
+
+                <li><a th:href="@{/}">INICIO</a></li>
+                <li><a th:href="@{/planes}">PLAN</a></li>
+                <li><a th:href="@{/reportes}">REPORTES</a></li>
+                <li><a th:href="@{/advertencias}">ADVERTENCIAS</a></li>
+                <li><a th:href="@{/api/detector}">MENSAJES</a></li>
+                <li><a th:href="@{/contacto}">CONTÁCTANOS</a></li>
+
+            </ul>
+
         </div>
 
-        <nav>
-            <a th:href="@{/}">INICIO</a>
-            <a th:href="@{/plan}">PLAN</a>
-            <a th:href="@{/reportes}">REPORTES</a>
-            <a th:href="@{/mensajes}">MENSAJES</a>
-            <a th:href="@{/contacto}">CONTÁCTANOS</a>
-        </nav>
+        <div class="nav-right">
 
-        <div class="icons">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <i class="fa-solid fa-user"></i>
+            <a th:href="@{/carrito}" class="nav-icon">🛒</a>
+            <a th:href="@{/buscar}" class="nav-icon">🔍</a>
+            <a th:href="@{/usuarios}" class="nav-icon">👤</a>
+
         </div>
 
-    </div>
+    </nav>
 
 </header>
-
-</body>
-</html>

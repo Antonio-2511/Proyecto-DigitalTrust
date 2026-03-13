@@ -1,15 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head :: head"></head>
-
+<head th:replace="~{fragments/head :: head('Inicio')}"></head>
 <body>
 
-<!-- HEADER / NAVBAR -->
-<header th:replace="fragments/header :: header"></header>
-
-
-<!-- HERO -->
+<div th:replace="~{fragments/header :: header}"></div>
 <section class="hero">
 
     <h1>AVANCE, DESARROLLO Y SEGURIDAD</h1>
@@ -21,7 +16,6 @@
 </section>
 
 
-<!-- REVIEWS -->
 <section class="reviews">
 
     <div class="review">
@@ -42,7 +36,6 @@
 </section>
 
 
-<!-- INFO -->
 <section class="info">
 
     <p>
@@ -54,7 +47,6 @@
 </section>
 
 
-<!-- PRODUCTOS -->
 <section class="products">
 
     <h2>DigitalTrust es la única seguridad que necesitas</h2>
@@ -84,10 +76,8 @@
 </section>
 
 
-<!-- FOOTER -->
 <footer th:replace="fragments/footer :: footer"></footer>
 
-<!-- SCRIPTS -->
 <div th:replace="fragments/scripts :: scripts"></div>
 
 </body>

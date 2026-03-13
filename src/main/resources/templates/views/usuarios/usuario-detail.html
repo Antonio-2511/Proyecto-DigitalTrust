@@ -1,18 +1,57 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Detalle Usuario</title>
-</head>
+<head th:replace="fragments/head :: head('Detalle Usuario')"></head>
 
 <body>
-<h2 th:text="${usuario.username}"></h2>
 
-<p>Email: <span th:text="${usuario.email}"></span></p>
+<header th:replace="fragments/header :: header"></header>
 
-<p>Plan: <span th:text="${usuario.planNombre}"></span></p>
+<main class="container">
+
+    <h1 class="page-title">Detalle Usuario</h1>
+
+    <div class="detail-card">
+
+        <div class="detail-row">
+            <strong>Username:</strong>
+            <span th:text="${usuario.username}"></span>
+        </div>
+
+        <div class="detail-row">
+            <strong>Email:</strong>
+            <span th:text="${usuario.email}"></span>
+        </div>
+
+        <div class="detail-row">
+            <strong>Teléfono:</strong>
+            <span th:text="${usuario.telefono}"></span>
+        </div>
+
+        <div class="detail-row">
+            <strong>Plan:</strong>
+            <span th:text="${usuario.planNombre}"></span>
+        </div>
+
+    </div>
+
+    <div class="form-actions">
+
+        <a class="btn btn-edit"
+           th:href="@{/usuarios/edit(username=${usuario.username})}">
+            Editar
+        </a>
+
+        <a class="btn btn-secondary"
+           th:href="@{/usuarios}">
+            Volver
+        </a>
+
+    </div>
+
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
 
 </body>
 </html>

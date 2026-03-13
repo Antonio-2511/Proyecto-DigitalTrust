@@ -42,11 +42,6 @@ public class Advertencia {
     )
     private User user;
 
-    @ManyToMany
-    @JoinTable(
-            name = "advertencia_fuente",
-            joinColumns = @JoinColumn(name = "advertencia_id"),
-            inverseJoinColumns = @JoinColumn(name = "fuente_id")
-    )
+    @OneToMany(mappedBy = "advertencia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FuenteConfiable> fuentes;
 }

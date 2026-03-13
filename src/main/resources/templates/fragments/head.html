@@ -1,19 +1,11 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="head">
+<head th:fragment="head(title)" xmlns:th="http://www.w3.org/1999/xhtml">
+
     <meta charset="UTF-8">
+
+    <title th:text="${title}">DigitalTrust</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>DigitalTrust</title>
-
-    <!-- CSS -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
-    <!-- Icons -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-</html>
