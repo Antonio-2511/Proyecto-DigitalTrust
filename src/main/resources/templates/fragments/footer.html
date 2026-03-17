@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-
-<footer th:fragment="footer">
+<footer th:fragment="footer" xmlns:th="http://www.w3.org/1999/xhtml">
 
     <div class="footer">
 
         <div class="footer-logo">
-            <h3>Digital Trust</h3>
+            <h3 th:text="#{footer.brand}"></h3>
         </div>
 
         <div class="footer-social">
-            <p>Nuestras redes:</p>
+            <p th:text="#{footer.social}"></p>
 
             <i class="fa-brands fa-instagram"></i>
             <i class="fa-brands fa-x-twitter"></i>
@@ -20,17 +16,14 @@
         </div>
 
         <div class="footer-links">
-            <p><strong>¿Qué hacemos?</strong></p>
+            <p><strong th:text="#{footer.what}"></strong></p>
             <ul>
-                <li>Reportar ciberacoso</li>
-                <li>Reportar información sensible</li>
-                <li>Ayuda a usuarios en riesgo</li>
+                <li th:text="#{footer.link1}"></li>
+                <li th:text="#{footer.link2}"></li>
+                <li th:text="#{footer.link3}"></li>
             </ul>
         </div>
 
     </div>
 
 </footer>
-
-</body>
-</html>

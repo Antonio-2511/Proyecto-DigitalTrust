@@ -5,69 +5,65 @@
 <body>
 
 <div th:replace="~{fragments/header :: header}"></div>
+
 <section class="hero">
 
-    <h1>AVANCE, DESARROLLO Y SEGURIDAD</h1>
+    <h1 th:text="#{home.title}"></h1>
 
     <img th:src="@{/images/security.png}" class="hero-img">
 
-    <h3>¡No nos creas a nosotros, cree en la comunidad!</h3>
+    <h3 th:text="#{home.subtitle}"></h3>
 
 </section>
-
 
 <section class="reviews">
 
     <div class="review">
         ⭐⭐⭐⭐⭐
-        <p>Lorem ipsum dolor sit amet...</p>
+        <p th:text="#{home.review}"></p>
     </div>
 
     <div class="review">
         ⭐⭐⭐⭐⭐
-        <p>Lorem ipsum dolor sit amet...</p>
+        <p th:text="#{home.review}"></p>
     </div>
 
     <div class="review">
         ⭐⭐⭐⭐⭐
-        <p>Lorem ipsum dolor sit amet...</p>
+        <p th:text="#{home.review}"></p>
     </div>
 
 </section>
-
 
 <section class="info">
 
-    <p>
-        En la era digital, la información es tu activo más valioso...
-    </p>
+    <p th:text="#{home.cta}"></p>
 
-    <button class="btn">TIENDA</button>
+    <button class="btn" th:text="#{home.button}"></button>
 
 </section>
 
-
 <section class="products">
 
-    <h2>DigitalTrust es la única seguridad que necesitas</h2>
+    <h2 th:text="#{home.products.title}"></h2>
 
     <div class="product-grid">
 
         <div class="product">
             <img th:src="@{/images/web.png}">
-            <p>Análisis de enlaces sospechosos</p>
+            <p th:text="#{home.product1}"></p>
             <span>23.99€</span>
         </div>
 
         <div class="product">
             <img th:src="@{/images/ad.png}">
-            <p>Escaneo de anuncios falsos</p>
+            <p th:text="#{home.product2}"></p>
             <span>39.99€</span>
         </div>
 
         <div class="product">
             <img th:src="@{/images/mobile.png}">
-            <p>Verificación de mensajes</p>
+            <p th:text="#{home.product3}"></p>
             <span>29.99€</span>
         </div>
 
@@ -75,8 +71,7 @@
 
 </section>
 
-
-<footer th:replace="fragments/footer :: footer"></footer>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 
 <div th:replace="fragments/scripts :: scripts"></div>
 

@@ -7,22 +7,24 @@
 </head>
 
 <body>
-<h2>Detalle de Advertencia</h2>
 
-<p>ID: <span th:text="${advertencia.id}"></span></p>
+<h2 th:text="#{warning.detail}"></h2>
 
-<p>Mensaje:
+<p><strong th:text="#{common.id}"></strong>: <span th:text="${advertencia.id}"></span></p>
+
+<p><strong th:text="#{warning.message}"></strong>:
     <span th:text="${advertencia.mensaje}"></span>
 </p>
-<p>Fecha de envío:
+
+<p><strong th:text="#{warning.date}"></strong>:
     <span th:text="${advertencia.fechaEnvio}"></span>
 </p>
 
-<p>Fuente confiable:
+<p><strong th:text="#{warning.source}"></strong>:
     <span th:text="${advertencia.fuenteConfiable.nombre}"></span>
 </p>
-<br>
-<a th:href="@{/advertencias}">Volver a advertencias</a>
+
+<a th:href="@{/advertencias}" th:text="#{common.back}"></a>
 
 </body>
 </html>

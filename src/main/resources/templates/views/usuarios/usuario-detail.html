@@ -9,27 +9,27 @@
 
 <main class="container">
 
-    <h1 class="page-title">Detalle Usuario</h1>
+    <h1 class="page-title" th:text="#{users.detail}"></h1>
 
     <div class="detail-card">
 
         <div class="detail-row">
-            <strong>Username:</strong>
+            <strong th:text="#{users.username}"></strong>
             <span th:text="${usuario.username}"></span>
         </div>
 
         <div class="detail-row">
-            <strong>Email:</strong>
+            <strong th:text="#{users.email}"></strong>
             <span th:text="${usuario.email}"></span>
         </div>
 
         <div class="detail-row">
-            <strong>Teléfono:</strong>
+            <strong th:text="#{users.phone}"></strong>
             <span th:text="${usuario.telefono}"></span>
         </div>
 
         <div class="detail-row">
-            <strong>Plan:</strong>
+            <strong th:text="#{users.plan}"></strong>
             <span th:text="${usuario.planNombre}"></span>
         </div>
 
@@ -38,13 +38,13 @@
     <div class="form-actions">
 
         <a class="btn btn-edit"
-           th:href="@{/usuarios/edit(username=${usuario.username})}">
-            Editar
+           th:href="@{/usuarios/edit(username=${usuario.username})}"
+           th:text="#{users.edit}">
         </a>
 
         <a class="btn btn-secondary"
-           th:href="@{/usuarios}">
-            Volver
+           th:href="@{/usuarios}"
+           th:text="#{common.back}">
         </a>
 
     </div>

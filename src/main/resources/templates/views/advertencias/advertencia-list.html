@@ -1,14 +1,45 @@
-<tr th:each="a : ${page.content}" xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-    <td th:text="${a.mensaje}"></td>
+<head th:replace="fragments/head :: head('Advertencias')"></head>
 
-    <td th:text="${a.fechaEnvio}"></td>
+<body>
 
-    <td>
-        <a th:href="@{/advertencias/detail(id=${a.id})}">
-            Ver
-        </a>
+<header th:replace="fragments/header :: header"></header>
 
-    </td>
+<main class="container">
 
-</tr>
+    <h1 class="page-title" th:text="#{navbar.advertencias}"></h1>
+
+    <table class="table">
+
+        <thead>
+        <tr>
+            <th th:text="#{warning.message}"></th>
+            <th th:text="#{warning.date}"></th>
+            <th th:text="#{users.actions}"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="a : ${page.content}">
+
+            <td th:text="${a.mensaje}"></td>
+            <td th:text="${a.fechaEnvio}"></td>
+
+            <td>
+                <a th:href="@{/advertencias/detail(id=${a.id})}"
+                   th:text="#{users.view}"></a>
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

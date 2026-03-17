@@ -1,19 +1,48 @@
-<tr th:each="r : ${page.content}" xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-    <td th:text="${r.titulo}"></td>
+<head th:replace="fragments/head :: head('Reportes')"></head>
 
-    <td th:text="${r.fechaReporte}"></td>
+<body>
 
-    <td>
+<header th:replace="fragments/header :: header"></header>
 
-        <a th:href="@{/reportes/detail(id=${r.id})}">
-            Ver
-        </a>
+<main class="container">
 
-        <a th:href="@{/reportes/edit(id=${r.id})}">
-            Editar
-        </a>
+    <h1 class="page-title" th:text="#{navbar.reportes}"></h1>
 
-    </td>
+    <table class="table">
 
-</tr>
+        <thead>
+        <tr>
+            <th th:text="#{report.title}"></th>
+            <th th:text="#{report.date}"></th>
+            <th th:text="#{users.actions}"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="r : ${page.content}">
+
+            <td th:text="${r.titulo}"></td>
+            <td th:text="${r.fechaReporte}"></td>
+
+            <td>
+                <a th:href="@{/reportes/detail(id=${r.id})}"
+                   th:text="#{users.view}"></a>
+
+                <a th:href="@{/reportes/edit(id=${r.id})}"
+                   th:text="#{users.edit}"></a>
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

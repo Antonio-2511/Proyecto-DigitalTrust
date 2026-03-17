@@ -8,30 +8,28 @@
 
 <body>
 
-<h2>Detalle del Reporte</h2>
+<h2 th:text="#{report.detail}"></h2>
 
-<p>ID: <span th:text="${reporte.id}"></span></p>
+<p><strong th:text="#{common.id}"></strong>: <span th:text="${reporte.id}"></span></p>
 
-<p>Título: <span th:text="${reporte.titulo}"></span></p>
+<p><strong th:text="#{report.title}"></strong>: <span th:text="${reporte.titulo}"></span></p>
 
-<p>Descripción:</p>
+<p><strong th:text="#{report.description}"></strong></p>
 <p th:text="${reporte.descripcion}"></p>
 
-<p>Fecha del reporte:
+<p><strong th:text="#{report.date}"></strong>:
     <span th:text="${reporte.fechaReporte}"></span>
 </p>
 
-<p>Nivel de peligro:
+<p><strong th:text="#{report.level}"></strong>:
     <span th:text="${reporte.nivelPeligro}"></span>
 </p>
 
-<p>Solucionado:
+<p><strong th:text="#{report.solved}"></strong>:
     <span th:text="${reporte.solucionado}"></span>
 </p>
 
-<br>
-
-<a th:href="@{/reportes}">Volver a reportes</a>
+<a th:href="@{/reportes}" th:text="#{common.back}"></a>
 
 </body>
 </html>

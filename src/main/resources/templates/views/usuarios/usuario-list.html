@@ -9,14 +9,14 @@
 
 <main class="container">
 
-    <h1 class="page-title">Usuarios</h1>
+    <h1 class="page-title" th:text="#{users.title}"></h1>
 
     <table class="table">
 
         <thead>
         <tr>
-            <th>Email</th>
-            <th>Acciones</th>
+            <th th:text="#{users.email}"></th>
+            <th th:text="#{users.actions}"></th>
         </tr>
         </thead>
 
@@ -28,19 +28,19 @@
             <td class="actions">
 
                 <a class="btn btn-view"
-                   th:href="@{/usuarios/detail(username=${u.username})}">
-                    Ver
+                   th:href="@{/usuarios/detail(username=${u.username})}"
+                   th:text="#{users.view}">
                 </a>
 
                 <a class="btn btn-edit"
-                   th:href="@{/usuarios/edit(username=${u.username})}">
-                    Editar
+                   th:href="@{/usuarios/edit(username=${u.username})}"
+                   th:text="#{users.edit}">
                 </a>
 
                 <form th:action="@{/usuarios/delete}" method="post" style="display:inline">
                     <input type="hidden" name="username" th:value="${u.username}">
-                    <button class="btn btn-delete" type="submit">
-                        Eliminar
+                    <button class="btn btn-delete" type="submit"
+                            th:text="#{users.delete}">
                     </button>
                 </form>
 

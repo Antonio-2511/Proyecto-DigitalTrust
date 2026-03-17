@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Login')}"></head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="container">
+
+    <h1 th:text="#{login.title}">Login</h1>
+
+    <form th:action="@{/login}" method="post">
+
+        <div class="form-group">
+            <label th:text="#{login.username}">Usuario</label>
+            <input type="text" name="username">
+        </div>
+
+        <div class="form-group">
+            <label th:text="#{login.password}">Contraseña</label>
+            <input type="password" name="password">
+        </div>
+
+        <button type="submit" th:text="#{login.submit}">Entrar</button>
+
+    </form>
+
+</main>
+
+</body>
+</html>
