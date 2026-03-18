@@ -10,7 +10,7 @@
 <main class="container">
 
     <h1 class="page-title"
-        th:text="${modo == 'crear'} ? 'Crear Usuario' : 'Editar Usuario'">
+        th:text="${modo == 'crear'} ? #{users.create} : #{users.editTitle}">
     </h1>
 
     <form class="form-card"
@@ -25,35 +25,35 @@
         </div>
 
         <div class="form-group">
-            <label>Username</label>
+            <label th:text="#{users.username}"></label>
             <input type="text" th:field="*{username}">
         </div>
 
         <div class="form-group">
-            <label>Email</label>
+            <label th:text="#{users.email}"></label>
             <input type="email" th:field="*{email}">
         </div>
 
         <div class="form-group">
-            <label>Teléfono</label>
+            <label th:text="#{users.phone}"></label>
             <input type="text" th:field="*{telefono}">
         </div>
 
         <div class="form-group">
-            <label>Password</label>
+            <label th:text="#{users.password}"></label>
             <input type="password" th:field="*{password}">
         </div>
 
         <div class="form-group">
-            <label>Confirmar Password</label>
+            <label th:text="#{users.confirmPassword}"></label>
             <input type="password" th:field="*{confirmPassword}">
         </div>
 
         <div class="form-group">
-            <label>Plan</label>
+            <label th:text="#{users.plan}"></label>
 
             <select th:field="*{planId}">
-                <option value="">Selecciona plan</option>
+                <option value="" th:text="#{users.selectPlan}"></option>
 
                 <option th:each="p : ${planes}"
                         th:value="${p.nombrePlan}"
@@ -66,12 +66,13 @@
 
         <div class="form-actions">
 
-            <button class="btn btn-primary" type="submit">
-                Guardar
+            <button class="btn btn-primary" type="submit"
+                    th:text="#{common.save}">
             </button>
 
-            <a class="btn btn-secondary" th:href="@{/usuarios}">
-                Cancelar
+            <a class="btn btn-secondary"
+               th:href="@{/usuarios}"
+               th:text="#{common.cancel}">
             </a>
 
         </div>

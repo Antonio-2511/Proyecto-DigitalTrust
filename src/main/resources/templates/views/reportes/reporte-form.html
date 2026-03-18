@@ -1,19 +1,39 @@
-<form th:action="@{/reportes/insert}"
-      th:object="${reporte}"
-      method="post" xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-    <input th:field="*{titulo}" placeholder="Título">
+<head th:replace="fragments/head :: head('Reporte')"></head>
 
-    <textarea th:field="*{descripcion}"></textarea>
+<body>
 
-    <select th:field="*{nivelPeligro}">
+<header th:replace="fragments/header :: header"></header>
 
-        <option value="BAJO">Bajo</option>
-        <option value="MEDIO">Medio</option>
-        <option value="ALTO">Alto</option>
+<main class="container">
 
-    </select>
+    <h1 th:text="#{report.title}"></h1>
 
-    <button type="submit">Guardar</button>
+    <form th:action="@{/reportes/insert}"
+          th:object="${reporte}"
+          method="post">
 
-</form>
+        <input th:field="*{titulo}" th:placeholder="#{report.title}">
+
+        <textarea th:field="*{descripcion}" th:placeholder="#{report.description}"></textarea>
+
+        <select th:field="*{nivelPeligro}">
+
+            <option value="BAJO" th:text="#{report.low}"></option>
+            <option value="MEDIO" th:text="#{report.medium}"></option>
+            <option value="ALTO" th:text="#{report.high}"></option>
+
+        </select>
+
+        <button type="submit" th:text="#{common.save}"></button>
+
+    </form>
+
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

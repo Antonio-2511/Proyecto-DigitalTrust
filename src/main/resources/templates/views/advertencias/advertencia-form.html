@@ -1,8 +1,85 @@
-<select th:field="*{fuenteId}" xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-    <option th:each="f : ${fuentes}"
-            th:value="${f.id}"
-            th:text="${f.nombre}">
-    </option>
+<head th:replace="fragments/head :: head('Reporte')"></head>
 
-</select>
+<body>
+
+<header th:replace="fragments/header :: header"></header>
+
+<main class="container">
+
+    <!-- 🧠 TÍTULO DINÁMICO -->
+    <h1 class="page-title"
+        th:text="${modo == 'crear'} ? #{report.create} : #{report.edit}">
+    </h1>
+
+    <!-- 📋 FORMULARIO -->
+    <form class="form-card"
+          th:action="${modo == 'crear'} ? @{/reportes/insert} : @{/reportes/update}"
+          th:object="${reporte}"
+          method="post">
+
+        <!-- ⚠️ ERRORES -->
+        <div th:if="${#fields.hasErrors('*')}" class="error-box">
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}"
+                    th:text="${err}">
+                </li>
+            </ul>
+        </div>
+
+        <!-- 🧾 TÍTULO -->
+        <div class="form-group">
+            <label th:text="#{report.title}"></label>
+            <input type="text" th:field="*{titulo}">
+        </div>
+
+        <!-- 📝 DESCRIPCIÓN -->
+        <div class="form-group">
+            <label th:text="#{report.description}"></label>
+            <textarea th:field="*{descripcion}"></textarea>
+        </div>
+
+        <!-- ⚠️ NIVEL DE PELIGRO -->
+        <div class="form-group">
+            <label th:text="#{report.level}"></label>
+
+            <select th:field="*{nivelPeligro}">
+
+                <option value="BAJO" th:text="#{report.low}"></option>
+                <option value="MEDIO" th:text="#{report.medium}"></option>
+                <option value="ALTO" th:text="#{report.high}"></option>
+
+            </select>
+
+        </div>
+
+        <!-- ✅ SOLUCIONADO (OPCIONAL SI LO USAS) -->
+        <div class="form-group">
+            <label th:text="#{report.solved}"></label>
+            <input type="checkbox" th:field="*{solucionado}">
+        </div>
+
+        <!-- 🎯 ACCIONES -->
+        <div class="form-actions">
+
+            <button class="btn btn-primary" type="submit"
+                    th:text="#{common.save}">
+            </button>
+
+            <a class="btn btn-secondary"
+               th:href="@{/reportes}"
+               th:text="#{common.cancel}">
+            </a>
+
+        </div>
+
+    </form>
+
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
