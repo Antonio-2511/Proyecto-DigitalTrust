@@ -1,211 +1,255 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Detector de Mensajes Sospechosos</title>
-
+    <title>Detector de Mensajes - Proyecto AOVMAE</title>
     <style>
-        /* Estilos Generales para igualar el cuerpo de la web */
+        /* --- TUS VARIABLES Y ESTILOS ORIGINALES --- */
+        :root {
+            --color-primario: #38b2ac;
+            --color-primario-hover: #2c9a94;
+            --color-nav: #06D5B2;
+            --color-fondo-pagina: #e2e8f0;
+            --color-texto: #1a202c;
+            --color-peligro: #e53e3e; /* Rojo para riesgo alto */
+            --radio-borde: 10px;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7fafc; /* Color de fondo suave */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--color-fondo-pagina);
             margin: 0;
-            color: #333;
+            color: var(--color-texto);
         }
 
-        /* Contenedor principal de la sección */
-        main, .main-content-container {
-            padding: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
+        .navbar-empresa {
+            background-color: var(--color-nav);
+            color: white;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 0.9rem;
         }
 
-        h1, h2 {
-            color: #1a202c; /* Color oscuro para títulos */
-            margin-bottom: 20px;
+        .navbar-links { display: flex; gap: 20px; }
+        .navbar-links span { cursor: pointer; }
+
+        .main-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+            background-color: #f8fafc;
+            border: 3px solid var(--color-primario);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* Estilo para los formularios (Detector y Tabla) */
-        form, .form-group {
+        .titulo-seccion { font-size: 1.6rem; margin-bottom: 25px; font-weight: bold; }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Simplificado para este ejemplo */
+            gap: 25px;
             margin-bottom: 30px;
         }
 
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-            color: #4a5568;
-        }
+        label { display: block; font-weight: bold; margin-bottom: 8px; }
 
-        /* Estilo para el área de texto (textarea) */
         textarea {
             width: 100%;
+            border: 2px solid #cbd5e0;
+            border-radius: var(--radio-borde);
             padding: 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            background-color: #fff;
             font-family: inherit;
-            font-size: 1rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
+            resize: none;
+            box-sizing: border-box;
         }
 
-        textarea:focus {
-            border-color: #38b2ac; /* Color turquesa al enfocar */
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.2);
+        /* --- TARJETA DE RESULTADOS --- */
+        .card-resultado {
+            background: white;
+            border-radius: var(--radio-borde);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        /* Botón "Analizar" al estilo de la barra de navegación */
-        #btnAnalizar, .btn-submit {
-            background-color: #38b2ac; /* El turquesa de tu logo */
+        .card-header {
+            background-color: #f7fafc;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .panel-riesgo {
+            background-color: #f0fff4;
+            border: 1px solid #c6f6d5;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        /* Estilo para cuando el riesgo es alto */
+        .panel-riesgo.peligro {
+            background-color: #fff5f5;
+            border-color: #feb2b2;
+        }
+
+        .icono-check {
+            font-size: 2rem;
+            color: var(--color-primario);
+        }
+
+        .barra-progreso-bg {
+            height: 12px;
+            background: #cbd5e0;
+            border-radius: 6px;
+            margin-top: 10px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .barra-progreso-fill {
+            height: 100%;
+            background-color: var(--color-primario);
+            width: 0%;
+            transition: width 0.5s ease-in-out, background-color 0.5s;
+        }
+
+        .container-boton {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-accion {
+            background-color: #4a5568;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 25px;
             border-radius: 6px;
-            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: background 0.3s;
         }
 
-        #btnAnalizar:hover, .btn-submit:hover {
-            background-color: #2c9a94; /* Un turquesa un poco más oscuro al pasar el ratón */
-        }
-
-        /* Estilos para los resultados del análisis */
-        #resultadoContainer, .result-card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-
-        .result-item {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        /* Estilos para la tabla de mensajes analizados */
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-
-        th {
-            background-color: #f7fafc; /* Fondo gris muy suave para cabecera */
-            color: #4a5568;
-            font-weight: bold;
-            text-align: left;
-            padding: 15px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #2d3748;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
+        .btn-accion:hover { background-color: var(--color-nav); }
     </style>
 </head>
 <body>
-<main class="main-content-container">
-    <h1>Detector de Mensajes Sospechosos</h1>
 
-    <form id="detectorForm" class="form-group">
-        <label for="mensajeTexto">Escribe el mensaje:</label>
-        <textarea id="mensajeTexto" rows="10"></textarea>
+<nav class="navbar-empresa">
+    <div>LOGO</div>
+    <div class="navbar-links">
+        <span>INICIO</span><span>PLAN</span><span>REPORTES</span><span>MENSAJES</span><span>CONTÁCTANOS</span>
+    </div>
+    <div>🛒 🔍 👤</div>
+</nav>
 
-        <button type="button" id="btnAnalizar">Analizar</button>
-    </form>
+<div class="main-wrapper">
+    <h1 class="titulo-seccion">Detector de Mensajes Peligrosos</h1>
 
-    <div id="resultadoContainer">
-        <h2>Resultados</h2>
-        <p class="result-item"><strong>Nivel de riesgo:</strong> <span id="nivelRiesgo">---</span></p>
-        <p class="result-item"><strong>Resultado del análisis:</strong> <span id="resultadoAnalisis">---</span></p>
+    <div class="input-grid">
+        <div>
+            <label for="mensajeTexto">Pega el Mensaje</label>
+            <textarea id="mensajeTexto" rows="6" placeholder="Escribe o pega el texto sospechoso aquí..."></textarea>
+        </div>
     </div>
 
-    <h2>Mensajes analizados previamente</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Mensaje</th>
-            <th>Nivel de riesgo</th>
-            <th>Resultado del análisis</th>
-            <th>Fecha</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-</main>
+    <div class="card-resultado">
+        <div class="card-header">Resultado del Análisis</div>
+        <div class="card-body">
+            <div class="panel-riesgo" id="panelRiesgo">
+                <div class="icono-check" id="iconoResultado">✓</div>
+                <div style="flex-grow: 1;">
+                    <small>Nivel de Riesgo:</small><br>
+                    <strong id="textoNivel" style="font-size: 1.2rem; color: var(--color-primario);">ESPERANDO...</strong>
+                    <div class="barra-progreso-bg">
+                        <div id="barraFill" class="barra-progreso-fill"></div>
+                    </div>
+                    <div style="text-align: right;"><small id="puntosRiesgo">0/5</small></div>
+                </div>
+            </div>
+            <div id="descripcionAnalisis" style="font-style: italic; color: #718096; text-align: center;">
+                El resultado aparecerá tras pulsar el botón.
+            </div>
+        </div>
+    </div>
+
+    <div class="container-boton">
+        <button type="button" id="btnAnalizar" class="btn-accion">Analizar Ahora</button>
+    </div>
+</div>
 
 <script>
-    const form = document.getElementById('mensajeForm');
-    const resultadoDiv = document.getElementById('resultado');
-    const nivelRiesgoSpan = document.getElementById('nivelRiesgo');
-    const resultadoAnalisisSpan = document.getElementById('resultadoAnalisis');
-    const mensajesTablaBody = document.querySelector('#mensajesTabla tbody');
+    const btnAnalizar = document.getElementById('btnAnalizar');
+    const mensajeInput = document.getElementById('mensajeTexto');
+    const textoNivel = document.getElementById('textoNivel');
+    const barraFill = document.getElementById('barraFill');
+    const puntosRiesgo = document.getElementById('puntosRiesgo');
+    const panelRiesgo = document.getElementById('panelRiesgo');
+    const iconoResultado = document.getElementById('iconoResultado');
+    const descripcionAnalisis = document.getElementById('descripcionAnalisis');
 
-    async function cargarMensajes() {
-        try {
-            const resp = await fetch('/api/mensajes/todos');
-            const mensajes = await resp.json();
-
-            mensajesTablaBody.innerHTML = '';
-            mensajes.forEach(msg => {
-                const fila = document.createElement('tr');
-                fila.innerHTML = `
-                    <td>${msg.contenidoTexto}</td>
-                    <td class="${msg.nivelRiesgo}">${msg.nivelRiesgo}</td>
-                    <td>${msg.resultadoAnalisis}</td>
-                    <td>${new Date(msg.fechaAnalisis).toLocaleString()}</td>
-                `;
-                mensajesTablaBody.appendChild(fila);
-            });
-        } catch (error) {
-            console.error('Error cargando mensajes:', error);
-        }
-    }
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const texto = document.getElementById('contenidoTexto').value;
+    async function enviarAnalisis() {
+        const texto = mensajeInput.value.trim();
+        if (!texto) return alert("Por favor, introduce un mensaje.");
 
         try {
-            const response = await fetch('/api/mensajes/analizar', {
+            const response = await fetch('/api/detector/analizar', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                body: JSON.stringify(texto)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contenidoTexto: texto })
             });
+
+            if (!response.ok) throw new Error("Error " + response.status);
 
             const data = await response.json();
 
-            nivelRiesgoSpan.textContent = data.nivelRiesgo;
-            resultadoAnalisisSpan.textContent = data.resultadoAnalisis;
-            resultadoDiv.className = 'resultado ' + data.nivelRiesgo;
-            resultadoDiv.style.display = 'block';
+            // 1. Calcular porcentaje de barra (Nivel es 1-5)
+            const porcentaje = (data.nivelRiesgo / 5) * 100;
+            barraFill.style.width = porcentaje + "%";
+            puntosRiesgo.textContent = data.nivelRiesgo + "/5";
 
-            cargarMensajes();
-            form.reset();
+            // 2. Cambiar colores según riesgo
+            if (data.nivelRiesgo >= 4) {
+                textoNivel.style.color = "var(--color-peligro)";
+                barraFill.style.backgroundColor = "var(--color-peligro)";
+                panelRiesgo.classList.add('peligro');
+                iconoResultado.textContent = "⚠";
+                iconoResultado.style.color = "var(--color-peligro)";
+            } else {
+                textoNivel.style.color = "var(--color-primario)";
+                barraFill.style.backgroundColor = "var(--color-primario)";
+                panelRiesgo.classList.remove('peligro');
+                iconoResultado.textContent = "✓";
+                iconoResultado.style.color = "var(--color-primario)";
+            }
+
+            // 3. Mostrar texto
+            textoNivel.textContent = "NIVEL " + data.nivelRiesgo;
+            descripcionAnalisis.textContent = data.resultadoAnalisis;
+
         } catch (error) {
-            console.error('Error al analizar el mensaje:', error);
+            console.error('Error:', error);
+            alert("No se pudo conectar con el servidor. Revisa si la seguridad (403) está desactivada.");
         }
-    });
+    }
 
-    // cargar mensajes al abrir la página
-    cargarMensajes();
+    btnAnalizar.addEventListener('click', enviarAnalisis);
 </script>
 </body>
 </html>

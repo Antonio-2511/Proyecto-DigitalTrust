@@ -16,14 +16,18 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
+
                         // 🔓 PÚBLICAS (CLAVE)
                         .requestMatchers(
                                 "/",
                                 "/login",
                                 "/forgot-password",
+                                "/contacto/**",
                                 "/reset-password",
+                                "/planes",
                                 "/css/**",
-                                "/images/**"
+                                "/images/**",
+                                "/api/detector/**"
                         ).permitAll()
 
                         // 🔒 TODO LO DEMÁS

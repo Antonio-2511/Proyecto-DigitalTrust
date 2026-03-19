@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*") // Permite peticiones desde cualquier origen para pruebas
 @RestController
-@RequestMapping("/api/detector")
+@RequestMapping("/api/detector") // Mantenemos tu ruta original
 public class DetectorPalabrasController {
 
     private final DetectorPalabrasService detectorService;
@@ -22,7 +23,14 @@ public class DetectorPalabrasController {
     }
 
     @PostMapping("/analizar")
-    public AdvertenciaDTO analizar(@RequestBody String texto) {
-        return detectorService.analizarMensaje(texto);
+    public AdvertenciaDTO analizar(@RequestBody java.util.Map<String, String> payload) {
+        String texto = payload.get("contenidoTexto"); // Extrae el valor del JSON { "contenidoTexto": "..." }
+        return detectorService.analizarMensaje(texto != null ? texto : "");
+    }
+    // Clase estática para recibir el JSON {"contenidoTexto": "..."}
+    public static class MensajeRequest {
+        private String contenidoTexto;
+        public String getContenidoTexto() { return contenidoTexto; }
+        public void setContenidoTexto(String contenidoTexto) { this.contenidoTexto = contenidoTexto; }
     }
 }

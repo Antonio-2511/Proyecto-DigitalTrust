@@ -18,6 +18,7 @@ public class HomeController {
         return "detector-mensajes-sospechosos"; // detector-mensajes-sospechosos.html
     }
 
+
     // Opcional: aquí mismo puedes poner métodos para otras funcionalidades futuras
     //Hola
 }

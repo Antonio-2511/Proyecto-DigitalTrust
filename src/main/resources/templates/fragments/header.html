@@ -1,62 +1,35 @@
-<header th:fragment="header"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
-    <nav class="navbar">
-
-        <div class="nav-left">
-
-            <a th:href="@{/}" class="logo">
-                LOGO
-            </a>
-
-            <ul class="nav-links">
-
-                <li><a th:href="@{/}" th:text="#{navbar.home}"></a></li>
-                <li><a th:href="@{/planes}" th:text="#{navbar.planes}"></a></li>
-                <li><a th:href="@{/reportes}" th:text="#{navbar.reportes}"></a></li>
-                <li><a th:href="@{/advertencias}" th:text="#{navbar.advertencias}"></a></li>
-                <li><a th:href="@{/detector-mensajes-sospechosos}" th:text="#{navbar.mensajes}"></a></li>
-                <li><a th:href="@{/contacto}" th:text="#{navbar.contacto}"></a></li>
-
-            </ul>
-
-        </div>
+<header th:fragment="header" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <nav class="navbar"> <div class="nav-left">
+        <a th:href="@{/}" class="logo">LOGO</a>
+        <ul class="nav-links">
+            <li><a th:href="@{/}" th:text="#{navbar.home}">Inicio</a></li>
+            <li><a th:href="@{/planes}" th:text="#{navbar.planes}">Planes</a></li>
+            <li><a th:href="@{/reportes}" th:text="#{navbar.reportes}">Reportes</a></li>
+            <li><a th:href="@{/advertencias}" th:text="#{navbar.advertencias}">Advertencias</a></li>
+            <li><a th:href="@{/detector-mensajes-sospechosos}" th:text="#{navbar.mensajes}">Mensajes</a></li>
+            <li><a th:href="@{/contacto}" th:text="#{navbar.contacto}">Contacto</a></li>
+        </ul>
+    </div>
 
         <div class="nav-right">
-
-            <!-- siempre visibles -->
             <a th:href="@{/carrito}" class="nav-icon">🛒</a>
             <a th:href="@{/buscar}" class="nav-icon">🔍</a>
 
-            <!--  USUARIO NO LOGUEADO -->
             <div sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="nav-icon">👤</a>
             </div>
 
-            <!--  USUARIO LOGUEADO -->
             <div sec:authorize="isAuthenticated()" style="display:flex; align-items:center; gap:10px;">
-
-                <!--  acceso a usuarios -->
-                <a th:href="@{/usuarios}" class="nav-icon">👤</a>
-
-                <!--  nombre del usuario -->
-                <span sec:authentication="name" style="font-size: 0.9rem;"></span>
-
-                <!--  logout -->
-                <form th:action="@{/logout}" method="post" style="display:inline;">
-                    <button type="submit">Cerrar sesión</button>
+                <span sec:authentication="name" style="font-size: 0.8rem; font-weight: bold;"></span>
+                <form th:action="@{/logout}" method="post" style="margin:0;">
+                    <button type="submit" class="btn" style="padding: 5px 15px; font-size: 12px;">Salir</button>
                 </form>
             </div>
 
-            <!--  idioma -->
-            <div class="lang-switch">
-                <a th:href="@{/?lang=es}">ES</a> |
-                <a th:href="@{/?lang=en}">EN</a>
+            <div class="lang-switch" style="font-size: 14px; font-weight: bold;">
+                <a th:href="@{/(lang='es')}" style="color:white; text-decoration:none;">ES</a> |
+                <a th:href="@{/(lang='en')}" style="color:white; text-decoration:none;">EN</a>
             </div>
-
         </div>
-
     </nav>
-
 </header>
