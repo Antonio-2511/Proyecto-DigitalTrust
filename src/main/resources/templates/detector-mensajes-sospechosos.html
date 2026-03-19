@@ -3,46 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <title>Detector de Mensajes Sospechosos</title>
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        label { display: block; margin-top: 20px; font-weight: bold; }
-        textarea { width: 100%; height: 100px; }
-        button { margin-top: 10px; padding: 10px 20px; }
-        .resultado { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
-        .ALTO { color: red; }
-        .MEDIO { color: orange; }
-        .BAJO { color: yellowgreen; }
-        .SEGURO { color: green; }
-        table { margin-top: 30px; width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px; border: 1px solid #ccc; text-align: left; }
+        /* Estilos Generales para igualar el cuerpo de la web */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7fafc; /* Color de fondo suave */
+            margin: 0;
+            color: #333;
+        }
+
+        /* Contenedor principal de la sección */
+        main, .main-content-container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: #1a202c; /* Color oscuro para títulos */
+            margin-bottom: 20px;
+        }
+
+        /* Estilo para los formularios (Detector y Tabla) */
+        form, .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+
+        /* Estilo para el área de texto (textarea) */
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+        }
+
+        textarea:focus {
+            border-color: #38b2ac; /* Color turquesa al enfocar */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(56, 178, 172, 0.2);
+        }
+
+        /* Botón "Analizar" al estilo de la barra de navegación */
+        #btnAnalizar, .btn-submit {
+            background-color: #38b2ac; /* El turquesa de tu logo */
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        #btnAnalizar:hover, .btn-submit:hover {
+            background-color: #2c9a94; /* Un turquesa un poco más oscuro al pasar el ratón */
+        }
+
+        /* Estilos para los resultados del análisis */
+        #resultadoContainer, .result-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Estilos para la tabla de mensajes analizados */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f7fafc; /* Fondo gris muy suave para cabecera */
+            color: #4a5568;
+            font-weight: bold;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #2d3748;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
-<h1>Detector de Mensajes Sospechosos</h1>
+<main class="main-content-container">
+    <h1>Detector de Mensajes Sospechosos</h1>
 
-<form id="mensajeForm">
-    <label for="contenidoTexto">Escribe el mensaje:</label>
-    <textarea id="contenidoTexto" required></textarea>
-    <button type="submit">Analizar</button>
-</form>
+    <form id="detectorForm" class="form-group">
+        <label for="mensajeTexto">Escribe el mensaje:</label>
+        <textarea id="mensajeTexto" rows="10"></textarea>
 
-<div id="resultado" class="resultado" style="display:none;">
-    <p><strong>Nivel de riesgo:</strong> <span id="nivelRiesgo"></span></p>
-    <p><strong>Resultado del análisis:</strong> <span id="resultadoAnalisis"></span></p>
-</div>
+        <button type="button" id="btnAnalizar">Analizar</button>
+    </form>
 
-<h2>Mensajes analizados previamente</h2>
-<table id="mensajesTabla">
-    <thead>
-    <tr>
-        <th>Mensaje</th>
-        <th>Nivel de riesgo</th>
-        <th>Resultado del análisis</th>
-        <th>Fecha</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <div id="resultadoContainer">
+        <h2>Resultados</h2>
+        <p class="result-item"><strong>Nivel de riesgo:</strong> <span id="nivelRiesgo">---</span></p>
+        <p class="result-item"><strong>Resultado del análisis:</strong> <span id="resultadoAnalisis">---</span></p>
+    </div>
+
+    <h2>Mensajes analizados previamente</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Mensaje</th>
+            <th>Nivel de riesgo</th>
+            <th>Resultado del análisis</th>
+            <th>Fecha</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</main>
 
 <script>
     const form = document.getElementById('mensajeForm');

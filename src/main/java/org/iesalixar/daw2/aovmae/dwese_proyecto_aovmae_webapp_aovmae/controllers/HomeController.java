@@ -19,4 +19,5 @@ public class HomeController {
     }
 
     // Opcional: aquí mismo puedes poner métodos para otras funcionalidades futuras
+    //Hola
 }
