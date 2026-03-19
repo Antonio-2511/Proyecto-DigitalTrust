@@ -15,6 +15,7 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositorie
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PlanRepository planRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder; // 🔥 CLAVE
 
     @Override
     public Page<UserDTO> list(Pageable pageable) {
@@ -62,8 +66,12 @@ public class UserServiceImpl implements UserService {
                 );
 
         User usuario = UserMapper.toEntity(dto, plan);
+
+        usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia()));
+
         userRepository.save(usuario);
     }
+
     @Override
     public void update(UserUpdateDTO dto) {
 
@@ -82,6 +90,11 @@ public class UserServiceImpl implements UserService {
                 );
 
         UserMapper.copyToExistingEntity(dto, usuario, plan);
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            usuario.setContrasenia(passwordEncoder.encode(dto.getPassword()));
+        }
+
         userRepository.save(usuario);
     }
 
@@ -110,5 +123,4 @@ public class UserServiceImpl implements UserService {
     public User getAuthenticatedUser() {
         return null;
     }
-
 }

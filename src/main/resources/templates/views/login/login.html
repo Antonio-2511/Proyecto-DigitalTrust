@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head :: head('Login')}"></head>
 
@@ -11,23 +11,44 @@
 
     <h1 th:text="#{login.title}">Login</h1>
 
+    <div th:if="${param.error}" class="error-box">
+        <p th:text="#{login.error}">Usuario o contraseña incorrectos</p>
+    </div>
+
+    <div th:if="${param.logout}" class="success-box">
+        <p th:text="#{login.logout}">Sesión cerrada correctamente</p>
+    </div>
+
     <form th:action="@{/login}" method="post">
 
         <div class="form-group">
             <label th:text="#{login.username}">Usuario</label>
-            <input type="text" name="username">
+            <input type="text" name="username" required>
         </div>
 
         <div class="form-group">
             <label th:text="#{login.password}">Contraseña</label>
-            <input type="password" name="password">
+            <input type="password" name="password" required>
         </div>
 
-        <button type="submit" th:text="#{login.submit}">Entrar</button>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary"
+                    th:text="#{login.submit}">
+                Entrar
+            </button>
+        </div>
 
     </form>
 
+    <div class="extra-links" style="margin-top: 15px;">
+        <a th:href="@{/forgot-password}" th:text="#{login.forgot}">
+            ¿Olvidaste tu contraseña?
+        </a>
+    </div>
+
 </main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 
 </body>
 </html>

@@ -12,10 +12,10 @@ INSERT INTO Plan (Nombre_plan, Beneficios, Precio, Fecha_inicio, Fecha_expiracio
 -- USERS
 -- ================================
 INSERT INTO users (username, Contrasenia, Fecha_creacion, Telefono, Gmail, Plan_Nombre_plan) VALUES
-('juan01', '1234', '2026-01-05 10:00:00', '600111222', 'juan@gmail.com', 'Basico'),
-('maria02', 'abcd', '2026-01-06 11:30:00', '600333444', 'maria@gmail.com', 'Estandar'),
-('carlos03', 'pass', '2026-01-07 09:15:00', '600555666', 'carlos@gmail.com', 'Premium'),
-('ana04', 'segura', '2026-01-08 14:45:00', '600777888', 'ana@gmail.com', 'Empresarial');
+('juan01', '$2a$10$m241PmcQs.9BZeAf9rH0NOzYCUeecn1MaQMyGIKetLEyY5m82BJN2', '2026-01-05 10:00:00', '600111222', 'juan@gmail.com', 'Basico'),
+('maria02', '$2a$10$m241PmcQs.9BZeAf9rH0NOzYCUeecn1MaQMyGIKetLEyY5m82BJN2', '2026-01-06 11:30:00', '600333444', 'maria@gmail.com', 'Estandar'),
+('carlos03', '$2a$10$m241PmcQs.9BZeAf9rH0NOzYCUeecn1MaQMyGIKetLEyY5m82BJN2', '2026-01-07 09:15:00', '600555666', 'carlos@gmail.com', 'Premium'),
+('ana04', '$2a$10$m241PmcQs.9BZeAf9rH0NOzYCUeecn1MaQMyGIKetLEyY5m82BJN2', '2026-01-08 14:45:00', '600777888', 'ana@gmail.com', 'Empresarial');
 
 
 -- ================================

@@ -46,4 +46,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Reporte> reportes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<PasswordResetToken> tokens;
 }

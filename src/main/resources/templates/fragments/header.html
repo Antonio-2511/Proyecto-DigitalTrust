@@ -44,8 +44,9 @@
                 <span sec:authentication="name" style="font-size: 0.9rem;"></span>
 
                 <!--  logout -->
-                <a th:href="@{/logout}" class="nav-icon">🚪</a>
-
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit">Cerrar sesión</button>
+                </form>
             </div>
 
             <!--  idioma -->

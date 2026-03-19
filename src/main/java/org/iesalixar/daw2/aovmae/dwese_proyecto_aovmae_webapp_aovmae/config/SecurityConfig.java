@@ -14,30 +14,30 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                //  AUTORIZACIÓN
                 .authorizeHttpRequests(auth -> auth
 
-                        // públicas
+                        // 🔓 PÚBLICAS (CLAVE)
                         .requestMatchers(
                                 "/",
                                 "/login",
+                                "/forgot-password",
+                                "/reset-password",
                                 "/css/**",
-                                "/images/**",
-                                "/?lang=*"
+                                "/images/**"
                         ).permitAll()
 
-                        // todo lo demás protegido
+                        // 🔒 TODO LO DEMÁS
                         .anyRequest().authenticated()
                 )
 
-                //  LOGIN PERSONALIZADO
+                // 🔐 LOGIN
                 .formLogin(login -> login
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
 
-                //  LOGOUT
+                // 🚪 LOGOUT
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .permitAll()
@@ -46,7 +46,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    //  ENCODER (OBLIGATORIO)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
