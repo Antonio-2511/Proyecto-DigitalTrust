@@ -2,19 +2,26 @@
 
     <div class="footer">
 
+        <!-- LOGO -->
         <div class="footer-logo">
-            <h3 th:text="#{footer.brand}"></h3>
+            <img th:src="@{/images/digitalTrust_logo.png}"
+                 src="/images/digitalTrust_logo.png"
+                 alt="DigitalTrust Logo">
         </div>
 
+        <!-- REDES SOCIALES -->
         <div class="footer-social">
             <p th:text="#{footer.social}"></p>
 
-            <i class="fa-brands fa-instagram"></i>
-            <i class="fa-brands fa-x-twitter"></i>
-            <i class="fa-brands fa-facebook"></i>
-            <i class="fa-brands fa-tiktok"></i>
+            <div class="social-icons">
+                <img th:src="@{/images/ig_logo.png}" src="/images/ig_logo.png" alt="Instagram">
+                <img th:src="@{/images/x_logoo.png}" src="/images/x_logoo.png" alt="Twitter">
+                <img th:src="@{/images/logo_facebook.png}" src="/images/logo_facebook.png" alt="Facebook">
+                <img th:src="@{/images/logo_tiktok.png}" src="/images/logo_tiktok.png" alt="TikTok">
+            </div>
         </div>
 
+        <!-- LINKS -->
         <div class="footer-links">
             <p><strong th:text="#{footer.what}"></strong></p>
             <ul>

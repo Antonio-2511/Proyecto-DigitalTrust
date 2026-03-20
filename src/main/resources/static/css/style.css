@@ -13,21 +13,19 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 background:#22c1a5;
-padding:12px 40px;
+padding:0 40px;   /* 🔥 quitamos padding vertical */
 color:white;
+height:50px;      /* 🔥 igual al logo */
 }
-
 .nav-left{
 display:flex;
 align-items:center;
 gap:30px;
 }
 
-.logo{
-color:white;
-font-weight:bold;
-text-decoration:none;
-font-size:18px;
+.logo img{
+height:50px;
+display:block;
 }
 
 .nav-links{
@@ -42,6 +40,7 @@ padding:0;
 color:white;
 text-decoration:none;
 font-weight:bold;
+font-size:14px;
 }
 
 .nav-links a:hover{
@@ -51,50 +50,106 @@ text-decoration:underline;
 .nav-right{
 display:flex;
 gap:15px;
+align-items:center;
 }
 
 .nav-icon{
 text-decoration:none;
 font-size:18px;
+color:white;
 }
 
 /* HERO */
 
 .hero{
+position:relative;
+height:300px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 text-align:center;
-background:#ef5350;
-padding:40px;
 color:black;
+overflow:hidden;
 }
 
 .hero-img{
-width:350px;
-margin-top:20px;
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:0;
 }
 
+/* Para que el texto quede encima */
+.hero h1,
+.hero h3{
+position:relative;
+z-index:1;
+}
+
+.hero::after{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+z-index:1;
+}
 /* REVIEWS */
 
 .reviews{
 display:flex;
 justify-content:space-around;
+align-items:center;
 background:#9ad6cc;
-padding:40px;
+padding:40px 20px;
+gap:20px;
+flex-wrap:wrap;
 }
 
 .review{
-width:25%;
+width:300px;
 text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+.review-img{
+width:110px;
+height:110px;
+object-fit:cover;
+border-radius:50%;
+display:block;
+margin:0 auto 10px auto;
+}
+
+.review p{
+font-size:12px;
+margin-top:10px;
 }
 
 /* INFO */
 
 .info{
 background:#4fd1c5;
-padding:30px;
+padding:25px;
 text-align:center;
 }
 
-/* BOTONES GENERALES */
+.info p{
+max-width:700px;
+margin:auto;
+font-size:14px;
+margin-bottom:15px;
+}
+
+/* BOTONES */
 
 .btn{
 background:#083a4d;
@@ -114,28 +169,43 @@ opacity:0.85;
 /* PRODUCTS */
 
 .products{
-padding:40px;
+padding:40px 20px;
 background:#9ad6cc;
 text-align:center;
+}
+
+.products h2{
+margin-bottom:20px;
 }
 
 .product-grid{
 display:flex;
 justify-content:center;
-gap:40px;
+gap:30px;
 margin-top:20px;
+flex-wrap:wrap;
 }
 
 .product{
 background:white;
-padding:20px;
+padding:15px;
 border-radius:10px;
 width:200px;
 box-shadow:0 2px 6px rgba(0,0,0,0.1);
+text-align:center;
 }
 
 .product img{
-width:100px;
+width:80px;
+height:80px;
+object-fit:contain;
+margin-bottom:10px;
+}
+
+.product span{
+display:block;
+margin-top:10px;
+font-weight:bold;
 }
 
 /* FOOTER */
@@ -143,9 +213,56 @@ width:100px;
 .footer{
 background:#1abc9c;
 color:white;
-padding:20px;
+padding:30px 40px;
 display:flex;
 justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.footer-logo img{
+height:70px;
+}
+
+.footer-social{
+text-align:center;
+}
+
+.social-icons{
+margin-top:15px;
+display:flex;
+gap:25px;
+justify-content:center;
+align-items:center;
+}
+
+.social-icons img{
+width:50px;
+height:50px;
+object-fit:contain;
+cursor:pointer;
+transition:transform 0.2s;
+}
+
+.social-icons img:hover{
+transform:scale(1.2);
+}
+
+.footer-links ul{
+list-style:none;
+padding:0;
+margin:0;
+}
+
+.footer-links li{
+font-size:14px;
+margin-bottom:5px;
+}
+
+.social-icons img:first-child{
+width:40px;
+height:40px;
 }
 
 /* CONTENEDOR GENERAL */

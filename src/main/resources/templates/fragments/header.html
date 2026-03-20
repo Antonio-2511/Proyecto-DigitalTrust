@@ -1,7 +1,10 @@
 <header th:fragment="header" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <nav class="navbar"> <div class="nav-left">
-        <a th:href="@{/}" class="logo">LOGO</a>
-        <ul class="nav-links">
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/images/digitalTrust_logo.png}"
+                 src="/images/digitalTrust_logo.png"
+                 alt="DigitalTrust Logo">
+        </a>        <ul class="nav-links">        <ul class="nav-links">
             <li><a th:href="@{/}" th:text="#{navbar.home}">Inicio</a></li>
             <li><a th:href="@{/planes}" th:text="#{navbar.planes}">Planes</a></li>
             <li><a th:href="@{/reportes}" th:text="#{navbar.reportes}">Reportes</a></li>

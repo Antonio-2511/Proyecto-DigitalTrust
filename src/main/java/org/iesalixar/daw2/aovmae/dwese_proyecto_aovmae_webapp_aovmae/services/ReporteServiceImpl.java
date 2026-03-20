@@ -16,16 +16,40 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementación del servicio {@link ReporteService}.
+ * <p>
+ * Gestiona la lógica de negocio asociada a los reportes de usuarios,
+ * incluyendo operaciones CRUD y asociación con el usuario autenticado.
+ * </p>
+ *
+ * <p>
+ * Los reportes representan posibles incidencias o estafas detectadas,
+ * siendo una pieza clave en el sistema de ciberseguridad.
+ * </p>
+ */
 @Service
 @Transactional
 public class ReporteServiceImpl implements ReporteService {
 
+    /**
+     * Servicio de usuarios para obtener el usuario autenticado.
+     */
     @Autowired
     private UserService userService;
 
+    /**
+     * Repositorio de acceso a datos para la entidad {@link Reporte}.
+     */
     @Autowired
     private ReporteRepository reporteRepository;
 
+    /**
+     * Obtiene una lista paginada de reportes.
+     *
+     * @param pageable configuración de paginación
+     * @return página de {@link ReporteDTO}
+     */
     @Override
     public Page<ReporteDTO> list(Pageable pageable) {
         return reporteRepository
@@ -33,6 +57,13 @@ public class ReporteServiceImpl implements ReporteService {
                 .map(ReporteMapper::toDTO);
     }
 
+    /**
+     * Obtiene un reporte para su edición.
+     *
+     * @param id identificador del reporte
+     * @return {@link ReporteUpdateDTO} con los datos editables
+     * @throws ResourceNotFoundException si el reporte no existe
+     */
     @Override
     public ReporteUpdateDTO getForEdit(Long id) {
 
@@ -44,15 +75,32 @@ public class ReporteServiceImpl implements ReporteService {
         return ReporteMapper.toUpdateDTO(reporte);
     }
 
+    /**
+     * Crea un nuevo reporte asociado al usuario autenticado.
+     *
+     * @param dto datos de creación del reporte
+     */
     @Override
     public void create(ReporteCreateDTO dto) {
 
+        /**
+         * Obtención del usuario autenticado en el sistema.
+         */
         User usuario = userService.getAuthenticatedUser();
 
+        /**
+         * Conversión del DTO a entidad y persistencia.
+         */
         Reporte reporte = ReporteMapper.toEntity(dto, usuario);
         reporteRepository.save(reporte);
     }
 
+    /**
+     * Actualiza un reporte existente.
+     *
+     * @param dto datos actualizados del reporte
+     * @throws ResourceNotFoundException si el reporte no existe
+     */
     @Override
     public void update(ReporteUpdateDTO dto) {
 
@@ -65,6 +113,12 @@ public class ReporteServiceImpl implements ReporteService {
         reporteRepository.save(reporte);
     }
 
+    /**
+     * Elimina un reporte por su identificador.
+     *
+     * @param id identificador del reporte
+     * @throws ResourceNotFoundException si el reporte no existe
+     */
     @Override
     public void delete(Long id) {
 
@@ -75,6 +129,13 @@ public class ReporteServiceImpl implements ReporteService {
         reporteRepository.deleteById(id);
     }
 
+    /**
+     * Obtiene el detalle completo de un reporte.
+     *
+     * @param id identificador del reporte
+     * @return {@link ReporteDetailDTO} con la información detallada
+     * @throws ResourceNotFoundException si el reporte no existe
+     */
     @Override
     public ReporteDetailDTO getDetail(Long id) {
 

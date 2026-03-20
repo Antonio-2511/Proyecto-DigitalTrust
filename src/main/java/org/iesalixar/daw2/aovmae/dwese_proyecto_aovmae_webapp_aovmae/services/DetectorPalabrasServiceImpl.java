@@ -12,13 +12,43 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Implementación del servicio {@link DetectorPalabrasService}.
+ * <p>
+ * Este servicio analiza textos en busca de palabras clave asociadas a posibles
+ * estafas o comportamientos sospechosos, asignando un nivel de riesgo.
+ * </p>
+ *
+ * <p>
+ * Se basa en un sistema simple de puntuación donde cada palabra clave tiene
+ * un peso asociado. La suma de estos pesos determina el nivel de criticidad.
+ * </p>
+ *
+ * 💡 Este enfoque es útil como primera capa de detección en sistemas
+ * anti-phishing o anti-fraude.
+ */
 @Service
 public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
 
+    /**
+     * Repositorio para persistir las advertencias generadas tras el análisis.
+     */
     private final AdvertenciaRepository advertenciaRepository;
 
+    /**
+     * Mapa de palabras clave con su peso de riesgo asociado.
+     * <p>
+     * Cada entrada representa una palabra potencialmente peligrosa
+     * y el valor indica su impacto en el cálculo del riesgo.
+     * </p>
+     */
     private final Map<String, Integer> palabrasRiesgo = new HashMap<>();
 
+    /**
+     * Constructor que inicializa el repositorio y las palabras de riesgo.
+     *
+     * @param advertenciaRepository repositorio de advertencias
+     */
     public DetectorPalabrasServiceImpl(AdvertenciaRepository advertenciaRepository) {
         this.advertenciaRepository = advertenciaRepository;
 
@@ -29,14 +59,29 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
         palabrasRiesgo.put("seguro", 4);
     }
 
+    /**
+     * Analiza un texto y calcula su nivel de riesgo basado en palabras clave.
+     *
+     * @param texto texto a analizar
+     * @return puntuación de riesgo acumulada
+     */
     @Override
     public int analizarTexto(String texto) {
         if (texto == null || texto.isBlank()) return 0;
 
+        /**
+         * Normalización del texto:
+         * - Conversión a minúsculas
+         * - Eliminación de caracteres especiales
+         */
         String normalizado = texto.toLowerCase().replaceAll("[^a-z0-9 ]", "");
         String[] tokens = normalizado.split("\\s+");
 
         int riesgo = 0;
+
+        /**
+         * Suma de los pesos asociados a cada palabra detectada.
+         */
         for (String token : tokens) {
             riesgo += palabrasRiesgo.getOrDefault(token, 0);
         }
@@ -44,7 +89,18 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
         return riesgo;
     }
 
-    // Ahora devuelve un NIVEL NUMÉRICO (1–5)
+    /**
+     * Determina el nivel de criticidad a partir del riesgo calculado.
+     *
+     * @param riesgo puntuación obtenida del análisis
+     * @return nivel de criticidad (1–5)
+     *         <ul>
+     *             <li>1: Seguro</li>
+     *             <li>2: Bajo</li>
+     *             <li>3: Medio</li>
+     *             <li>5: Alto</li>
+     *         </ul>
+     */
     @Override
     public Integer determinarNivel(int riesgo) {
         if (riesgo >= 8) return 5;   // ALTO
@@ -53,12 +109,21 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
         return 1;                    // SEGURO
     }
 
+    /**
+     * Analiza un mensaje completo, genera una advertencia y la persiste.
+     *
+     * @param texto contenido del mensaje a analizar
+     * @return {@link AdvertenciaDTO} con el resultado del análisis
+     */
     @Override
     public AdvertenciaDTO analizarMensaje(String texto) {
 
         int riesgo = analizarTexto(texto);
         Integer nivel = determinarNivel(riesgo);
 
+        /**
+         * Creación de la entidad Advertencia con los resultados del análisis.
+         */
         Advertencia advertencia = new Advertencia();
         advertencia.setTitulo("Mensaje Analizado");
         advertencia.setDescripcion(texto);
@@ -66,11 +131,19 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
         advertencia.setFechaEnvio(LocalDateTime.now());
         advertencia.setEsEmergencia(nivel >= 5);
 
+        /**
+         * Persistencia de la advertencia en base de datos.
+         */
         advertenciaRepository.save(advertencia);
 
         return AdvertenciaMapper.toDTO(advertencia);
     }
 
+    /**
+     * Obtiene todas las advertencias almacenadas.
+     *
+     * @return lista de {@link AdvertenciaDTO}
+     */
     public List<AdvertenciaDTO> listAll() {
         return advertenciaRepository.findAll().stream()
                 .map(AdvertenciaMapper::toDTO)

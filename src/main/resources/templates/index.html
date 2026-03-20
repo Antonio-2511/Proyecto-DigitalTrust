@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head :: head('Inicio')}"></head>
+
 <body>
 
 <div th:replace="~{fragments/header :: header}"></div>
@@ -10,7 +11,10 @@
 
     <h1 th:text="#{home.title}"></h1>
 
-    <img th:src="@{/images/security.png}" class="hero-img">
+    <img th:src="@{/images/Banner-Principal.png}"
+         src="/images/Banner-Principal.png"
+         alt="Seguridad Digital"
+         class="hero-img">
 
     <h3 th:text="#{home.subtitle}"></h3>
 
@@ -18,17 +22,35 @@
 
 <section class="reviews">
 
+    <!-- Review 1 -->
     <div class="review">
+        <img th:src="@{/images/avatar-perfil.png}"
+             src="/images/avatar-perfil.png"
+             alt="Usuario"
+             class="review-img">
+
         ⭐⭐⭐⭐⭐
         <p th:text="#{home.review}"></p>
     </div>
 
+    <!-- Review 2 -->
     <div class="review">
+        <img th:src="@{/images/avatar-perfil-1.png}"
+             src="/images/avatar-perfil-1.png"
+             alt="Usuario"
+             class="review-img">
+
         ⭐⭐⭐⭐⭐
         <p th:text="#{home.review}"></p>
     </div>
 
+    <!-- Review 3 -->
     <div class="review">
+        <img th:src="@{/images/avatar-perfil-2.png}"
+             src="/images/avatar-perfil-2.png"
+             alt="Usuario"
+             class="review-img">
+
         ⭐⭐⭐⭐⭐
         <p th:text="#{home.review}"></p>
     </div>
@@ -50,19 +72,25 @@
     <div class="product-grid">
 
         <div class="product">
-            <img th:src="@{/images/web.png}">
+            <img th:src="@{/images/analisis_enlaces.png}"
+                 src="/images/analisis_enlaces.png"
+                 alt="Análisis de sitios web">
             <p th:text="#{home.product1}"></p>
             <span>23.99€</span>
         </div>
 
         <div class="product">
-            <img th:src="@{/images/ad.png}">
+            <img th:src="@{/images/escaneo_ads.png}"
+                 src="/images/escaneo_ads.png"
+                 alt="Escaneo de anuncios">
             <p th:text="#{home.product2}"></p>
             <span>39.99€</span>
         </div>
 
         <div class="product">
-            <img th:src="@{/images/mobile.png}">
+            <img th:src="@{/images/verificacion_llamadas.png}"
+                 src="/images/verficacion_llamadas.png"
+                 alt="Verificación de apps móviles">
             <p th:text="#{home.product3}"></p>
             <span>29.99€</span>
         </div>
@@ -70,7 +98,6 @@
     </div>
 
 </section>
-
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
