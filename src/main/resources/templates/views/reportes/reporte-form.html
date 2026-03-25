@@ -9,27 +9,38 @@
 
 <main class="container">
 
-    <h1 th:text="#{report.title}"></h1>
+    <h1 class="page-title">
+        <span th:text="${#strings.isEmpty(reporte.id) ? 'Nuevo Reporte' : 'Editar Reporte'}"></span>
+    </h1>
 
-    <form th:action="@{/reportes/insert}"
-          th:object="${reporte}"
-          method="post">
+    <div class="form-container">
 
-        <input th:field="*{titulo}" th:placeholder="#{report.title}">
+        <form th:action="@{/reportes/update}" method="post" th:object="${reporte}">
 
-        <textarea th:field="*{descripcion}" th:placeholder="#{report.description}"></textarea>
+            <input type="hidden" th:field="*{id}" />
 
-        <select th:field="*{nivelPeligro}">
+            <!-- TÍTULO -->
+            <div class="form-group">
+                <label>Título</label>
+                <input type="text" th:field="*{titulo}" placeholder="Ej: Página sospechosa" required />
+            </div>
 
-            <option value="BAJO" th:text="#{report.low}"></option>
-            <option value="MEDIO" th:text="#{report.medium}"></option>
-            <option value="ALTO" th:text="#{report.high}"></option>
+            <!-- DESCRIPCIÓN -->
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea th:field="*{descripcion}" rows="4"
+                          placeholder="Describe el problema..."></textarea>
+            </div>
 
-        </select>
+            <!-- BOTONES -->
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Guardar</button>
+                <a th:href="@{/reportes}" class="btn-cancel">Cancelar</a>
+            </div>
 
-        <button type="submit" th:text="#{common.save}"></button>
+        </form>
 
-    </form>
+    </div>
 
 </main>
 

@@ -11,6 +11,11 @@
 
     <h1 class="page-title" th:text="#{navbar.advertencias}"></h1>
 
+
+    <div th:if="${param.validated}">
+        <p style="color:green;">Advertencia generada correctamente</p>
+    </div>
+
     <table class="table">
 
         <thead>
@@ -24,11 +29,15 @@
         <tbody>
         <tr th:each="a : ${page.content}">
 
-            <td th:text="${a.mensaje}"></td>
-            <td th:text="${a.fechaEnvio}"></td>
+
+            <td th:text="${a.descripcion}"></td>
+
+
+            <td th:text="${#temporals.format(a.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></td>
 
             <td>
-                <a th:href="@{/advertencias/detail(id=${a.id})}"
+
+                <a th:href="@{/advertencias/{id}(id=${a.id})}"
                    th:text="#{users.view}"></a>
             </td>
 

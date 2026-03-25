@@ -1,55 +1,35 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services;
 
-
 import jakarta.transaction.Transactional;
-import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteCreateDTO;
-import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteDTO;
-import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteDetailDTO;
-import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteUpdateDTO;
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.*;
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.Advertencia;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.Reporte;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.User;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.exceptions.ResourceNotFoundException;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.mappers.ReporteMapper;
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositories.AdvertenciaRepository;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositories.ReporteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-/**
- * Implementación del servicio {@link ReporteService}.
- * <p>
- * Gestiona la lógica de negocio asociada a los reportes de usuarios,
- * incluyendo operaciones CRUD y asociación con el usuario autenticado.
- * </p>
- *
- * <p>
- * Los reportes representan posibles incidencias o estafas detectadas,
- * siendo una pieza clave en el sistema de ciberseguridad.
- * </p>
- */
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @Transactional
 public class ReporteServiceImpl implements ReporteService {
 
-    /**
-     * Servicio de usuarios para obtener el usuario autenticado.
-     */
     @Autowired
     private UserService userService;
 
-    /**
-     * Repositorio de acceso a datos para la entidad {@link Reporte}.
-     */
     @Autowired
     private ReporteRepository reporteRepository;
 
-    /**
-     * Obtiene una lista paginada de reportes.
-     *
-     * @param pageable configuración de paginación
-     * @return página de {@link ReporteDTO}
-     */
+    @Autowired
+    private AdvertenciaRepository advertenciaRepository;
+
     @Override
     public Page<ReporteDTO> list(Pageable pageable) {
         return reporteRepository
@@ -57,13 +37,6 @@ public class ReporteServiceImpl implements ReporteService {
                 .map(ReporteMapper::toDTO);
     }
 
-    /**
-     * Obtiene un reporte para su edición.
-     *
-     * @param id identificador del reporte
-     * @return {@link ReporteUpdateDTO} con los datos editables
-     * @throws ResourceNotFoundException si el reporte no existe
-     */
     @Override
     public ReporteUpdateDTO getForEdit(Long id) {
 
@@ -75,32 +48,22 @@ public class ReporteServiceImpl implements ReporteService {
         return ReporteMapper.toUpdateDTO(reporte);
     }
 
-    /**
-     * Crea un nuevo reporte asociado al usuario autenticado.
-     *
-     * @param dto datos de creación del reporte
-     */
     @Override
     public void create(ReporteCreateDTO dto) {
 
-        /**
-         * Obtención del usuario autenticado en el sistema.
-         */
         User usuario = userService.getAuthenticatedUser();
 
-        /**
-         * Conversión del DTO a entidad y persistencia.
-         */
         Reporte reporte = ReporteMapper.toEntity(dto, usuario);
+
+        // 🔥 adaptado a tu entidad
+        reporte.setFechaReporte(LocalDateTime.now());
+
         reporteRepository.save(reporte);
+
+        // 🔥 IA simulada (sin estado)
+        comprobarReportesMasivos(reporte);
     }
 
-    /**
-     * Actualiza un reporte existente.
-     *
-     * @param dto datos actualizados del reporte
-     * @throws ResourceNotFoundException si el reporte no existe
-     */
     @Override
     public void update(ReporteUpdateDTO dto) {
 
@@ -113,12 +76,6 @@ public class ReporteServiceImpl implements ReporteService {
         reporteRepository.save(reporte);
     }
 
-    /**
-     * Elimina un reporte por su identificador.
-     *
-     * @param id identificador del reporte
-     * @throws ResourceNotFoundException si el reporte no existe
-     */
     @Override
     public void delete(Long id) {
 
@@ -129,13 +86,6 @@ public class ReporteServiceImpl implements ReporteService {
         reporteRepository.deleteById(id);
     }
 
-    /**
-     * Obtiene el detalle completo de un reporte.
-     *
-     * @param id identificador del reporte
-     * @return {@link ReporteDetailDTO} con la información detallada
-     * @throws ResourceNotFoundException si el reporte no existe
-     */
     @Override
     public ReporteDetailDTO getDetail(Long id) {
 
@@ -145,5 +95,66 @@ public class ReporteServiceImpl implements ReporteService {
                 );
 
         return ReporteMapper.toDetailDTO(reporte);
+    }
+
+    // =========================================================
+    // 🔥 LÓGICA DE NEGOCIO SIN MODIFICAR BD
+    // =========================================================
+
+    /**
+     * Detecta si hay múltiples reportes con la misma descripción
+     * y genera una advertencia automática.
+     */
+    private void comprobarReportesMasivos(Reporte reporte) {
+
+        List<Reporte> similares =
+                reporteRepository.findByDescripcion(reporte.getDescripcion());
+
+        if (similares.size() == 3) {
+
+            Advertencia advertencia = new Advertencia();
+
+            advertencia.setTitulo("Alerta global de fraude");
+            advertencia.setDescripcion("Contenido reportado varias veces: "
+                    + reporte.getDescripcion());
+            advertencia.setNivelCriticidad(5);
+            advertencia.setFechaEnvio(LocalDateTime.now());
+            advertencia.setEsEmergencia(true);
+
+            advertenciaRepository.save(advertencia);
+        }
+    }
+
+    /**
+     * Validación manual (sin guardar estado en BD)
+     */
+    public void validarReporte(Long id, boolean esFraude) {
+
+        Reporte reporte = reporteRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("reporte", "id", id)
+                );
+
+        if (esFraude) {
+            crearAdvertenciaDesdeReporte(reporte);
+        }
+
+        // 💡 No guardamos estado → solo comportamiento
+    }
+
+    /**
+     * Genera advertencia desde un reporte validado
+     */
+    private void crearAdvertenciaDesdeReporte(Reporte reporte) {
+
+        Advertencia advertencia = new Advertencia();
+
+        advertencia.setTitulo("Contenido confirmado como fraude");
+        advertencia.setDescripcion(reporte.getDescripcion());
+        advertencia.setNivelCriticidad(5);
+        advertencia.setFechaEnvio(LocalDateTime.now());
+        advertencia.setEsEmergencia(true);
+
+        advertenciaRepository.save(advertencia);
     }
 }

@@ -65,6 +65,7 @@ public class AdvertenciaController {
             Model model) {
 
         model.addAttribute("page", advertenciaService.list(pageable));
+
         return "views/advertencias/advertencia-list";
     }
 

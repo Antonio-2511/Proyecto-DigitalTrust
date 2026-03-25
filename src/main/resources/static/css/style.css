@@ -397,4 +397,186 @@ background:#ffe6e6;
 border:1px solid red;
 padding:10px;
 margin-bottom:20px;
+
+
+
+
+.form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* BOTÓN GUARDAR */
+.btn-primary {
+    background: #2bbbad;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: #666;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background: #f5f5f5;
+    color: #000;
+}
+
+
+/* CONTENEDOR GENERAL */
+.report-wrapper {
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+/* HEADER */
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.report-header h1 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.report-id {
+    font-size: 13px;
+    color: #777;
+}
+
+/* BADGE */
+.report-badge {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+/* TARJETA */
+.report-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+/* SECCIONES */
+.section {
+    margin-bottom: 25px;
+}
+
+.section h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.section p {
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+/* GRID INFO */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-box {
+    background: #f4f6f8;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.info-label {
+    display: block;
+    font-size: 12px;
+    color: #666;
+}
+
+.info-value {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* ESTADO */
+.info-value.neutral {
+    color: #999;
+}
+
+/* ACCIONES */
+.report-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* BOTONES */
+.btn-back {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+}
+
+.btn-edit {
+    background: #2bbbad;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-edit:hover {
+    background: #249e92;
+}
+
+
+
 }

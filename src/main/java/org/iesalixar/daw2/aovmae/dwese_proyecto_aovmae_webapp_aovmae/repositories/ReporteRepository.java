@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReporteRepository extends JpaRepository<Reporte, Long> {
 
@@ -16,4 +18,7 @@ public interface ReporteRepository extends JpaRepository<Reporte, Long> {
      * Útil para vistas tipo "mis reportes".
      */
     Page<Reporte> findByUser(User usuario, Pageable pageable);
+
+    List<Reporte> findByDescripcion(String descripcion);
+
 }

@@ -7,6 +7,8 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.Advert
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * Interfaz de servicio para la gestión de advertencias dentro del sistema.
  * <p>
@@ -65,4 +67,7 @@ public interface AdvertenciaService {
      * @return un {@link AdvertenciaDetailDTO} con toda la información detallada
      */
     AdvertenciaDetailDTO getDetail(Long id);
+
+    Page<AdvertenciaDTO> listAll(Pageable pageable);
+
 }

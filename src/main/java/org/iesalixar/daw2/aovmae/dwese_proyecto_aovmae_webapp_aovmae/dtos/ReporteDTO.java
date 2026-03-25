@@ -43,4 +43,5 @@ public class ReporteDTO {
      * Nombre del usuario que ha creado el reporte.
      */
     private String nombreUsuario;
+
 }

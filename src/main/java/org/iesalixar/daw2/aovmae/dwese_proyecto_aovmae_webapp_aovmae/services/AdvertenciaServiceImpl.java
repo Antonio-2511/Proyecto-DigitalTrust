@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Implementación del servicio {@link AdvertenciaService}.
  * <p>
@@ -162,6 +164,8 @@ public class AdvertenciaServiceImpl implements AdvertenciaService {
                 .orElseThrow(() -> new ResourceNotFoundException("advertencia", "id", id));
         return AdvertenciaMapper.toDetailDTO(advertencia);
     }
+
+
 
     /**
      * Repositorio de usuarios (inyectado pero no utilizado actualmente).

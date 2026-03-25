@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head :: head('Reportes')"></head>
+<head th:replace="fragments/head :: head('Reportes')">
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
 
 <body>
 
@@ -28,13 +32,24 @@
             <td th:text="${r.fechaReporte}"></td>
 
             <td>
-                <a th:href="@{/reportes/detail(id=${r.id})}"
+                <a th:href="@{/reportes/{id}(id=${r.id})}"
                    th:text="#{users.view}"></a>
 
-                <a th:href="@{/reportes/edit(id=${r.id})}"
+                <a th:href="@{/reportes/edit/{id}(id=${r.id})}"
                    th:text="#{users.edit}"></a>
-            </td>
 
+                <form th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
+                      method="post"
+                      style="display:inline;">
+                    <button type="submit" name="fraude" value="true">✔️</button>
+                </form>
+
+                <form th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
+                      method="post"
+                      style="display:inline;">
+                    <button type="submit" name="fraude" value="false">❌</button>
+                </form>
+            </td>
         </tr>
         </tbody>
 

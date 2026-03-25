@@ -1,35 +1,71 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Detalle del Reporte</title>
-</head>
+<head th:replace="fragments/head :: head('Detalle Reporte')"></head>
 
 <body>
 
-<h2 th:text="#{report.detail}"></h2>
+<header th:replace="fragments/header :: header"></header>
 
-<p><strong th:text="#{common.id}"></strong>: <span th:text="${reporte.id}"></span></p>
+<main class="container">
 
-<p><strong th:text="#{report.title}"></strong>: <span th:text="${reporte.titulo}"></span></p>
+    <div class="report-wrapper">
 
-<p><strong th:text="#{report.description}"></strong></p>
-<p th:text="${reporte.descripcion}"></p>
+        <!-- CABECERA -->
+        <div class="report-header">
+            <div>
+                <h1 th:text="${reporte.titulo}"></h1>
+                <span class="report-id">ID: <span th:text="${reporte.id}"></span></span>
+            </div>
 
-<p><strong th:text="#{report.date}"></strong>:
-    <span th:text="${reporte.fechaReporte}"></span>
-</p>
+            <span class="report-badge"> Reporte</span>
+        </div>
 
-<p><strong th:text="#{report.level}"></strong>:
-    <span th:text="${reporte.nivelPeligro}"></span>
-</p>
+        <!-- CONTENIDO -->
+        <div class="report-card">
 
-<p><strong th:text="#{report.solved}"></strong>:
-    <span th:text="${reporte.solucionado}"></span>
-</p>
+            <!-- DESCRIPCIÓN -->
+            <div class="section">
+                <h3> Descripción</h3>
+                <p th:text="${reporte.descripcion}"></p>
+            </div>
 
-<a th:href="@{/reportes}" th:text="#{common.back}"></a>
+            <!-- INFO -->
+            <div class="info-grid">
+
+                <div class="info-box">
+                    <span class="info-label"> Fecha</span>
+                    <span class="info-value"
+                          th:text="${#temporals.format(reporte.fechaReporte, 'dd/MM/yyyy HH:mm')}"></span>
+                </div>
+
+                <div class="info-box">
+                    <span class="info-label"> Estado</span>
+                    <span class="info-value neutral">Pendiente</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ACCIONES -->
+        <div class="report-actions">
+
+            <a th:href="@{/reportes}" class="btn-back">
+                ⬅ Volver
+            </a>
+
+            <a th:href="@{/reportes/edit/{id}(id=${reporte.id})}" class="btn-edit">
+                 Editar
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
 
 </body>
 </html>

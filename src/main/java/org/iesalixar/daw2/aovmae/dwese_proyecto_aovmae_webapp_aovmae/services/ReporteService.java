@@ -67,4 +67,6 @@ public interface ReporteService {
      * @return {@link ReporteDetailDTO} con la información detallada
      */
     ReporteDetailDTO getDetail(Long id);
+
+    void validarReporte(Long id, boolean fraude);
 }

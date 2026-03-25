@@ -52,4 +52,6 @@ public class ReporteDetailDTO {
      * Dirección de correo electrónico del usuario asociado al reporte.
      */
     private String emailUsuario;
+
+
 }
