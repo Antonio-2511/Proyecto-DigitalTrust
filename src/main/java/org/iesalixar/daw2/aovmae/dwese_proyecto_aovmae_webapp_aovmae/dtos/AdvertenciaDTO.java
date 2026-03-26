@@ -50,6 +50,8 @@ public class AdvertenciaDTO {
      */
     private boolean esEmergencia;
 
+    private String descripcion;
+
     /**
      * Fecha y hora de envío de la advertencia.
      */

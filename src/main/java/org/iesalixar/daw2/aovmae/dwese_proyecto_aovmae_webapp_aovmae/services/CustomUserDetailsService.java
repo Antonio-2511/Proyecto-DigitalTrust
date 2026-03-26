@@ -52,21 +52,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         /**
-         * Búsqueda del usuario en base de datos.
+         * ERROR CORREGIDO:
+         * Antes: UserRepository.findByUsername(username) -> Esto busca un método static.
+         * Ahora: userRepository.findByUsername(username) -> Usa la instancia inyectada.
          */
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
         /**
-         * Construcción del objeto UserDetails requerido por Spring Security.
-         * <p>
-         * Se asigna el rol "USER". Spring automáticamente añadirá el prefijo "ROLE_".
-         * </p>
+         * Construcción del objeto UserDetails.
          */
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getContrasenia())
-                .roles("USER") //  importante: sin ROLE_
+                .roles("USER")
                 .build();
     }
 }

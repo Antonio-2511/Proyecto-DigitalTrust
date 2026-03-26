@@ -7,18 +7,28 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repositorio para la entidad User.
+ * * Al extender de JpaRepository, Spring proporciona métodos básicos (save, delete, etc.)
+ * y permite definir consultas personalizadas mediante nombres de métodos.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
     /**
      * Busca un usuario por nombre de usuario.
-     * Usado por Spring Security para autenticación.
+     * El EntityGraph fuerza la carga del Plan (FetchType.EAGER) para evitar
+     * el error LazyInitializationException al autenticar.
+     * * @param username Nombre de usuario (Clave primaria)
+     * @return Un Optional que contiene el usuario si existe
      */
     @EntityGraph(attributePaths = "plan")
     Optional<User> findByUsername(String username);
 
     /**
-     * Busca un usuario por email.
+     * Busca un usuario por su correo electrónico (campo 'gmail' en tu BD).
+     * * @param gmail Correo electrónico
+     * @return Un Optional con el usuario
      */
     Optional<User> findByGmail(String gmail);
 
@@ -29,7 +39,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     /**
      * Comprueba si existe otro usuario con el mismo email excluyendo un id.
-     * Usado en edición.
+     * Útil para validaciones en formularios de edición de perfil.
      */
     boolean existsByGmailAndUsernameNot(String gmail, String username);
 

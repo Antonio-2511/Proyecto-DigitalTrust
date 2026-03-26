@@ -1,5 +1,7 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services;
 
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.User;
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.AdvertenciaDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.Advertencia;
@@ -34,6 +36,7 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
      * Repositorio para persistir las advertencias generadas tras el análisis.
      */
     private final AdvertenciaRepository advertenciaRepository;
+    private final UserRepository userRepository; // <--- AÑADE ESTA LÍNEA
 
     /**
      * Mapa de palabras clave con su peso de riesgo asociado.
@@ -49,8 +52,9 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
      *
      * @param advertenciaRepository repositorio de advertencias
      */
-    public DetectorPalabrasServiceImpl(AdvertenciaRepository advertenciaRepository) {
+    public DetectorPalabrasServiceImpl(AdvertenciaRepository advertenciaRepository, UserRepository userRepository) {
         this.advertenciaRepository = advertenciaRepository;
+        this.userRepository = userRepository;
 
         palabrasRiesgo.put("compra", 3);
         palabrasRiesgo.put("datos", 5);
@@ -115,25 +119,27 @@ public class DetectorPalabrasServiceImpl implements DetectorPalabrasService {
      * @param texto contenido del mensaje a analizar
      * @return {@link AdvertenciaDTO} con el resultado del análisis
      */
-    @Override
-    public AdvertenciaDTO analizarMensaje(String texto) {
 
+    @Override
+    public AdvertenciaDTO analizarMensaje(String texto, String username) {
         int riesgo = analizarTexto(texto);
         Integer nivel = determinarNivel(riesgo);
 
-        /**
-         * Creación de la entidad Advertencia con los resultados del análisis.
-         */
         Advertencia advertencia = new Advertencia();
-        advertencia.setTitulo("Mensaje Analizado");
+        advertencia.setTitulo("Análisis de Seguridad");
         advertencia.setDescripcion(texto);
-        advertencia.setNivelCriticidad(nivel); // ✅ ahora es Integer
+        advertencia.setNivelCriticidad(nivel);
         advertencia.setFechaEnvio(LocalDateTime.now());
         advertencia.setEsEmergencia(nivel >= 5);
 
-        /**
-         * Persistencia de la advertencia en base de datos.
-         */
+        // BUSCAMOS AL USUARIO EN LA TABLA 'users'
+        // El username viene directamente de la sesión de Spring Security
+        User usuario = userRepository.findByUsername(username) // <--- CORRECTO: "u" minúscula (Usa la instancia)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
+
+        // Asignamos el usuario a la advertencia para que users_username NO sea NULL
+        advertencia.setUser(usuario);
+
         advertenciaRepository.save(advertencia);
 
         return AdvertenciaMapper.toDTO(advertencia);

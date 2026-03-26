@@ -2,105 +2,67 @@ package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.controller
 
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.AdvertenciaDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services.DetectorPalabrasService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
- * Controlador REST para la detección de posibles estafas en textos.
- *
- * Proporciona endpoints para:
- * - Obtener todas las advertencias registradas
- * - Analizar mensajes en busca de patrones sospechosos
- *
- * ⚠️ Seguridad:
- * Este endpoint puede ser objetivo de:
- * - Abuso de API (spam de peticiones)
- * - Envío de payloads maliciosos
- * - Ataques de denegación de servicio (DoS)
- *
- * Se recomienda implementar:
- * - Rate limiting
- * - Validación de entrada
- * - Autenticación en producción
+ * Controlador para la detección de estafas integrado con Thymeleaf.
  */
-@CrossOrigin(origins = "*") // Permite peticiones desde cualquier origen para pruebas
-@RestController
-@RequestMapping("/api/detector") // Mantenemos tu ruta original
+@Controller
+@RequestMapping("/detector-mensajes-sospechosos")
 public class DetectorPalabrasController {
 
-    /**
-     * Servicio encargado de analizar textos y detectar patrones de estafa.
-     */
     private final DetectorPalabrasService detectorService;
 
-    /**
-     * Constructor con inyección de dependencias.
-     *
-     * @param detectorService servicio de detección de palabras clave
-     */
     public DetectorPalabrasController(DetectorPalabrasService detectorService) {
         this.detectorService = detectorService;
     }
 
     /**
-     * Endpoint que devuelve todas las advertencias registradas.
-     *
-     * @return lista de advertencias
+     * Muestra la página del detector (GET)
      */
-    @GetMapping("/todos")
+    @GetMapping
+    public String mostrarPagina(Model model) {
+        model.addAttribute("resultado", null);
+        model.addAttribute("textoOriginal", "");
+        // CAMBIA "detector" POR EL NOMBRE EXACTO DEL ARCHIVO
+        return "detector-mensajes-sospechosos";
+    }
+
+    @PostMapping
+    public String analizar(@RequestParam("contenidoTexto") String contenidoTexto,
+                           Principal principal,
+                           Model model) {
+
+        if (contenidoTexto != null && !contenidoTexto.isBlank()) {
+            // Obtenemos el username del usuario logueado
+            if (principal == null) {
+                // Si no está logueado, lo mandamos al login para evitar el error de null
+                return "redirect:/login";
+            }
+
+            String username = principal.getName();
+
+            // Llamamos al servicio con el usuario detectado
+            AdvertenciaDTO resultado = detectorService.analizarMensaje(contenidoTexto, username);
+
+            model.addAttribute("resultado", resultado);
+            model.addAttribute("textoOriginal", contenidoTexto);
+        }
+        return "detector-mensajes-sospechosos";
+    }
+
+    /**
+     * Si necesitas seguir exponiendo la lista de advertencias como JSON para una tabla AJAX,
+     * este método usa @ResponseBody para saltarse la resolución de vistas HTML.
+     */
+    @GetMapping("/api/todos")
+    @ResponseBody
     public List<AdvertenciaDTO> getAll() {
         return detectorService.listAll();
-    }
-
-    /**
-     * Endpoint para analizar un texto y detectar posibles estafas.
-     *
-     * Recibe un JSON con formato:
-     * {
-     *   "contenidoTexto": "mensaje a analizar"
-     * }
-     *
-     * @param payload mapa con los datos recibidos en el body
-     * @return advertencia generada tras el análisis
-     *
-     * ⚠️ Seguridad:
-     * - Validar tamaño del texto (evitar payloads excesivos).
-     * - Sanitizar entrada para evitar inyecciones.
-     * - Considerar autenticación si se expone públicamente.
-     */
-    @PostMapping("/analizar")
-    public AdvertenciaDTO analizar(@RequestBody java.util.Map<String, String> payload) {
-        String texto = payload.get("contenidoTexto"); // Extrae el valor del JSON { "contenidoTexto": "..." }
-        return detectorService.analizarMensaje(texto != null ? texto : "");
-    }
-
-    /**
-     * Clase auxiliar para mapear el JSON de entrada de forma tipada.
-     *
-     * Representa el payload:
-     * {
-     *   "contenidoTexto": "..."
-     * }
-     *
-     * ⚠️ Buenas prácticas:
-     * Se recomienda usar esta clase en lugar de Map para mayor seguridad y claridad.
-     */
-    public static class MensajeRequest {
-        private String contenidoTexto;
-
-        /**
-         * Obtiene el contenido del texto a analizar.
-         *
-         * @return texto del mensaje
-         */
-        public String getContenidoTexto() { return contenidoTexto; }
-
-        /**
-         * Establece el contenido del texto a analizar.
-         *
-         * @param contenidoTexto texto del mensaje
-         */
-        public void setContenidoTexto(String contenidoTexto) { this.contenidoTexto = contenidoTexto; }
     }
 }

@@ -8,7 +8,7 @@ public interface DetectorPalabrasService {
     /**
      * Analiza un mensaje y guarda la advertencia en la base de datos
      */
-    AdvertenciaDTO analizarMensaje(String texto);
+    AdvertenciaDTO analizarMensaje(String texto, String username);
 
     /**
      * Lista todas las advertencias existentes

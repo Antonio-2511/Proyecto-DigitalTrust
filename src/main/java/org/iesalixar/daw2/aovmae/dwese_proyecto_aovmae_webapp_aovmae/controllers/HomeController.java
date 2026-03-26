@@ -34,12 +34,7 @@ public class HomeController {
      * en busca de posibles patrones de estafa.
      *
      * @return nombre de la vista del detector
-     */
-    @GetMapping("detector-mensajes-sospechosos")
-    public String detectorMensajes() {
-        return "detector-mensajes-sospechosos"; // detector-mensajes-sospechosos.html
-    }
-
+     *
 
     /**
      * ⚙️ Zona para futuras funcionalidades.
