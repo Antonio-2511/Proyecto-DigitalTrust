@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO (Data Transfer Object) que representa el detalle completo de un reporte
@@ -52,6 +54,8 @@ public class ReporteDetailDTO {
      * Dirección de correo electrónico del usuario asociado al reporte.
      */
     private String emailUsuario;
+
+    private List<AdvertenciaDTO> advertencias = new ArrayList<>();
 
 
 }
