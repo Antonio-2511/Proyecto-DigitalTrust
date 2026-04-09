@@ -1,27 +1,34 @@
-<footer th:fragment="footer" xmlns:th="http://www.w3.org/1999/xhtml">
+<footer th:fragment="footer" xmlns:th="http://www.thymeleaf.org">
 
     <div class="footer">
 
-        <!-- LOGO -->
         <div class="footer-logo">
-            <img th:src="@{/images/digitalTrust_logo.png}"
-                 src="/images/digitalTrust_logo.png"
-                 alt="DigitalTrust Logo">
+            <a th:href="@{/}">
+                <img th:src="@{/images/digitalTrust_logo.png}"
+                     src="/images/digitalTrust_logo.png"
+                     alt="DigitalTrust Logo">
+            </a>
         </div>
 
-        <!-- REDES SOCIALES -->
         <div class="footer-social">
             <p th:text="#{footer.social}"></p>
 
             <div class="social-icons">
-                <img th:src="@{/images/ig_logo.png}" src="/images/ig_logo.png" alt="Instagram">
-                <img th:src="@{/images/x_logoo.png}" src="/images/x_logoo.png" alt="Twitter">
-                <img th:src="@{/images/logo_facebook.png}" src="/images/logo_facebook.png" alt="Facebook">
-                <img th:src="@{/images/logo_tiktok.png}" src="/images/logo_tiktok.png" alt="TikTok">
+                <a href="https://www.instagram.com/digitaltrustes/?hl=es%2F" target="_blank" title="Instagram">
+                    <img th:src="@{/images/ig_logo.png}" src="/images/ig_logo.png" alt="Instagram">
+                </a>
+
+                <a href="https://x.com/DigitalTru44733" target="_blank" title="X">
+                    <img th:src="@{/images/x_logoo.png}" src="/images/x_logoo.png" alt="Twitter">
+                </a>
+
+
+                <a href="https://www.tiktok.com/@digitaltrust00" target="_blank" title="TikTok">
+                    <img th:src="@{/images/logo_tiktok.png}" src="/images/logo_tiktok.png" alt="TikTok">
+                </a>
             </div>
         </div>
 
-        <!-- LINKS -->
         <div class="footer-links">
             <p><strong th:text="#{footer.what}"></strong></p>
             <ul>
