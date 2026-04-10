@@ -475,3 +475,46 @@ body {
     .footer { justify-content: center; text-align: center; }
     .search-container { width: 95%; }
 }
+
+/* Estilos específicos para la tienda */
+.product {
+    position: relative;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product:hover {
+    border-color: #22c1a5;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.product-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #f39c12;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.price {
+    margin: 20px 0;
+    color: #083a4d;
+}
+
+.price .amount {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.description {
+    font-size: 14px;
+    color: #666;
+    min-height: 40px;
+}

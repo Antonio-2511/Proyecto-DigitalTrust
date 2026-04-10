@@ -4,6 +4,11 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.Pl
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 @Repository
 public interface PlanRepository extends JpaRepository<Plan, String> {
+    // JpaRepository ya incluye métodos como findAll() y findById()
 }

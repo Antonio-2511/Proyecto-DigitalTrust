@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/login",
+                                "/tienda",
                                 "/forgot-password",
                                 "/contacto/**",
                                 "/reset-password",

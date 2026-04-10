@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: head}"></head>
+
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="products" style="padding-top: 100px; min-height: 80vh;">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; text-align: center;">
+    <h1 th:text="#{navbar.planes}">Nuestros Planes</h1>
+    <p>Selecciona el plan que mejor se adapte a tus necesidades de seguridad.</p>
+
+    <div class="product-grid" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 40px;">
+
+      <div th:each="plan : ${planes}" class="product"
+           style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 250px; transition: transform 0.3s;">
+
+        <h3 th:text="${plan.nombrePlan}" style="color: #22c1a5;">Nombre Plan</h3>
+        <p th:text="${plan.beneficios}" style="font-size: 0.9em; color: #666; height: 50px;">Beneficios</p>
+
+        <div style="font-size: 24px; font-weight: bold; margin: 15px 0;">
+          <span th:text="${plan.precio}">0.00</span>€
+        </div>
+
+        <form th:action="@{/carrito/agregar}" method="post">
+          <input type="hidden" name="idPlan" th:value="${plan.nombrePlan}">
+          <button type="submit" class="btn" style="background: #083a4d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%;">
+            Seleccionar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+</body>
+</html>
