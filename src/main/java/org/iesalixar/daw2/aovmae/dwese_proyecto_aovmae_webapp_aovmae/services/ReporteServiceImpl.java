@@ -12,6 +12,7 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositorie
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,14 +31,22 @@ public class ReporteServiceImpl implements ReporteService {
     @Autowired
     private AdvertenciaRepository advertenciaRepository;
 
+    /**
+     * 🔐 Solo MODERATOR o ADMIN pueden ver TODOS los reportes
+     */
     @Override
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public Page<ReporteDTO> list(Pageable pageable) {
         return reporteRepository
                 .findAll(pageable)
                 .map(ReporteMapper::toDTO);
     }
 
+    /**
+     * 🔐 Solo el dueño o ADMIN puede editar
+     */
     @Override
+    @PreAuthorize("@reporteSecurity.esPropietario(#id, authentication.name) or hasRole('ADMIN')")
     public ReporteUpdateDTO getForEdit(Long id) {
 
         Reporte reporte = reporteRepository.findById(id)
@@ -48,35 +57,63 @@ public class ReporteServiceImpl implements ReporteService {
         return ReporteMapper.toUpdateDTO(reporte);
     }
 
+    /**
+     * 🔐 Cualquier usuario autenticado puede crear reportes
+     */
     @Override
+    @PreAuthorize("isAuthenticated()")
     public void create(ReporteCreateDTO dto) {
 
         User usuario = userService.getAuthenticatedUser();
 
         Reporte reporte = ReporteMapper.toEntity(dto, usuario);
-
-        // 🔥 adaptado a tu entidad
         reporte.setFechaReporte(LocalDateTime.now());
 
         reporteRepository.save(reporte);
 
-        // 🔥 IA simulada (sin estado)
         comprobarReportesMasivos(reporte);
     }
 
+    /**
+     * 🔐 Solo propietario o ADMIN
+     */
     @Override
+    @PreAuthorize("#dto.id != null and (@reporteSecurity.esPropietario(#dto.id, authentication.name) or hasRole('ADMIN'))")
     public void update(ReporteUpdateDTO dto) {
 
+        /**
+         * Recuperamos el reporte
+         */
         Reporte reporte = reporteRepository.findById(dto.getId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("reporte", "id", dto.getId())
                 );
 
+        /**
+         * 🔐 DEFENSA EXTRA (recomendado en backend crítico)
+         */
+        User user = userService.getAuthenticatedUser();
+
+        boolean esPropietario = reporte.getUser().getUsername().equals(user.getUsername());
+        boolean esAdmin = userService.isAdmin();
+
+        if (!esPropietario && !esAdmin) {
+            throw new RuntimeException("No tienes permisos para modificar este reporte");
+        }
+
+        /**
+         * Actualización
+         */
         ReporteMapper.copyToExistingEntity(dto, reporte);
+
         reporteRepository.save(reporte);
     }
 
+    /**
+     * 🔐 Solo MODERATOR o ADMIN pueden eliminar
+     */
     @Override
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public void delete(Long id) {
 
         if (!reporteRepository.existsById(id)) {
@@ -86,7 +123,11 @@ public class ReporteServiceImpl implements ReporteService {
         reporteRepository.deleteById(id);
     }
 
+    /**
+     * 🔐 Solo propietario o ADMIN
+     */
     @Override
+    @PreAuthorize("@reporteSecurity.esPropietario(#id, authentication.name) or hasRole('ADMIN')")
     public ReporteDetailDTO getDetail(Long id) {
 
         Reporte reporte = reporteRepository.findById(id)
@@ -98,13 +139,9 @@ public class ReporteServiceImpl implements ReporteService {
     }
 
     // =========================================================
-    // 🔥 LÓGICA DE NEGOCIO SIN MODIFICAR BD
+    // 🔥 LÓGICA DE NEGOCIO
     // =========================================================
 
-    /**
-     * Detecta si hay múltiples reportes con la misma descripción
-     * y genera una advertencia automática.
-     */
     private void comprobarReportesMasivos(Reporte reporte) {
 
         List<Reporte> similares =
@@ -126,8 +163,9 @@ public class ReporteServiceImpl implements ReporteService {
     }
 
     /**
-     * Validación manual (sin guardar estado en BD)
+     * 🔐 Solo MODERATOR o ADMIN validan fraude
      */
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public void validarReporte(Long id, boolean esFraude) {
 
         Reporte reporte = reporteRepository.findById(id)
@@ -138,13 +176,8 @@ public class ReporteServiceImpl implements ReporteService {
         if (esFraude) {
             crearAdvertenciaDesdeReporte(reporte);
         }
-
-        // 💡 No guardamos estado → solo comportamiento
     }
 
-    /**
-     * Genera advertencia desde un reporte validado
-     */
     private void crearAdvertenciaDesdeReporte(Reporte reporte) {
 
         Advertencia advertencia = new Advertencia();

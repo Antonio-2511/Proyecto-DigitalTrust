@@ -2,6 +2,7 @@ package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.controller
 
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.MensajeDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services.MensajeService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,45 +29,33 @@ import java.util.List;
 @RequestMapping("/api/mensajes")
 public class MensajeController {
 
-    /**
-     * Servicio encargado de la lógica de negocio para mensajes.
-     */
     private final MensajeService mensajeService;
 
-    /**
-     * Constructor con inyección de dependencias.
-     *
-     * @param mensajeService servicio de análisis de mensajes
-     */
     public MensajeController(MensajeService mensajeService) {
         this.mensajeService = mensajeService;
     }
 
     /**
-     * Endpoint que devuelve todos los mensajes registrados.
-     *
-     * @return lista de mensajes analizados
+     * 🔐 SOLO ADMIN o MODERATOR
      */
     @GetMapping("/todos")
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     public List<MensajeDTO> getAll() {
         return mensajeService.listAll();
     }
 
     /**
-     * Endpoint para analizar un mensaje de texto.
-     *
-     * Recibe directamente el contenido del mensaje en el body de la petición.
-     *
-     * @param contenidoTexto texto a analizar
-     * @return resultado del análisis del mensaje
-     *
-     * ⚠️ Seguridad:
-     * - Validar que el texto no sea nulo o excesivamente largo.
-     * - Sanitizar contenido para evitar inyecciones.
-     * - Considerar autenticación si el endpoint es público.
+     * 🔐 SOLO USUARIOS AUTENTICADOS
      */
     @PostMapping("/analizar")
+    @PreAuthorize("isAuthenticated()")
     public MensajeDTO analizar(@RequestBody String contenidoTexto) {
+
+        // 🔒 validación básica anti abuso
+        if (contenidoTexto == null || contenidoTexto.length() > 1000) {
+            throw new IllegalArgumentException("Texto inválido");
+        }
+
         return mensajeService.analizarMensaje(contenidoTexto);
     }
 }

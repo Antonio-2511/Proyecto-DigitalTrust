@@ -1,62 +1,120 @@
-<header th:fragment="header" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<header th:fragment="header"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
     <nav class="navbar">
+
+        <!-- IZQUIERDA -->
         <div class="nav-left">
+
             <a th:href="@{/}" class="logo">
-                <img th:src="@{/images/digitalTrust_logo.png}" src="/images/digitalTrust_logo.png" alt="DigitalTrust Logo">
+                <img th:src="@{/images/digitalTrust_logo.png}" alt="DigitalTrust Logo">
             </a>
+
             <ul class="nav-links" id="navLinks">
-                <li><a th:href="@{/}" th:text="#{navbar.home}">Inicio</a></li>
-                <li><a th:href="@{/planes}" th:text="#{navbar.planes}">Planes</a></li>
-                <li><a th:href="@{/reportes}" th:text="#{navbar.reportes}">Reportes</a></li>
-                <li><a th:href="@{/advertencias}" th:text="#{navbar.advertencias}">Advertencias</a></li>
-                <li><a th:href="@{/detector-mensajes-sospechosos}" th:text="#{navbar.mensajes}">Mensajes</a></li>
-                <li><a th:href="@{/contacto}" th:text="#{navbar.contacto}">Contacto</a></li>
+
+                <!-- 🌍 PÚBLICO -->
+                <li>
+                    <a th:href="@{/}" th:text="#{navbar.home}">Inicio</a>
+                </li>
+
+                <li>
+                    <a th:href="@{/planes}" th:text="#{navbar.planes}">Planes</a>
+                </li>
+
+                <!-- 🔐 ADMIN + MODERADOR -->
+                <li sec:authorize="hasAnyRole('ADMIN','MODERATOR')">
+                    <a th:href="@{/reportes}">Reportes</a>
+                </li>
+
+                <li sec:authorize="hasAnyRole('ADMIN','MODERATOR')">
+                    <a th:href="@{/advertencias}">Advertencias</a>
+                </li>
+
+                <!-- 👤 SOLO USER -->
+                <li sec:authorize="hasRole('USER')">
+                    <a th:href="@{/contacto}" th:text="#{navbar.contacto}">Contacto</a>
+                </li>
+
+                <!-- 🔓 TODOS LOGUEADOS -->
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{/detector-mensajes-sospechosos}"
+                       th:text="#{navbar.mensajes}">
+                        Mensajes
+                    </a>
+                </li>
+
             </ul>
         </div>
 
+        <!-- DERECHA -->
         <div class="nav-right">
+
             <div class="nav-icons-group">
                 <a th:href="@{/carrito}" class="nav-icon" title="Carrito">🛒</a>
                 <button id="btnOpenSearch" class="nav-icon" title="Buscar">🔍</button>
             </div>
 
+            <!-- NO LOGUEADO -->
             <div sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="nav-icon">👤</a>
             </div>
 
+            <!-- LOGUEADO -->
             <div sec:authorize="isAuthenticated()" class="user-section">
+
+                <!-- 👤 USERNAME -->
                 <span sec:authentication="name" class="user-name"></span>
+
+
+                <!-- 🚪 LOGOUT -->
                 <form th:action="@{/logout}" method="post" style="margin:0;">
-                    <button type="submit" class="btn btn-exit" th:text="#{login.submit}">Salir</button>
+                    <button type="submit" class="btn btn-exit">
+                        Salir
+                    </button>
                 </form>
+
             </div>
 
+            <!-- 🌐 IDIOMA -->
             <div class="lang-switch">
-                <a th:href="@{/(lang='es')}">ES</a> | <a th:href="@{/(lang='en')}">EN</a>
+                <a th:href="@{/(lang='es')}">ES</a> |
+                <a th:href="@{/(lang='en')}">EN</a>
             </div>
+
         </div>
     </nav>
 
+    <!-- 🔍 BUSCADOR -->
     <div id="searchOverlay" class="search-overlay" role="dialog" aria-modal="true">
         <div class="search-container">
+
             <div class="search-header">
-                <input type="text" id="searchInput" th:placeholder="#{detector.placeholder}" autocomplete="off">
-                <button id="btnCloseSearch" class="close-btn" aria-label="Cerrar">&times;</button>
+                <input type="text"
+                       id="searchInput"
+                       th:placeholder="#{detector.placeholder}"
+                       autocomplete="off">
+
+                <button id="btnCloseSearch" class="close-btn" aria-label="Cerrar">
+                    &times;
+                </button>
             </div>
+
             <ul id="searchResults" class="search-results"></ul>
+
         </div>
     </div>
 
+    <!-- 🔎 SCRIPT BUSCADOR -->
     <script th:inline="javascript">
+
         const appRoutes = [
             { name: [[#{navbar.home}]], url: [[@{/}]], keywords: ["home", "inicio"] },
             { name: [[#{navbar.planes}]], url: [[@{/planes}]], keywords: ["planes", "precios"] },
-            { name: [[#{navbar.reportes}]], url: [[@{/reportes}]], keywords: ["reportes", "denuncias"] },
-            { name: [[#{navbar.mensajes}]], url: [[@{/detector-mensajes-sospechosos}]], keywords: ["detector", "phishing"] },
-            /* Integración de Instagram en el buscador */
-            { name: "Instagram (DigitalTrust)", url: "https://www.instagram.com/digitaltrustes/?hl=es%2F", keywords: ["instagram", "redes", "social", "empresa", "foto"] },
-            { name: "DigitalTrust Business", url: [[@{/empresa}]], keywords: ["empresa", "corporativo", "vacio"] },
-            { name: [[#{navbar.contacto}]], url: [[@{/contacto}]], keywords: ["contacto", "email"] }
+            { name: [[#{navbar.reportes}]], url: [[@{/reportes}]], keywords: ["reportes"] },
+            { name: [[#{navbar.advertencias}]], url: [[@{/advertencias}]], keywords: ["alertas"] },
+            { name: [[#{navbar.mensajes}]], url: [[@{/detector-mensajes-sospechosos}]], keywords: ["detector"] },
+            { name: [[#{navbar.contacto}]], url: [[@{/contacto}]], keywords: ["contacto"] }
         ];
 
         const btnOpen = document.getElementById('btnOpenSearch');
@@ -65,26 +123,41 @@
         const input = document.getElementById('searchInput');
         const resultsList = document.getElementById('searchResults');
 
-        btnOpen.addEventListener('click', () => { overlay.classList.add('active'); input.focus(); });
-        btnClose.addEventListener('click', () => { overlay.classList.remove('active'); input.value = ''; resultsList.innerHTML = ''; });
+        btnOpen.addEventListener('click', () => {
+            overlay.classList.add('active');
+            input.focus();
+        });
+
+        btnClose.addEventListener('click', () => {
+            overlay.classList.remove('active');
+            input.value = '';
+            resultsList.innerHTML = '';
+        });
 
         input.addEventListener('input', () => {
+
             const query = input.value.toLowerCase();
             resultsList.innerHTML = '';
+
             if (query.length > 0) {
+
                 const filtered = appRoutes.filter(route =>
                     route.name.toLowerCase().includes(query) ||
                     route.keywords.some(k => k.includes(query))
                 );
+
                 filtered.forEach(route => {
                     const li = document.createElement('li');
-                    const isExternal = route.url.startsWith('http');
-                    li.innerHTML = `<a href="${route.url}" ${isExternal ? 'target="_blank"' : ''}>${route.name} ${isExternal ? '↗️' : ''}</a>`;
+                    li.innerHTML = `<a href="${route.url}">${route.name}</a>`;
                     resultsList.appendChild(li);
                 });
             }
         });
 
-        document.addEventListener('keydown', (e) => { if (e.key === "Escape") btnClose.click(); });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") btnClose.click();
+        });
+
     </script>
+
 </header>

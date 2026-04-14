@@ -2,6 +2,8 @@ package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.controller
 
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.AdvertenciaDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services.DetectorPalabrasService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,45 +25,48 @@ public class DetectorPalabrasController {
     }
 
     /**
-     * Muestra la página del detector (GET)
+     * 🔐 SOLO USUARIOS AUTENTICADOS
      */
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public String mostrarPagina(Model model) {
         model.addAttribute("resultado", null);
         model.addAttribute("textoOriginal", "");
-        // CAMBIA "detector" POR EL NOMBRE EXACTO DEL ARCHIVO
-        return "detector-mensajes-sospechosos";
-    }
-
-    @PostMapping
-    public String analizar(@RequestParam("contenidoTexto") String contenidoTexto,
-                           Principal principal,
-                           Model model) {
-
-        if (contenidoTexto != null && !contenidoTexto.isBlank()) {
-            // Obtenemos el username del usuario logueado
-            if (principal == null) {
-                // Si no está logueado, lo mandamos al login para evitar el error de null
-                return "redirect:/login";
-            }
-
-            String username = principal.getName();
-
-            // Llamamos al servicio con el usuario detectado
-            AdvertenciaDTO resultado = detectorService.analizarMensaje(contenidoTexto, username);
-
-            model.addAttribute("resultado", resultado);
-            model.addAttribute("textoOriginal", contenidoTexto);
-        }
         return "detector-mensajes-sospechosos";
     }
 
     /**
-     * Si necesitas seguir exponiendo la lista de advertencias como JSON para una tabla AJAX,
-     * este método usa @ResponseBody para saltarse la resolución de vistas HTML.
+     * 🔐 SOLO USUARIOS AUTENTICADOS
+     */
+    @PostMapping
+    @PreAuthorize("isAuthenticated()")
+    public String analizar(@RequestParam("contenidoTexto") String contenidoTexto,
+                           Model model) {
+
+        if (contenidoTexto != null && !contenidoTexto.isBlank()) {
+
+            // 🔥 OBTENER USUARIO DESDE SECURITY (MEJOR QUE PRINCIPAL)
+            String username = SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getName();
+
+            AdvertenciaDTO resultado =
+                    detectorService.analizarMensaje(contenidoTexto, username);
+
+            model.addAttribute("resultado", resultado);
+            model.addAttribute("textoOriginal", contenidoTexto);
+        }
+
+        return "detector-mensajes-sospechosos";
+    }
+
+    /**
+     * 🔐 SOLO STAFF
      */
     @GetMapping("/api/todos")
     @ResponseBody
+    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     public List<AdvertenciaDTO> getAll() {
         return detectorService.listAll();
     }

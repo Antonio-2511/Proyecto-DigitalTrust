@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,10 +27,12 @@ public class ReporteController {
     //  LISTADO
     // =========================================================
 
+    /**
+     * 🔐 Solo MODERATOR o ADMIN
+     */
     @GetMapping
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public String list(
-
-
             @PageableDefault(size = 10, sort = "fechaReporte", direction = Sort.Direction.DESC)
             Pageable pageable,
             Model model) {
@@ -42,13 +45,21 @@ public class ReporteController {
     //  CREAR
     // =========================================================
 
+    /**
+     * 🔐 Usuario autenticado
+     */
     @GetMapping("/new")
+    @PreAuthorize("isAuthenticated()")
     public String showNewForm(Model model) {
         model.addAttribute("reporte", new ReporteCreateDTO());
         return "views/reportes/reporte-form";
     }
 
+    /**
+     * 🔐 Usuario autenticado
+     */
     @PostMapping("/insert")
+    @PreAuthorize("isAuthenticated()")
     public String insert(
             @Valid @ModelAttribute("reporte") ReporteCreateDTO dto,
             BindingResult result) {
@@ -62,10 +73,14 @@ public class ReporteController {
     }
 
     // =========================================================
-    //  VER DETALLE (CORREGIDO)
+    //  DETALLE
     // =========================================================
 
+    /**
+     * 🔐 Propietario o ADMIN (reforzado en service)
+     */
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String detail(@PathVariable Long id,
                          Model model,
                          RedirectAttributes redirectAttributes) {
@@ -81,10 +96,14 @@ public class ReporteController {
     }
 
     // =========================================================
-    //  EDITAR (CORREGIDO)
+    //  EDITAR
     // =========================================================
 
+    /**
+     * 🔐 Propietario o ADMIN
+     */
     @GetMapping("/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
     public String showEdit(@PathVariable Long id,
                            Model model,
                            RedirectAttributes redirectAttributes) {
@@ -99,7 +118,11 @@ public class ReporteController {
         }
     }
 
+    /**
+     * 🔐 Propietario o ADMIN
+     */
     @PostMapping("/update")
+    @PreAuthorize("isAuthenticated()")
     public String update(
             @Valid @ModelAttribute("reporte") ReporteUpdateDTO dto,
             BindingResult result) {
@@ -116,17 +139,25 @@ public class ReporteController {
     //  ELIMINAR
     // =========================================================
 
+    /**
+     * 🔐 MODERATOR o ADMIN
+     */
     @PostMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public String delete(@PathVariable Long id) {
         reporteService.delete(id);
         return "redirect:/reportes?deleted";
     }
 
     // =========================================================
-    //  VALIDAR REPORTE (NUEVO - ADMIN)
+    //  VALIDAR REPORTE
     // =========================================================
 
+    /**
+     * 🔐 SOLO STAFF
+     */
     @PostMapping("/admin/{id}/validar")
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public String validarReporte(@PathVariable Long id,
                                  @RequestParam boolean fraude) {
 

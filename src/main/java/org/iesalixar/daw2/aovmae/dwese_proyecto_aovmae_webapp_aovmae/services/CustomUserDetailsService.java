@@ -23,49 +23,24 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    /**
-     * Repositorio de acceso a datos para la entidad {@link User}.
-     */
     private final UserRepository userRepository;
 
-    /**
-     * Constructor con inyección de dependencias.
-     *
-     * @param userRepository repositorio de usuarios
-     */
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Carga un usuario por su nombre de usuario.
-     * <p>
-     * Este método es invocado automáticamente por Spring Security durante
-     * el proceso de autenticación.
-     * </p>
-     *
-     * @param username nombre de usuario introducido en el login
-     * @return objeto {@link UserDetails} con la información del usuario
-     * @throws UsernameNotFoundException si el usuario no existe en la base de datos
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        /**
-         * ERROR CORREGIDO:
-         * Antes: UserRepository.findByUsername(username) -> Esto busca un método static.
-         * Ahora: userRepository.findByUsername(username) -> Usa la instancia inyectada.
-         */
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
-        /**
-         * Construcción del objeto UserDetails.
-         */
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password(user.getContrasenia())
-                .roles("USER")
+                .authorities(
+                        new SimpleGrantedAuthority(user.getRole().getName())
+                )
                 .build();
     }
 }

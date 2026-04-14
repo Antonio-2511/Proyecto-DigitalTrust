@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="fragments/head :: head('Reportes')">
-
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
 </head>
 
 <body>
@@ -13,44 +12,94 @@
 
 <main class="container">
 
-    <h1 class="page-title" th:text="#{navbar.reportes}"></h1>
+    <h1 class="page-title">📄 Reportes</h1>
+
+    <!-- MENSAJES -->
+    <div th:if="${param.created}" class="alert success">Reporte creado correctamente</div>
+    <div th:if="${param.updated}" class="alert info">Reporte actualizado</div>
+    <div th:if="${param.deleted}" class="alert danger">Reporte eliminado</div>
+
+    <!-- BOTÓN CREAR -->
+    <div class="actions-bar" sec:authorize="hasRole('USER')">
+        <a th:href="@{/reportes/new}" class="btn btn-primary">➕ Nuevo Reporte</a>
+    </div>
 
     <table class="table">
 
         <thead>
         <tr>
-            <th th:text="#{report.title}"></th>
-            <th th:text="#{report.date}"></th>
-            <th th:text="#{users.actions}"></th>
+            <th>Título</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
         </tr>
         </thead>
 
         <tbody>
+
         <tr th:each="r : ${page.content}">
 
+            <!-- TÍTULO -->
             <td th:text="${r.titulo}"></td>
-            <td th:text="${r.fechaReporte}"></td>
 
-            <td>
+            <!-- FECHA -->
+            <td th:text="${#temporals.format(r.fechaReporte, 'dd/MM/yyyy HH:mm')}"></td>
+
+            <!-- ACCIONES -->
+            <td class="actions">
+
+                <!-- VER -->
                 <a th:href="@{/reportes/{id}(id=${r.id})}"
-                   th:text="#{users.view}"></a>
+                   class="btn btn-sm btn-view">
+                    👁 Ver
+                </a>
 
+                <!-- EDITAR -->
                 <a th:href="@{/reportes/edit/{id}(id=${r.id})}"
-                   th:text="#{users.edit}"></a>
+                   sec:authorize="hasAnyRole('USER','ADMIN')"
+                   class="btn btn-sm btn-edit">
+                    ✏️ Editar
+                </a>
 
-                <form th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
+                <!-- VALIDAR (SOLO ADMIN) -->
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
                       method="post"
                       style="display:inline;">
-                    <button type="submit" name="fraude" value="true">✔️</button>
+                    <button type="submit"
+                            name="fraude"
+                            value="true"
+                            class="btn btn-sm btn-success">
+                        ✔️ Fraude
+                    </button>
                 </form>
 
-                <form th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
                       method="post"
                       style="display:inline;">
-                    <button type="submit" name="fraude" value="false">❌</button>
+                    <button type="submit"
+                            name="fraude"
+                            value="false"
+                            class="btn btn-sm btn-warning">
+                        ❌ No fraude
+                    </button>
                 </form>
+
+                <!-- ELIMINAR (SOLO ADMIN) -->
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:action="@{/reportes/delete/{id}(id=${r.id})}"
+                      method="post"
+                      style="display:inline;">
+                    <button type="submit"
+                            class="btn btn-sm btn-danger"
+                            onclick="return confirm('¿Seguro que quieres eliminar este reporte?');">
+                        🗑 Eliminar
+                    </button>
+                </form>
+
             </td>
         </tr>
+
         </tbody>
 
     </table>

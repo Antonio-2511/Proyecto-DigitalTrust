@@ -1,7 +1,9 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.config;
 
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * - Las rutas públicas y protegidas.
  * - El sistema de autenticación basado en formulario.
  * - La gestión de login y logout.
+ * - La integración con la base de datos (usuarios + roles).
  * - El codificador de contraseñas seguro.
  *
  * ⚠️ IMPORTANTE (Ciberseguridad):
@@ -21,7 +24,17 @@ import org.springframework.security.web.SecurityFilterChain;
  * controla el acceso a funcionalidades sensibles y protege los datos del usuario.
  */
 @Configuration
+@EnableMethodSecurity // 🔐 Permite usar @PreAuthorize en servicios
 public class SecurityConfig {
+
+    /**
+     * Servicio personalizado que carga usuarios desde la BD.
+     */
+    private final CustomUserDetailsService userDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     /**
      * Define la cadena de filtros de seguridad principal.
@@ -30,6 +43,7 @@ public class SecurityConfig {
      * - Autorización de peticiones HTTP.
      * - Sistema de login personalizado.
      * - Sistema de logout.
+     * - Integración con UserDetailsService.
      *
      * @param http objeto {@link HttpSecurity} para configurar la seguridad web
      * @return la cadena de filtros de seguridad construida
@@ -39,17 +53,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                /**
+                 * 🔗 INTEGRACIÓN CON BASE DE DATOS
+                 *
+                 * Indica a Spring Security que use nuestro servicio personalizado
+                 * para cargar usuarios y roles desde la BD.
+                 */
+                .userDetailsService(userDetailsService)
+
                 .authorizeHttpRequests(auth -> auth
 
                         /**
                          * 🔓 RUTAS PÚBLICAS
                          *
                          * Estas rutas no requieren autenticación.
-                         * Incluyen recursos estáticos y endpoints necesarios
-                         * para el acceso inicial del usuario.
-                         *
-                         * ⚠️ Revisar periódicamente: cualquier endpoint aquí es accesible
-                         * sin login, lo que puede ser vector de ataque si se expone lógica sensible.
                          */
                         .requestMatchers(
                                 "/",
@@ -65,10 +82,21 @@ public class SecurityConfig {
                         ).permitAll()
 
                         /**
-                         * 🔒 RUTAS PROTEGIDAS
+                         * 🔐 RUTAS POR ROLES
+                         *
+                         * Control de acceso basado en roles almacenados en BD.
+                         *
+                         * ⚠️ IMPORTANTE:
+                         * hasRole("ADMIN") → busca "ROLE_ADMIN" en la BD
+                         */
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/moderador/**").hasRole("MODERATOR")
+                        .requestMatchers("/reportes/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
+
+                        /**
+                         * 🔒 RESTO DE RUTAS
                          *
                          * Cualquier otra petición requiere autenticación.
-                         * Esto sigue el principio de "deny by default".
                          */
                         .anyRequest().authenticated()
                 )
@@ -78,10 +106,6 @@ public class SecurityConfig {
                  *
                  * - Página personalizada de login.
                  * - Redirección tras login exitoso.
-                 *
-                 * ⚠️ Recomendación:
-                 * Implementar protección contra ataques de fuerza bruta
-                 * (rate limiting, captcha, bloqueo temporal, etc.).
                  */
                 .formLogin(login -> login
                         .loginPage("/login")
@@ -93,9 +117,6 @@ public class SecurityConfig {
                  * 🚪 CONFIGURACIÓN DE LOGOUT
                  *
                  * - Permite cerrar sesión y redirigir al inicio.
-                 *
-                 * ⚠️ Recomendación:
-                 * Invalidar sesión y cookies para evitar session hijacking.
                  */
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")

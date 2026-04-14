@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,34 +48,20 @@ import java.util.Locale;
 @RequestMapping("/usuarios")
 public class UserController {
 
-    /**
-     * Servicio que contiene la lógica de negocio de usuarios.
-     */
     @Autowired
     private UserService userService;
 
-    /**
-     * Repositorio de planes/membresías.
-     *
-     * Se utiliza para asignar planes a los usuarios.
-     */
     @Autowired
     private PlanRepository planRepository;
 
-    /**
-     * Fuente de mensajes para internacionalización (i18n).
-     */
     @Autowired
     private MessageSource messageSource;
 
     /**
-     * Muestra el listado paginado de usuarios.
-     *
-     * @param pageable configuración de paginación (orden por gmail ASC)
-     * @param model modelo de la vista
-     * @return vista de listado
+     * 🔐 SOLO ADMIN
      */
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public String list(
             @PageableDefault(size = 10, sort = "gmail", direction = Sort.Direction.ASC)
             Pageable pageable,
@@ -87,10 +74,7 @@ public class UserController {
     }
 
     /**
-     * Muestra el formulario de creación de usuario.
-     *
-     * @param model modelo de la vista
-     * @return vista del formulario en modo "crear"
+     * 🔓 Registro abierto
      */
     @GetMapping("/new")
     public String showNewForm(Model model) {
@@ -103,14 +87,7 @@ public class UserController {
     }
 
     /**
-     * Procesa la creación de un nuevo usuario.
-     *
-     * @param dto datos del usuario
-     * @param result resultado de validación
-     * @param redirectAttributes atributos flash
-     * @param model modelo de la vista
-     * @param locale idioma actual
-     * @return redirección o formulario en caso de error
+     * 🔓 Registro abierto
      */
     @PostMapping("/insert")
     public String insert(
@@ -135,13 +112,10 @@ public class UserController {
                     messageSource.getMessage("msg.usuario.created", null, locale)
             );
 
-            return "redirect:/usuarios";
+            return "redirect:/login";
 
         } catch (DuplicateResourceException ex) {
 
-            /**
-             * Manejo de duplicados (username/email).
-             */
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
                     messageSource.getMessage(
@@ -157,15 +131,10 @@ public class UserController {
     }
 
     /**
-     * Muestra el formulario de edición de usuario.
-     *
-     * @param username identificador del usuario
-     * @param model modelo de la vista
-     * @param redirectAttributes atributos flash
-     * @param locale idioma
-     * @return vista de edición o redirección si no existe
+     * 🔐 Usuario o ADMIN
      */
     @GetMapping("/edit")
+    @PreAuthorize("#username == authentication.name or hasRole('ADMIN')")
     public String showEdit(@RequestParam String username,
                            Model model,
                            RedirectAttributes redirectAttributes,
@@ -196,16 +165,10 @@ public class UserController {
     }
 
     /**
-     * Procesa la actualización de un usuario.
-     *
-     * @param dto datos actualizados
-     * @param result validación
-     * @param redirectAttributes atributos flash
-     * @param model modelo
-     * @param locale idioma
-     * @return redirección o formulario si hay errores
+     * 🔐 Usuario o ADMIN
      */
     @PostMapping("/update")
+    @PreAuthorize("#dto.username == authentication.name or hasRole('ADMIN')")
     public String update(
             @Valid @ModelAttribute("usuario") UserUpdateDTO dto,
             BindingResult result,
@@ -247,18 +210,10 @@ public class UserController {
     }
 
     /**
-     * Elimina un usuario.
-     *
-     * @param username identificador del usuario
-     * @param redirectAttributes atributos flash
-     * @param locale idioma
-     * @return redirección al listado
-     *
-     * ⚠️ Seguridad:
-     * - Validar permisos (solo admins)
-     * - Protección CSRF
+     * 🔐 SOLO ADMIN
      */
     @PostMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public String delete(@RequestParam String username,
                          RedirectAttributes redirectAttributes,
                          Locale locale) {
@@ -291,15 +246,10 @@ public class UserController {
     }
 
     /**
-     * Muestra el detalle de un usuario.
-     *
-     * @param username identificador
-     * @param model modelo de la vista
-     * @param redirectAttributes atributos flash
-     * @param locale idioma
-     * @return vista de detalle o redirección
+     * 🔐 Usuario o ADMIN
      */
     @GetMapping("/detail")
+    @PreAuthorize("#username == authentication.name or hasRole('ADMIN')")
     public String detail(@RequestParam String username,
                          Model model,
                          RedirectAttributes redirectAttributes,
@@ -308,7 +258,6 @@ public class UserController {
         try {
 
             model.addAttribute("usuario", userService.getDetail(username));
-
             return "views/usuarios/usuario-detail";
 
         } catch (ResourceNotFoundException ex) {

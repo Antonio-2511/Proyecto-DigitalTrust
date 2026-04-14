@@ -79,4 +79,6 @@ public interface UserService {
      */
     User getAuthenticatedUser();
 
+    boolean isAdmin();
+
 }

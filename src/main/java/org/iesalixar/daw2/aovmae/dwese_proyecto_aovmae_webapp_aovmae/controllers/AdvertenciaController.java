@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,45 +38,31 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/advertencias")
 public class AdvertenciaController {
 
-    /**
-     * Servicio que contiene la lógica de negocio de advertencias.
-     */
     @Autowired
     private AdvertenciaService advertenciaService;
 
-    /**
-     * Repositorio para acceder a fuentes confiables.
-     *
-     * Se utiliza para poblar formularios (selects).
-     */
     @Autowired
     private FuenteConfiableRepository fuenteConfiableRepository;
 
     /**
-     * Muestra el listado paginado de advertencias.
-     *
-     * @param pageable configuración de paginación y ordenación (por defecto: fechaEnvio DESC)
-     * @param model modelo de la vista
-     * @return vista de listado de advertencias
+     * 🔐 SOLO MODERATOR o ADMIN
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public String list(
             @PageableDefault(size = 10, sort = "fechaEnvio", direction = Sort.Direction.DESC)
             Pageable pageable,
             Model model) {
 
         model.addAttribute("page", advertenciaService.list(pageable));
-
         return "views/advertencias/advertencia-list";
     }
 
     /**
-     * Muestra el formulario de creación de una nueva advertencia.
-     *
-     * @param model modelo de la vista
-     * @return vista del formulario
+     * 🔐 SOLO ADMIN
      */
     @GetMapping("/new")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showNewForm(Model model) {
         model.addAttribute("advertencia", new AdvertenciaCreateDTO());
         model.addAttribute("fuentes", fuenteConfiableRepository.findAll());
@@ -83,26 +70,15 @@ public class AdvertenciaController {
     }
 
     /**
-     * Procesa la creación de una nueva advertencia.
-     *
-     * @param dto datos de la advertencia a crear
-     * @param result resultado de la validación
-     * @param model modelo de la vista
-     * @return redirección al listado o formulario en caso de error
+     * 🔐 SOLO ADMIN
      */
     @PostMapping("/insert")
+    @PreAuthorize("hasRole('ADMIN')")
     public String insert(
             @Valid @ModelAttribute("advertencia") AdvertenciaCreateDTO dto,
             BindingResult result,
             Model model) {
 
-        /**
-         * Validación de datos de entrada.
-         *
-         * ⚠️ Importante para prevenir:
-         * - Datos maliciosos
-         * - Inconsistencias
-         */
         if (result.hasErrors()) {
             model.addAttribute("fuentes", fuenteConfiableRepository.findAll());
             return "views/advertencias/advertencia-form";
@@ -113,14 +89,10 @@ public class AdvertenciaController {
     }
 
     /**
-     * Muestra el formulario de edición de una advertencia existente.
-     *
-     * @param id identificador de la advertencia
-     * @param model modelo de la vista
-     * @param redirectAttributes atributos para redirección
-     * @return vista del formulario o redirección si no existe
+     * 🔐 SOLO ADMIN
      */
     @GetMapping("/edit")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showEdit(@RequestParam Long id,
                            Model model,
                            RedirectAttributes redirectAttributes) {
@@ -131,25 +103,16 @@ public class AdvertenciaController {
             return "views/advertencias/advertencia-form";
 
         } catch (ResourceNotFoundException ex) {
-            /**
-             * Manejo de error cuando el recurso no existe.
-             *
-             * ⚠️ Evita exponer información interna al usuario.
-             */
             redirectAttributes.addFlashAttribute("errorMessage", "Advertencia no encontrada");
             return "redirect:/advertencias";
         }
     }
 
     /**
-     * Procesa la actualización de una advertencia.
-     *
-     * @param dto datos actualizados
-     * @param result resultado de la validación
-     * @param model modelo de la vista
-     * @return redirección al listado o formulario si hay errores
+     * 🔐 SOLO ADMIN
      */
     @PostMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
     public String update(
             @Valid @ModelAttribute("advertencia") AdvertenciaUpdateDTO dto,
             BindingResult result,
@@ -165,31 +128,24 @@ public class AdvertenciaController {
     }
 
     /**
-     * Elimina una advertencia por su ID.
-     *
-     * @param id identificador de la advertencia
-     * @return redirección al listado
-     *
-     * ⚠️ Seguridad:
-     * - Este endpoint debería protegerse contra CSRF.
-     * - Considerar confirmación previa en frontend.
+     * 🔐 SOLO ADMIN
      */
     @PostMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public String delete(@RequestParam Long id) {
         advertenciaService.delete(id);
         return "redirect:/advertencias";
     }
 
     /**
-     * Muestra el detalle de una advertencia.
-     *
-     * @param id identificador de la advertencia
-     * @param model modelo de la vista
-     * @return vista de detalle
+     * 🔐 Usuario autenticado (lectura)
      */
-    @GetMapping("/detail")
-    public String detail(@RequestParam Long id, Model model) {
+    @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String detail(@PathVariable Long id, Model model) {
+
         model.addAttribute("advertencia", advertenciaService.getDetail(id));
+
         return "views/advertencias/advertencia-detail";
     }
 }

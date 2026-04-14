@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <title th:text="#{detector.titulo} + ' - Digital Trust'"></title>
@@ -7,7 +10,6 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <style>
-        /* --- Mantenemos tu estilo anterior --- */
         :root {
             --color-primario: #38b2ac;
             --color-nav: #22c1a5;
@@ -20,165 +22,219 @@
         }
 
         body {
-        background-color: var(--color-fondo-pagina);
+            background-color: var(--color-fondo-pagina);
         }
+
         .main-wrapper {
-        max-width: 900px;
-        margin: 40px auto;
-        background-color: white;
-        border-top: 5px solid var(--color-nav);
-        border-radius: 15px;
-        padding: 35px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: white;
+            border-top: 5px solid var(--color-nav);
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
         .titulo-seccion {
-        font-size: 1.8rem;
-        margin-bottom: 25px;
-        font-weight: bold;
-        text-align: center;
-        color: #2c3e50; }
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            font-weight: bold;
+            text-align: center;
+            color: #2c3e50;
+        }
 
         textarea {
-        width: 100%;
-        border: 2px solid #ddd;
-        border-radius: var(--radio-borde);
-        padding: 15px;
-        font-size: 1rem;
-        resize: none;
-        box-sizing: border-box;
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: var(--radio-borde);
+            padding: 15px;
+            font-size: 1rem;
+            resize: none;
+            box-sizing: border-box;
         }
 
         .card-resultado {
-        margin-top: 30px;
-        background: #fff;
-        border-radius: var(--radio-borde);
-        border: 1px solid #eee;
-        overflow: hidden;
+            margin-top: 30px;
+            border-radius: var(--radio-borde);
+            border: 1px solid #eee;
+            overflow: hidden;
         }
 
-        .card-header { background-color: #f8f9fa;
-        padding: 15px;
-        text-align: center;
-        border-bottom: 1px solid #eee;
-        font-weight: bold;
+        .card-header {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
         }
 
         .panel-riesgo {
-        padding: 25px;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        transition: all 0.4s ease;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
+
         .panel-riesgo.bajo {
-        background-color: #f0fff4 !important;
-        border: 2px solid #c6f6d5 !important;
+            background-color: #f0fff4;
+            border: 2px solid #c6f6d5;
         }
+
         .panel-riesgo.medio {
-        background-color: #fffaf0 !important;
-        border: 2px solid #fbd38d !important;
+            background-color: #fffaf0;
+            border: 2px solid #fbd38d;
         }
+
         .panel-riesgo.alto {
-        background-color: #fff5f5 !important;
-        border: 2px solid #feb2b2 !important;
+            background-color: #fff5f5;
+            border: 2px solid #feb2b2;
         }
 
         .icono-check {
-        font-size: 2.5rem;
-        font-weight: bold;
+            font-size: 2.5rem;
+            font-weight: bold;
         }
+
         .barra-progreso-bg {
-        height: 14px;
-        background: #e2e8f0;
-        border-radius: 7px;
-        margin-top: 12px;
-        width: 100%;
-        overflow:
-        hidden;
+            height: 14px;
+            background: #e2e8f0;
+            border-radius: 7px;
+            margin-top: 12px;
+            width: 100%;
+            overflow: hidden; /* 🔧 FIX */
         }
+
         .barra-progreso-fill {
-        height: 100%; width: 0%; transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            width: 0%;
+            transition: width 1s ease;
         }
-        .fill-bajo {
-        background-color: var(--color-exito) !important;
-        }
-        .fill-medio {
-        background-color: var(--color-alerta) !important;
-        }
-        .fill-alto {
-        background-color: var(--color-peligro)!important;
-        }
+
+        .fill-bajo { background-color: var(--color-exito); }
+        .fill-medio { background-color: var(--color-alerta); }
+        .fill-alto { background-color: var(--color-peligro); }
+
         .container-boton {
-        display: flex;
-        justify-content: center;
-        margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            margin-top: 25px;
         }
+
         .btn-analizar {
-        background-color: #083a4d;
-        color: white;
-        border: none;
-        padding: 15px 40px;
-        border-radius: 30px;
-        font-weight: bold;
-        cursor: pointer;
+            background-color: #083a4d;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .alert-login {
+            text-align: center;
+            padding: 30px;
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
+            border-radius: 10px;
         }
     </style>
 </head>
+
 <body>
 
 <header th:replace="~{fragments/header :: header}"></header>
 
 <div class="main-wrapper">
-    <h1 class="titulo-seccion" th:text="#{detector.titulo}">Detector de Mensajes</h1>
 
-    <form th:action="@{/detector-mensajes-sospechosos}" method="post">
-        <div class="form-group">
-            <label style="margin-bottom: 10px; display: block; font-weight: 600;" th:text="#{detector.label.instrucciones}">Verificación</label>
-            <textarea name="contenidoTexto" rows="7"
+    <h1 class="titulo-seccion" th:text="#{detector.titulo}">Detector</h1>
+
+    <!-- 🔐 SOLO USUARIOS -->
+    <div sec:authorize="isAuthenticated()">
+
+        <form th:action="@{/detector-mensajes-sospechosos}" method="post">
+
+            <label style="margin-bottom:10px; display:block; font-weight:600;"
+                   th:text="#{detector.label.instrucciones}">
+            </label>
+
+            <textarea name="contenidoTexto"
+                      rows="7"
                       th:text="${textoOriginal}"
-                      th:placeholder="#{detector.placeholder}"></textarea>
-        </div>
+                      th:placeholder="#{detector.placeholder}">
+            </textarea>
 
-        <div class="container-boton">
-            <button type="submit" class="btn-analizar" th:text="#{detector.boton.analizar}">Analizar</button>
-        </div>
-    </form>
+            <div class="container-boton">
+                <button type="submit"
+                        class="btn-analizar"
+                        th:text="#{detector.boton.analizar}">
+                </button>
+            </div>
 
-    <div class="card-resultado" th:if="${resultado != null}">
-        <div class="card-header" th:text="#{detector.resultado.detalle}">Detalle</div>
+        </form>
 
-        <div class="card-body">
-            <div class="panel-riesgo"
-                 th:classappend="${resultado.nivelCriticidad >= 4 ? 'alto' : (resultado.nivelCriticidad == 3 ? 'medio' : 'bajo')}">
+        <!-- RESULTADO -->
+        <div class="card-resultado" th:if="${resultado != null}">
 
-                <div class="icono-check"
-                     th:text="${resultado.nivelCriticidad >= 4 ? '⚠' : (resultado.nivelCriticidad == 3 ? '?' : '✓')}"
-                     th:style="${resultado.nivelCriticidad >= 4 ? 'color:#e74c3c' : (resultado.nivelCriticidad == 3 ? 'color:#ed8936' : 'color:#22c1a5')}">
-                </div>
+            <div class="card-header"
+                 th:text="#{detector.resultado.detalle}">
+            </div>
 
-                <div style="flex-grow: 1;">
-                    <small th:text="#{detector.resultado.nivel}">Nivel:</small><br>
+            <div class="card-body">
 
-                    <strong style="font-size: 1.4rem;"
-                            th:text="${resultado.nivelCriticidad >= 4 ? #messages.msg('detector.nivel.alto') : (resultado.nivelCriticidad == 3 ? #messages.msg('detector.nivel.medio') : #messages.msg('detector.nivel.bajo'))}"
-                            th:style="${resultado.nivelCriticidad >= 4 ? 'color:#e74c3c' : (resultado.nivelCriticidad == 3 ? 'color:#ed8936' : 'color:#22c1a5')}">
-                    </strong>
+                <div class="panel-riesgo"
+                     th:classappend="
+                        ${resultado.nivelCriticidad >= 4} ? 'alto' :
+                        (${resultado.nivelCriticidad == 3} ? 'medio' : 'bajo')">
 
-                    <div class="barra-progreso-bg">
-                        <div id="barraFill" class="barra-progreso-fill"
-                             th:data-nivel="${resultado.nivelCriticidad}"
-                             th:classappend="${resultado.nivelCriticidad >= 4 ? 'fill-alto' : (resultado.nivelCriticidad == 3 ? 'fill-medio' : 'fill-bajo')}">
+                    <div class="icono-check"
+                         th:text="
+                            ${resultado.nivelCriticidad >= 4} ? '⚠' :
+                            (${resultado.nivelCriticidad == 3 ? '?' : '✓'})">
+                    </div>
+
+                    <div style="flex-grow:1;">
+
+                        <small th:text="#{detector.resultado.nivel}"></small><br>
+
+                        <strong style="font-size:1.4rem;"
+                                th:text="
+                                    ${resultado.nivelCriticidad >= 4} ? 'Riesgo ALTO' :
+                                    (${resultado.nivelCriticidad == 3} ? 'Riesgo MEDIO' : 'Seguro')">
+                        </strong>
+
+                        <div class="barra-progreso-bg">
+                            <div id="barraFill"
+                                 class="barra-progreso-fill"
+                                 th:data-nivel="${resultado.nivelCriticidad}"
+                                 th:classappend="
+                                    ${resultado.nivelCriticidad >= 4} ? 'fill-alto' :
+                                    (${resultado.nivelCriticidad == 3} ? 'fill-medio' : 'fill-bajo')">
+                            </div>
                         </div>
+
                     </div>
                 </div>
-            </div>
 
-            <div style="padding: 20px; text-align: center; color: #4a5568;">
-                <p style="font-style: italic;" th:text="${resultado.descripcion}"></p>
+                <div style="padding:20px; text-align:center;">
+                    <p th:text="${resultado.descripcion}"></p>
+                </div>
+
             </div>
         </div>
+
     </div>
+
+    <!-- 🚫 NO LOGUEADO -->
+    <div sec:authorize="isAnonymous()" class="alert-login">
+
+        <p>🔐 Debes iniciar sesión para usar el detector</p>
+
+        <a th:href="@{/login}" class="btn-analizar">
+            Ir a login
+        </a>
+
+    </div>
+
 </div>
 
 <script>
@@ -187,7 +243,9 @@
         if (barra) {
             const nivel = parseInt(barra.getAttribute('data-nivel'));
             const porcentaje = Math.min((nivel / 5) * 100, 100);
-            setTimeout(() => { barra.style.width = porcentaje + "%"; }, 200);
+            setTimeout(() => {
+                barra.style.width = porcentaje + "%";
+            }, 200);
         }
     });
 </script>

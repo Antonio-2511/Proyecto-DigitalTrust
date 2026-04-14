@@ -13,16 +13,20 @@
 <p><strong th:text="#{common.id}"></strong>: <span th:text="${advertencia.id}"></span></p>
 
 <p><strong th:text="#{warning.message}"></strong>:
-    <span th:text="${advertencia.mensaje}"></span>
+    <span th:text="${advertencia.descripcion}"></span>
 </p>
 
 <p><strong th:text="#{warning.date}"></strong>:
     <span th:text="${advertencia.fechaEnvio}"></span>
 </p>
 
-<p><strong th:text="#{warning.source}"></strong>:
-    <span th:text="${advertencia.fuenteConfiable.nombre}"></span>
-</p>
+<p><strong th:text="#{warning.source}"></strong>:</p>
+
+<ul>
+    <li th:each="f : ${advertencia.nombresFuentesConfiables}"
+        th:text="${f}">
+    </li>
+</ul>
 
 <a th:href="@{/advertencias}" th:text="#{common.back}"></a>
 

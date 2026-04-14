@@ -18,30 +18,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     /**
-     * Muestra la página principal de la aplicación.
-     *
-     * @return nombre de la vista "index"
+     *  PÚBLICO
      */
     @GetMapping
     public String index() {
-        return "index"; // index.html
+        return "index";
     }
 
     /**
-     * Muestra la página del detector de mensajes sospechosos.
-     *
-     * Esta funcionalidad permite al usuario analizar textos
-     * en busca de posibles patrones de estafa.
-     *
-     * @return nombre de la vista del detector
-     *
-
-    /**
-     * ⚙️ Zona para futuras funcionalidades.
-     *
-     * Se pueden añadir nuevos endpoints públicos o privados
-     * según evolucione la aplicación.
+     *  Redirección inteligente al detector
      */
-    // Opcional: aquí mismo puedes poner métodos para otras funcionalidades futuras
-    //Hola
+    @GetMapping("/detector")
+    public String redirigirDetector() {
+        return "redirect:/detector-mensajes-sospechosos";
+    }
 }

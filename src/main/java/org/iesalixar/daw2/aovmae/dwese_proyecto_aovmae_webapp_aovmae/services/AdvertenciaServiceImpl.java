@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,57 +37,42 @@ import java.util.List;
 @Transactional
 public class AdvertenciaServiceImpl implements AdvertenciaService {
 
-    /**
-     * Repositorio de acceso a datos para la entidad {@link Advertencia}.
-     */
     @Autowired
     private AdvertenciaRepository advertenciaRepository;
 
     /**
-     * Obtiene una lista paginada de advertencias.
-     *
-     * @param pageable configuración de paginación
-     * @return página de {@link AdvertenciaDTO}
+     * 🔐 Solo MODERATOR o ADMIN pueden ver todas
      */
     @Override
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public Page<AdvertenciaDTO> list(Pageable pageable) {
         return advertenciaRepository.findAll(pageable)
                 .map(AdvertenciaMapper::toDTO);
     }
 
     /**
-     * Obtiene todas las advertencias en formato paginado.
-     * <p>
-     * Método equivalente a {@link #list(Pageable)}.
-     * </p>
-     *
-     * @param pageable configuración de paginación
-     * @return página de {@link AdvertenciaDTO}
+     * 🔐 Igual que list()
      */
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public Page<AdvertenciaDTO> listAll(Pageable pageable) {
         return advertenciaRepository.findAll(pageable)
                 .map(AdvertenciaMapper::toDTO);
     }
 
     /**
-     * Lista las advertencias marcadas como emergencia.
-     *
-     * @param pageable configuración de paginación
-     * @return página de {@link AdvertenciaDTO} filtradas por emergencia
+     * 🔐 Solo staff ve emergencias
      */
+    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public Page<AdvertenciaDTO> listEmergencias(Pageable pageable) {
         return advertenciaRepository.findByEsEmergenciaTrue(pageable)
                 .map(AdvertenciaMapper::toDTO);
     }
 
     /**
-     * Obtiene una advertencia para su edición.
-     *
-     * @param id identificador de la advertencia
-     * @return {@link AdvertenciaUpdateDTO} con los datos editables
-     * @throws ResourceNotFoundException si no existe la advertencia
+     * 🔐 Solo ADMIN edita
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public AdvertenciaUpdateDTO getForEdit(Long id) {
         Advertencia advertencia = advertenciaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("advertencia", "id", id));
@@ -94,41 +80,27 @@ public class AdvertenciaServiceImpl implements AdvertenciaService {
     }
 
     /**
-     * Crea una nueva advertencia.
-     * <p>
-     * Verifica previamente que no exista otra advertencia con el mismo título.
-     * </p>
-     *
-     * @param dto datos de creación
-     * @throws DuplicateResourceException si ya existe una advertencia con el mismo título
+     * 🔐 SOLO ADMIN crea manualmente
+     * (el sistema ya crea advertencias automáticamente)
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void create(AdvertenciaCreateDTO dto) {
+
         if (advertenciaRepository.existsByTitulo(dto.getTitulo())) {
             throw new DuplicateResourceException("advertencia", "titulo", dto.getTitulo());
         }
 
-        // No usamos usuario autenticado, asignamos null o un usuario genérico
-        User usuario = null; // o un usuario por defecto si la entidad lo requiere
+        Advertencia advertencia = AdvertenciaMapper.toEntity(dto, null);
 
-        /**
-         * Conversión del DTO a entidad y asignación de usuario.
-         */
-        Advertencia advertencia = AdvertenciaMapper.toEntity(dto, usuario);
-
-        /**
-         * Persistencia de la entidad en base de datos.
-         */
         advertenciaRepository.save(advertencia);
     }
 
     /**
-     * Actualiza una advertencia existente.
-     *
-     * @param dto datos actualizados de la advertencia
-     * @throws ResourceNotFoundException si la advertencia no existe
+     * 🔐 SOLO ADMIN
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void update(AdvertenciaUpdateDTO dto) {
         Advertencia advertencia = advertenciaRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("advertencia", "id", dto.getId()));
@@ -138,12 +110,10 @@ public class AdvertenciaServiceImpl implements AdvertenciaService {
     }
 
     /**
-     * Elimina una advertencia por su identificador.
-     *
-     * @param id identificador de la advertencia
-     * @throws ResourceNotFoundException si no existe la advertencia
+     * 🔐 SOLO ADMIN
      */
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(Long id) {
         if (!advertenciaRepository.existsById(id)) {
             throw new ResourceNotFoundException("advertencia", "id", id);
@@ -152,28 +122,13 @@ public class AdvertenciaServiceImpl implements AdvertenciaService {
     }
 
     /**
-     * Obtiene el detalle completo de una advertencia.
-     *
-     * @param id identificador de la advertencia
-     * @return {@link AdvertenciaDetailDTO} con la información detallada
-     * @throws ResourceNotFoundException si no existe la advertencia
+     * 🔐 Usuario autenticado puede ver detalle (si decides abrirlo)
      */
     @Override
+    @PreAuthorize("isAuthenticated()")
     public AdvertenciaDetailDTO getDetail(Long id) {
         Advertencia advertencia = advertenciaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("advertencia", "id", id));
         return AdvertenciaMapper.toDetailDTO(advertencia);
     }
-
-
-
-    /**
-     * Repositorio de usuarios (inyectado pero no utilizado actualmente).
-     * <p>
-     * Puede emplearse en futuras mejoras para asociar advertencias
-     * a usuarios autenticados.
-     * </p>
-     */
-    @Autowired
-    private org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositories.UserRepository userRepository;
 }
