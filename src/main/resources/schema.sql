@@ -1,9 +1,10 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
+
 -- -----------------------------------------------------
 -- Plan
 -- -----------------------------------------------------
-CREATE TABLE Plan (
+CREATE TABLE IF NOT EXISTS Plan (
   Nombre_plan VARCHAR(45) NOT NULL,
   Beneficios VARCHAR(100),
   Precio DECIMAL(10,2),
@@ -15,7 +16,7 @@ CREATE TABLE Plan (
 -- -----------------------------------------------------
 -- Roles
 -- -----------------------------------------------------
-CREATE TABLE roles (
+CREATE TABLE IF NOT EXISTS roles (
   id BIGINT AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL UNIQUE,
   display_name VARCHAR(100),
@@ -25,7 +26,7 @@ CREATE TABLE roles (
 -- -----------------------------------------------------
 -- users
 -- -----------------------------------------------------
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(45) NOT NULL,
   Contrasenia VARCHAR(100),
   Fecha_creacion DATETIME,
@@ -55,7 +56,7 @@ CREATE TABLE users (
 -- -----------------------------------------------------
 -- Advertencia
 -- -----------------------------------------------------
-CREATE TABLE Advertencia (
+CREATE TABLE IF NOT EXISTS Advertencia (
   Id INT AUTO_INCREMENT,
   Titulo VARCHAR(100),
   Nivel_Criticidad INTEGER,
@@ -78,7 +79,7 @@ CREATE TABLE Advertencia (
 -- -----------------------------------------------------
 -- Fuente_Confiable
 -- -----------------------------------------------------
-CREATE TABLE Fuente_Confiable (
+CREATE TABLE IF NOT EXISTS Fuente_Confiable (
   Id_Fuente INT AUTO_INCREMENT,
   Nombre_entidad VARCHAR(100),
   Tipo VARCHAR(45),
@@ -101,7 +102,7 @@ CREATE TABLE Fuente_Confiable (
 -- -----------------------------------------------------
 -- Mensaje
 -- -----------------------------------------------------
-CREATE TABLE Mensaje (
+CREATE TABLE IF NOT EXISTS Mensaje (
   Id_mensaje INT AUTO_INCREMENT,
   Contenido_texto VARCHAR(255),
   Origen VARCHAR(45),
@@ -130,9 +131,38 @@ CREATE TABLE Mensaje (
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------------
+-- Tabla para los productos de la Tienda
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS Servicio (
+    Id_servicio INT AUTO_INCREMENT,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion TEXT,
+    Precio DECIMAL(10,2) NOT NULL,
+    Imagen_url VARCHAR(255),
+    Categoria VARCHAR(50),
+    PRIMARY KEY (Id_servicio)
+    ) ENGINE=InnoDB;
+
+
+-- -----------------------------------------------------
+-- Tabla para registrar qué usuario compra qué servicio
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS Compra_Servicio (
+    Id_compra INT AUTO_INCREMENT,
+    users_username VARCHAR(45) NOT NULL,
+    servicio_id INT NOT NULL,
+    Fecha_compra DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Precio_pagado DECIMAL(10,2),
+    PRIMARY KEY (Id_compra),
+    CONSTRAINT fk_compra_user FOREIGN KEY (users_username)
+    REFERENCES users (username) ON DELETE CASCADE,
+    CONSTRAINT fk_compra_servicio FOREIGN KEY (servicio_id)
+    REFERENCES Servicio (Id_servicio) ON DELETE CASCADE
+    ) ENGINE=InnoDB;
+-- -----------------------------------------------------
 -- Reporte
 -- -----------------------------------------------------
-CREATE TABLE Reporte (
+CREATE TABLE IF NOT EXISTS Reporte (
   Id_reporte INT AUTO_INCREMENT,
   Titulo VARCHAR(100),
   Descripcion VARCHAR(255),
@@ -149,5 +179,6 @@ CREATE TABLE Reporte (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
 
 SET FOREIGN_KEY_CHECKS = 1;

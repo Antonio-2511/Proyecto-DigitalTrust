@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(#{carrito.pestana})}"></head>
+<body style="background-color: #A7F3D0;">
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main style="padding-top: 140px; min-height: 85vh; display: flex; justify-content: center; padding-bottom: 50px;">
+    <div style="background: white; width: 95%; max-width: 1000px; border-radius: 30px; padding: 45px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);">
+
+        <h1 th:text="#{carrito.titulo}" style="color: #083a4d; margin-bottom: 35px; font-size: 2.2rem; border-left: 5px solid #083a4d; padding-left: 20px;"></h1>
+
+        <!-- Carrito vacío -->
+        <div th:if="${#lists.isEmpty(items)}" style="text-align: center; padding: 60px 0;">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🛒</div>
+            <p th:text="#{carrito.vacio}" style="font-size: 1.3rem; color: #64748b; margin-bottom: 25px;"></p>
+            <a th:href="@{/tienda}" th:text="#{detalles.volver}"
+               style="display: inline-block; background: #083a4d; color: white; padding: 12px 30px; border-radius: 12px; text-decoration: none; font-weight: bold; transition: 0.3s;">
+            </a>
+        </div>
+
+        <!-- Carrito con items -->
+        <div th:if="${not #lists.isEmpty(items)}">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                    <thead>
+                    <tr style="border-bottom: 2px solid #f1f5f9; color: #64748b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                        <th th:text="#{carrito.tabla.servicio}" style="padding: 15px; text-align: left;"></th>
+                        <th th:text="#{carrito.tabla.precio}" style="padding: 15px; text-align: center;"></th>
+                        <th th:text="#{carrito.tabla.cantidad}" style="padding: 15px; text-align: center;"></th>
+                        <th th:text="#{carrito.tabla.subtotal}" style="padding: 15px; text-align: right;"></th>
+                        <th style="padding: 15px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${items}" style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc'" onmouseout="this.style.backgroundColor='transparent'">
+                        <td style="padding: 20px; display: flex; align-items: center; gap: 20px;">
+                            <div style="background: #ccfbf1; padding: 8px; border-radius: 12px;">
+                                <img th:src="@{'/images/' + ${item.servicio.imagenUrl}}" style="width: 45px; height: auto;">
+                            </div>
+                            <span th:text="${item.servicio.nombre}" style="font-weight: 700; color: #083a4d; font-size: 1.05rem;"></span>
+                        </td>
+                        <td th:text="${item.servicio.precio} + '€'" style="text-align: center; color: #475569;"></td>
+                        <td style="text-align: center;">
+                            <span th:text="${item.cantidad}" style="background: #f1f5f9; padding: 5px 15px; border-radius: 8px; font-weight: bold; color: #083a4d;"></span>
+                        </td>
+                        <td th:text="${item.subtotal} + '€'" style="text-align: right; font-weight: 800; color: #059669; font-size: 1.1rem;"></td>
+                        <td style="text-align: right; padding-right: 15px;">
+                            <a th:href="@{/carrito/eliminar/{id}(id=${item.servicio.id})}"
+                               style="color: #ef4444; text-decoration: none; font-size: 1.5rem; font-weight: bold; padding: 5px 10px; border-radius: 8px; transition: 0.2s;"
+                               onmouseover="this.style.backgroundColor='#fee2e2'" onmouseout="this.style.backgroundColor='transparent'">&times;</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer del Carrito -->
+            <div style="margin-top: 40px; display: flex; justify-content: flex-end; align-items: center; gap: 50px; border-top: 3px solid #f1f5f9; padding-top: 30px; flex-wrap: wrap;">
+                <div style="text-align: right;">
+                    <span th:text="#{carrito.total_pagar}" style="color: #64748b; font-weight: 500; display: block; margin-bottom: 5px;"></span>
+                    <h2 th:text="${total} + '€'" style="color: #083a4d; font-size: 2.8rem; margin: 0; font-weight: 900; letter-spacing: -1px;"></h2>
+                </div>
+                <button th:text="#{carrito.finalizar}"
+                        style="background: #083a4d; color: white; border: none; padding: 20px 50px; border-radius: 20px; font-weight: 800; cursor: pointer; font-size: 1.2rem; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(8, 58, 77, 0.2);"
+                        onmouseover="this.style.backgroundColor='#059669'; this.style.transform='translateY(-3px)';"
+                        onmouseout="this.style.backgroundColor='#083a4d'; this.style.transform='translateY(0)';">
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

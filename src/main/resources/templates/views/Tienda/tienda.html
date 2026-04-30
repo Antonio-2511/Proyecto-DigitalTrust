@@ -1,36 +1,99 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/header :: head}"></head>
-
-<body>
+<head th:replace="~{fragments/head :: head(#{tienda.pestana})}"></head>
+<body style="background-color: #A7F3D0;">
 
 <div th:replace="~{fragments/header :: header}"></div>
 
-<main class="products" style="padding-top: 100px; min-height: 80vh;">
-  <div class="container" style="max-width: 1200px; margin: 0 auto; text-align: center;">
-    <h1 th:text="#{navbar.planes}">Nuestros Planes</h1>
-    <p>Selecciona el plan que mejor se adapte a tus necesidades de seguridad.</p>
+<main class="products" style="padding-top: 120px; min-height: 80vh;">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; text-align: center; padding: 0 20px;">
 
-    <div class="product-grid" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 40px;">
+    <!-- SECCIÓN DE FILTROS -->
+    <div style="background: rgba(255, 255, 255, 0.4); padding: 25px; border-radius: 25px; margin-bottom: 40px; backdrop-filter: blur(5px);">
+      <form th:action="@{/tienda}" method="get" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; justify-content: center;">
 
-      <div th:each="plan : ${planes}" class="product"
-           style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 250px; transition: transform 0.3s;">
-
-        <h3 th:text="${plan.nombrePlan}" style="color: #22c1a5;">Nombre Plan</h3>
-        <p th:text="${plan.beneficios}" style="font-size: 0.9em; color: #666; height: 50px;">Beneficios</p>
-
-        <div style="font-size: 24px; font-weight: bold; margin: 15px 0;">
-          <span th:text="${plan.precio}">0.00</span>€
+        <!-- Filtro: Nombre -->
+        <div style="text-align: left; flex: 1; min-width: 200px; max-width: 300px;">
+          <label th:text="#{filtro.buscar}" style="color: #083a4d; font-weight: bold; font-size: 0.9rem; margin-left: 5px;"></label>
+          <input type="text" name="q" th:value="${query}" th:placeholder="#{filtro.placeholder}"
+                 style="width: 100%; padding: 12px; border: none; border-radius: 12px; margin-top: 5px; outline: none;">
         </div>
 
-        <form th:action="@{/carrito/agregar}" method="post">
-          <input type="hidden" name="idPlan" th:value="${plan.nombrePlan}">
-          <button type="submit" class="btn" style="background: #083a4d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%;">
-            Seleccionar
+        <!-- Filtro: Categoría -->
+        <div style="text-align: left; flex: 1; min-width: 180px; max-width: 250px;">
+          <label th:text="#{filtro.categoria}" style="color: #083a4d; font-weight: bold; font-size: 0.9rem; margin-left: 5px;"></label>
+          <select name="categoria" style="width: 100%; padding: 12px; border: none; border-radius: 12px; margin-top: 5px; outline: none; cursor: pointer;">
+            <option value="" th:text="#{filtro.cat.todas}"></option>
+            <option value="Analisis" th:selected="${catSeleccionada == 'Analisis'}" th:text="#{categoria.Analisis}"></option>
+            <option value="Publicidad" th:selected="${catSeleccionada == 'Publicidad'}" th:text="#{categoria.Publicidad}"></option>
+            <option value="Mensajeria" th:selected="${catSeleccionada == 'Mensajeria'}" th:text="#{categoria.Mensajeria}"></option>
+            <option value="Identidad" th:selected="${catSeleccionada == 'Identidad'}" th:text="#{categoria.Identidad}"></option>
+          </select>
+        </div>
+
+        <!-- Filtro: Precio -->
+        <div style="text-align: left; flex: 1; min-width: 180px; max-width: 250px;">
+          <label style="color: #083a4d; font-weight: bold; font-size: 0.9rem; margin-left: 5px;">
+            <span th:text="#{filtro.precio}"></span>: <span id="priceValue" th:text="${precioSeleccionado != null ? precioSeleccionado : '100'}">100</span>€
+          </label>
+          <input type="range" name="precio" min="10" max="100" step="1"
+                 th:value="${precioSeleccionado != null ? precioSeleccionado : 100}"
+                 oninput="document.getElementById('priceValue').innerText = this.value"
+                 style="width: 100%; margin-top: 15px; cursor: pointer; accent-color: #083a4d;">
+        </div>
+
+        <!-- Acciones -->
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" th:text="#{filtro.boton}" style="background: #083a4d; color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;"
+                  onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+          </button>
+          <a th:href="@{/tienda}" th:text="#{filtro.restablecer}" style="background: white; color: #083a4d; text-decoration: none; padding: 12px 20px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center;">
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- TÍTULOS -->
+    <h1 th:text="#{tienda.titulo}" style="color: #083a4d; margin-bottom: 10px;"></h1>
+    <p th:text="#{tienda.subtitulo}" style="color: #064E3B; margin-bottom: 40px;"></p>
+
+    <!-- GRID DE PRODUCTOS -->
+    <div class="product-grid" style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; padding-bottom: 50px;">
+
+      <!-- Mensaje si no hay resultados -->
+      <div th:if="${#lists.isEmpty(servicios)}" style="padding: 40px; color: #083a4d; width: 100%;">
+        <h3 th:text="#{tienda.no_resultados}"></h3>
+        <p th:text="#{tienda.no_resultados_sub}"></p>
+      </div>
+
+      <!-- Tarjetas de servicio -->
+      <div th:each="s : ${servicios}" class="product"
+           th:onclick="|window.location.href='/tienda/producto/' + ${s.id}|"
+           style="background: #ccfbf1; padding: 30px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                      width: 280px; cursor: pointer; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center;"
+           onmouseover="this.style.transform='translateY(-10px)'"
+           onmouseout="this.style.transform='translateY(0)'">
+
+        <div style="flex-grow: 1; display: flex; align-items: center; margin-bottom: 30px;">
+          <img th:src="@{'/images/' + ${s.imagenUrl}}" style="width: 150px; height: auto;" alt="Icono">
+        </div>
+
+        <div style="width: 100%; border-top: 2px solid #083a4d; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 th:text="${s.nombre}" style="font-size: 0.9rem; color: #083a4d; margin: 0; text-align: left; max-width: 70%;"></h3>
+          <span th:text="${s.precio} + '€'" style="font-weight: bold; color: #083a4d; font-size: 1rem;"></span>
+        </div>
+
+        <form th:action="@{/carrito/add/{id}(id=${s.id})}" method="post" style="width: 100%; margin: 0;">
+          <button type="submit" th:text="#{carrito.sumar}"
+                  style="background-color: #083a4d; color: white; border: none; padding: 12px; border-radius: 15px; width: 100%; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: all 0.3s ease;"
+                  onmouseover="this.style.backgroundColor='#059669';"
+                  onmouseout="this.style.backgroundColor='#083a4d';"
+                  onclick="event.stopPropagation();">
           </button>
         </form>
       </div>
+
     </div>
   </div>
 </main>

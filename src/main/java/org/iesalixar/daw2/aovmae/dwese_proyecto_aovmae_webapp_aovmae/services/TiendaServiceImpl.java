@@ -15,7 +15,6 @@ public class TiendaServiceImpl implements TiendaService {
 
     @Override
     public List<Plan> listarTodos() {
-        // Retorna los planes: Basico, Estandar, Premium y Empresarial
         return planRepository.findAll();
     }
 
