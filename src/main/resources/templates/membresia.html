@@ -8,6 +8,23 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1 0 auto; /* Esto empuja el footer hacia abajo */
+        }
+
+        footer {
+            flex-shrink: 0; /* Evita que el footer se comprima */
+        }
         /* Estilos específicos para la cuadrícula de planes (puedes moverlos a style.css luego) */
         .pricing-grid {
             display: flex;
@@ -96,6 +113,7 @@
             display: inline-block;
             box-sizing: border-box;
         }
+
     </style>
 </head>
 <body>
@@ -128,5 +146,6 @@
         </div>
     </div>
 </main>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
