@@ -1,25 +1,14 @@
-# ----------------------------
-# 1️⃣ Build stage
-# ----------------------------
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
-
-WORKDIR /app
-
-COPY pom.xml .
-RUN mvn dependency:go-offline
-
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-# ----------------------------
-# 2️⃣ Runtime stage
-# ----------------------------
+# Imagen base con Java 17 (compatible con Spring Boot 3)
 FROM eclipse-temurin:21-jdk-alpine
 
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-COPY --from=builder /app/target/*.jar app.jar
+# Copiamos el jar generado por Maven
+COPY target/*.jar app.jar
 
+# Puerto interno de la aplicación
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+# Arranque de la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
