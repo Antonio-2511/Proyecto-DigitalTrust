@@ -69,4 +69,7 @@ public interface ReporteService {
     ReporteDetailDTO getDetail(Long id);
 
     void validarReporte(Long id, boolean fraude);
+
+    Page<ReporteDTO> listByUser(String username, Pageable pageable);
+
 }

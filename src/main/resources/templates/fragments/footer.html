@@ -2,42 +2,61 @@
 
     <div class="footer">
 
-        <div class="footer-logo">
-            <a th:href="@{/}">
+        <div th:replace="~{fragments/toasts :: toasts}"></div>
+
+        <!-- LOGO + TAGLINE -->
+        <div class="footer-brand">
+            <a th:href="@{/}" class="footer-logo-link">
                 <img th:src="@{/images/digitalTrust_logo.png}"
                      src="/images/digitalTrust_logo.png"
                      alt="DigitalTrust Logo">
             </a>
+            <p class="footer-tagline">Protegiendo tu seguridad digital</p>
         </div>
 
-        <div class="footer-social">
-            <p th:text="#{footer.social}"></p>
+        <!-- SEPARADOR VERTICAL -->
+        <div class="footer-divider"></div>
 
-            <div class="social-icons">
-                <a href="https://www.instagram.com/digitaltrustes/?hl=es%2F" target="_blank" title="Instagram">
-                    <img th:src="@{/images/ig_logo.png}" src="/images/ig_logo.png" alt="Instagram">
-                </a>
-
-                <a href="https://x.com/DigitalTru44733" target="_blank" title="X">
-                    <img th:src="@{/images/x_logoo.png}" src="/images/x_logoo.png" alt="Twitter">
-                </a>
-
-
-                <a href="https://www.tiktok.com/@digitaltrust00" target="_blank" title="TikTok">
-                    <img th:src="@{/images/logo_tiktok.png}" src="/images/logo_tiktok.png" alt="TikTok">
-                </a>
-            </div>
-        </div>
-
-        <div class="footer-links">
-            <p><strong th:text="#{footer.what}"></strong></p>
-            <ul>
+        <!-- QUÉ HACEMOS -->
+        <div class="footer-col">
+            <p class="footer-col-title" th:text="#{footer.what}">¿Qué hacemos?</p>
+            <ul class="footer-list">
                 <li th:text="#{footer.link1}"></li>
                 <li th:text="#{footer.link2}"></li>
                 <li th:text="#{footer.link3}"></li>
             </ul>
         </div>
 
+        <!-- SEPARADOR VERTICAL -->
+        <div class="footer-divider"></div>
+
+        <!-- REDES -->
+        <div class="footer-col">
+            <p class="footer-col-title" th:text="#{footer.social}">Síguenos</p>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/digitaltrustes/?hl=es%2F"
+                   target="_blank" title="Instagram" class="social-icon-link">
+                    <img th:src="@{/images/ig_logo.png}"
+                         src="/images/ig_logo.png" alt="Instagram">
+                </a>
+                <a href="https://x.com/DigitalTru44733"
+                   target="_blank" title="X" class="social-icon-link">
+                    <img th:src="@{/images/x_logoo.png}"
+                         src="/images/x_logoo.png" alt="X">
+                </a>
+                <a href="https://www.tiktok.com/@digitaltrust00"
+                   target="_blank" title="TikTok" class="social-icon-link">
+                    <img th:src="@{/images/logo_tiktok.png}"
+                         src="/images/logo_tiktok.png" alt="TikTok">
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BARRA INFERIOR -->
+    <div class="footer-bottom">
+        <span>© 2026 DigitalTrust · Todos los derechos reservados</span>
     </div>
 
 </footer>

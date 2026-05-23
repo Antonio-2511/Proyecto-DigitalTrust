@@ -6,6 +6,7 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.Report
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.ReporteUpdateDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.Reporte;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.entities.User;
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.mappers.AdvertenciaMapper;
 
 import java.util.List;
 
@@ -50,6 +51,8 @@ public class ReporteMapper {
         dto.setId(entity.getId());
         dto.setTitulo(entity.getTitulo());
         dto.setFechaReporte(entity.getFechaReporte());
+        dto.setValidado(entity.isValidado());
+        dto.setEsFraude(entity.getEsFraude());
 
         if (entity.getUser() != null) {
             dto.setNombreUsuario(entity.getUser().getUsername());
@@ -86,10 +89,22 @@ public class ReporteMapper {
         dto.setTitulo(entity.getTitulo());
         dto.setDescripcion(entity.getDescripcion());
         dto.setFechaReporte(entity.getFechaReporte());
+        dto.setValidado(entity.isValidado());
+        dto.setEsFraude(entity.getEsFraude() != null && entity.getEsFraude());
+
 
         if (entity.getUser() != null) {
             dto.setNombreUsuario(entity.getUser().getUsername());
             dto.setEmailUsuario(entity.getUser().getGmail());
+        }
+
+        if (entity.getAdvertencias() != null && !entity.getAdvertencias().isEmpty()) {
+            dto.setAdvertencias(
+                    entity.getAdvertencias()
+                            .stream()
+                            .map(AdvertenciaMapper::toDTO)
+                            .toList()
+            );
         }
 
         return dto;

@@ -1,59 +1,79 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="fragments/head :: head('Usuarios')"></head>
-
+<head th:replace="~{fragments/head :: head('Usuarios')}"></head>
 <body>
-
-<header th:replace="fragments/header :: header"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
 
-    <h1 class="page-title" th:text="#{users.title}"></h1>
+    <div class="rl-page-header">
+        <div class="rl-title-block">
+            <span class="rl-eyebrow" th:text="#{users.panel}"></span>
+            <h1 class="rl-title" th:text="#{users.title}"></h1>
+            <p class="rl-subtitle" th:text="#{users.subtitle}"></p>
+        </div>
+        <a th:href="@{/usuarios/new}" class="rl-btn-new" th:text="#{users.new}"></a>
+    </div>
 
-    <table class="table">
+    <div class="rl-wrapper">
 
-        <thead>
-        <tr>
-            <th th:text="#{users.email}"></th>
-            <th th:text="#{users.actions}"></th>
-        </tr>
-        </thead>
+        <div class="rl-card">
+            <table class="rl-table">
+                <thead>
+                <tr>
+                    <th th:text="#{users.email}"></th>
+                    <th th:text="#{users.actions}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${page.content}">
 
-        <tbody>
-        <tr th:each="u : ${page.content}">
+                    <td class="rl-td-title">
+                        <span class="rl-report-title" th:text="${u.email}"></span>
+                    </td>
 
-            <td th:text="${u.email}"></td>
+                    <td class="rl-td-actions">
 
-            <td class="actions">
+                        <a class="rl-action rl-action--view"
+                           th:href="@{/usuarios/detail(username=${u.username})}"
+                           th:text="#{users.view}"></a>
 
-                <a class="btn btn-view"
-                   th:href="@{/usuarios/detail(username=${u.username})}"
-                   th:text="#{users.view}">
-                </a>
+                        <a class="rl-action rl-action--edit"
+                           th:href="@{/usuarios/edit(username=${u.username})}"
+                           th:text="#{users.edit}"></a>
 
-                <a class="btn btn-edit"
-                   th:href="@{/usuarios/edit(username=${u.username})}"
-                   th:text="#{users.edit}">
-                </a>
+                        <form th:action="@{/usuarios/delete}" method="post" style="display:inline">
+                            <input type="hidden" name="username" th:value="${u.username}">
+                            <button class="rl-action rl-action--delete" type="submit"
+                                    th:text="#{users.delete}"
+                                    th:attr="onclick='return confirm(\'' + #{users.confirm.delete} + '\')'">
+                            </button>
+                        </form>
 
-                <form th:action="@{/usuarios/delete}" method="post" style="display:inline">
-                    <input type="hidden" name="username" th:value="${u.username}">
-                    <button class="btn btn-delete" type="submit"
-                            th:text="#{users.delete}">
-                    </button>
-                </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-            </td>
+        <div class="pagination" th:if="${page.totalPages > 1}">
+            <a th:href="@{/usuarios(page=${page.number - 1})}"
+               th:classappend="${page.first} ? 'disabled'"
+               class="page-btn" th:text="#{users.pagination.prev}"></a>
+            <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+                <a th:href="@{/usuarios(page=${i})}" th:text="${i + 1}"
+                   th:classappend="${i == page.number} ? 'active'" class="page-btn"></a>
+            </span>
+            <a th:href="@{/usuarios(page=${page.number + 1})}"
+               th:classappend="${page.last} ? 'disabled'"
+               class="page-btn" th:text="#{users.pagination.next}"></a>
+        </div>
 
-        </tr>
-        </tbody>
-
-    </table>
-
+    </div>
 </main>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

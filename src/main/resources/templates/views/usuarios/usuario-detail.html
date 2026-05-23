@@ -1,57 +1,96 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="fragments/head :: head('Detalle Usuario')"></head>
-
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Detalle Usuario')}"></head>
 <body>
-
-<header th:replace="fragments/header :: header"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
+    <div class="ud-wrapper">
 
-    <h1 class="page-title" th:text="#{users.detail}"></h1>
+        <div class="ud-main">
 
-    <div class="detail-card">
+            <div class="ud-profile-card">
+                <div class="ud-avatar">
+                    <span class="ud-avatar__initials"
+                          th:text="${#strings.toUpperCase(#strings.substring(usuario.username, 0, 1))}"></span>
+                </div>
+                <div class="ud-profile-info">
+                    <h1 class="ud-username" th:text="${usuario.username}"></h1>
+                    <span class="ud-plan-badge" th:text="${usuario.planNombre}"></span>
+                </div>
+            </div>
 
-        <div class="detail-row">
-            <strong th:text="#{users.username}"></strong>
-            <span th:text="${usuario.username}"></span>
+            <div class="ud-card">
+                <p class="ud-card__title" th:text="#{users.detail.account}"></p>
+                <div class="ud-data-row">
+                    <span class="ud-data-label" th:text="#{users.username}"></span>
+                    <span class="ud-data-value" th:text="${usuario.username}"></span>
+                </div>
+                <div class="ud-data-row">
+                    <span class="ud-data-label" th:text="#{users.email}"></span>
+                    <span class="ud-data-value" th:text="${usuario.email}"></span>
+                </div>
+                <div class="ud-data-row">
+                    <span class="ud-data-label" th:text="#{users.phone}"></span>
+                    <span class="ud-data-value" th:text="${usuario.telefono}"></span>
+                </div>
+                <div class="ud-data-row ud-data-row--last">
+                    <span class="ud-data-label" th:text="#{users.plan}"></span>
+                    <span class="ud-data-value" th:text="${usuario.planNombre}"></span>
+                </div>
+            </div>
+
+            <div class="ud-card">
+                <p class="ud-card__title" th:text="#{users.detail.warnings}"></p>
+                <div th:if="${advertencias == null or advertencias.isEmpty()}"
+                     class="ud-empty" th:text="#{users.detail.warnings.empty}"></div>
+                <div th:if="${advertencias != null and !advertencias.isEmpty()}">
+                    <div th:each="adv : ${advertencias}"
+                         class="al-user-item"
+                         th:classappend="${adv.esEmergencia} ? 'al-user-item--emergency' : ''">
+                        <div class="al-user-item__nivel"
+                             th:classappend="${adv.nivelCriticidad >= 4} ? 'al-criticidad--high' :
+                                            (${adv.nivelCriticidad == 3} ? 'al-criticidad--mid' : 'al-criticidad--low')"
+                             th:text="${adv.nivelCriticidad}"></div>
+                        <div class="al-user-item__body">
+                            <div class="al-user-item__header">
+                                <strong th:text="${adv.titulo}"></strong>
+                                <span th:if="${adv.esEmergencia}" class="rl-badge rl-badge--fraud"
+                                      th:text="#{users.detail.emergency}"></span>
+                            </div>
+                            <p th:text="${adv.descripcion}"></p>
+                            <small th:text="${#temporals.format(adv.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></small>
+                        </div>
+                        <a th:href="@{/advertencias/{id}(id=${adv.id})}"
+                           class="rl-action rl-action--view" th:text="#{warnings.action.view}"></a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="detail-row">
-            <strong th:text="#{users.email}"></strong>
-            <span th:text="${usuario.email}"></span>
-        </div>
-
-        <div class="detail-row">
-            <strong th:text="#{users.phone}"></strong>
-            <span th:text="${usuario.telefono}"></span>
-        </div>
-
-        <div class="detail-row">
-            <strong th:text="#{users.plan}"></strong>
-            <span th:text="${usuario.planNombre}"></span>
-        </div>
+        <aside class="ud-sidebar">
+            <div class="ud-card ud-card--side">
+                <p class="ud-card__title" th:text="#{users.detail.actions}"></p>
+                <a class="ud-side-btn ud-side-btn--edit"
+                   th:href="@{/usuarios/edit(username=${usuario.username})}"
+                   th:text="#{users.detail.action.edit}"></a>
+                <a class="ud-side-btn ud-side-btn--back" th:href="@{/}"
+                   th:text="#{users.detail.action.back}"></a>
+            </div>
+            <div class="ud-card ud-card--side">
+                <p class="ud-card__title" th:text="#{users.detail.plan}"></p>
+                <div class="ud-plan-info">
+                    <span class="ud-plan-name" th:text="${usuario.planNombre}"></span>
+                    <a th:href="@{/planes}" class="ud-plan-link" th:text="#{users.detail.plan.view}"></a>
+                </div>
+            </div>
+        </aside>
 
     </div>
-
-    <div class="form-actions">
-
-        <a class="btn btn-edit"
-           th:href="@{/usuarios/edit(username=${usuario.username})}"
-           th:text="#{users.edit}">
-        </a>
-
-        <a class="btn btn-secondary"
-           th:href="@{/usuarios}"
-           th:text="#{common.back}">
-        </a>
-
-    </div>
-
 </main>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

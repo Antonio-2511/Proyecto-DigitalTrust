@@ -94,4 +94,9 @@ public class Advertencia {
      */
     @OneToMany(mappedBy = "advertencia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FuenteConfiable> fuentes;
+
+    @ManyToOne
+    @JoinColumn(name = "reporte_id", nullable = true)
+    private Reporte reporte;
+
 }

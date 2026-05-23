@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repositorio de acceso a datos para la entidad {@link Advertencia}.
  *
@@ -45,6 +47,10 @@ public interface AdvertenciaRepository extends JpaRepository<Advertencia, Long> 
      * @return true si existe una advertencia con ese título, false en caso contrario
      */
     boolean existsByTitulo(@NotBlank @Size(max = 100) String titulo);
+
+
+    List<Advertencia> findByUser_Username(String username);
+
 
     /**
      * Obtiene una página de advertencias asociadas a un usuario específico.

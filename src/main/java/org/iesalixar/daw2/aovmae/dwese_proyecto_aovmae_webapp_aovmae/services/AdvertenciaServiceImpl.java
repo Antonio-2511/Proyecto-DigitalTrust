@@ -131,4 +131,15 @@ public class AdvertenciaServiceImpl implements AdvertenciaService {
                 .orElseThrow(() -> new ResourceNotFoundException("advertencia", "id", id));
         return AdvertenciaMapper.toDetailDTO(advertencia);
     }
+
+    @Override
+    @PreAuthorize("#username == authentication.name or hasRole('ADMIN')")
+    public List<AdvertenciaDTO> listByUser(String username) {
+        return advertenciaRepository.findByUser_Username(username)
+                .stream()
+                .map(AdvertenciaMapper::toDTO)
+                .toList();
+    }
+
+
 }

@@ -71,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/login",
+                                "/registro",
                                 "/tienda",
                                 "/forgot-password",
                                 "/contacto/**",
@@ -92,6 +93,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/moderador/**").hasRole("MODERATOR")
                         .requestMatchers("/reportes/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
+                        .requestMatchers("/advertencias/**").hasAnyRole("USER", "MODERATOR", "ADMIN")
 
                         /**
                          * 🔒 RESTO DE RUTAS

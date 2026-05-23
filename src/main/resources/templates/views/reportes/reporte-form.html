@@ -1,50 +1,78 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="fragments/head :: head('Reporte')"></head>
-
+<head th:replace="~{fragments/head :: head('Reportes')}"></head>
 <body>
-
-<header th:replace="fragments/header :: header"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
-
-    <h1 class="page-title">
-        <span th:text="${#strings.isEmpty(reporte.id) ? 'Nuevo Reporte' : 'Editar Reporte'}"></span>
-    </h1>
-
-    <div class="form-container">
-
-        <form th:action="@{/reportes/update}" method="post" th:object="${reporte}">
-
-            <input type="hidden" th:field="*{id}" />
-
-            <!-- TÍTULO -->
-            <div class="form-group">
-                <label>Título</label>
-                <input type="text" th:field="*{titulo}" placeholder="Ej: Página sospechosa" required />
-            </div>
-
-            <!-- DESCRIPCIÓN -->
-            <div class="form-group">
-                <label>Descripción</label>
-                <textarea th:field="*{descripcion}" rows="4"
-                          placeholder="Describe el problema..."></textarea>
-            </div>
-
-            <!-- BOTONES -->
-            <div class="form-actions">
-                <button type="submit" class="btn-primary">Guardar</button>
-                <a th:href="@{/reportes}" class="btn-cancel">Cancelar</a>
-            </div>
-
-        </form>
-
+    <div class="rf-top-wrapper">
+        <nav class="rf-breadcrumb">
+            <a th:href="@{/reportes}" class="rf-breadcrumb__link" th:text="#{report.form.breadcrumb}"></a>
+            <span class="rf-breadcrumb__sep">/</span>
+            <span class="rf-breadcrumb__current"
+                  th:text="${reporte.getClass().simpleName == 'ReporteUpdateDTO'} ? #{report.form.edit} : #{report.form.new}">
+            </span>
+        </nav>
+        <div class="rf-page-header">
+            <h1 class="rf-page-title"
+                th:text="${reporte.getClass().simpleName == 'ReporteUpdateDTO'} ? #{report.form.edit} : #{report.form.new}">
+            </h1>
+            <p class="rf-page-subtitle"
+               th:text="${reporte.getClass().simpleName == 'ReporteUpdateDTO'} ? #{report.form.subtitle.edit} : #{report.form.subtitle.new}">
+            </p>
+        </div>
     </div>
 
+    <div class="rf-layout rf-layout--centered">
+        <div class="rf-main-col">
+            <div class="rf-card">
+                <form th:action="${reporte.getClass().simpleName == 'ReporteUpdateDTO'} ? @{/reportes/update} : @{/reportes/insert}"
+                      method="post" th:object="${reporte}">
+
+                    <input type="hidden" th:field="*{id}"
+                           th:if="${reporte.getClass().simpleName == 'ReporteUpdateDTO'}" />
+
+                    <div class="rf-field">
+                        <label class="rf-label" for="titulo" th:text="#{report.form.field.title}"></label>
+                        <input class="rf-input" id="titulo" type="text" th:field="*{titulo}"
+                               th:placeholder="#{report.form.field.title.placeholder}" required />
+                    </div>
+
+                    <div class="rf-field">
+                        <label class="rf-label" for="descripcion" th:text="#{report.form.field.desc}"></label>
+                        <textarea class="rf-input rf-textarea" id="descripcion" th:field="*{descripcion}"
+                                  rows="5" th:placeholder="#{report.form.field.desc.placeholder}"></textarea>
+                    </div>
+
+                    <div class="rf-actions">
+                        <a th:href="${reporte.getClass().simpleName == 'ReporteUpdateDTO'} ? @{/reportes/{id}(id=${reporte.id})} : @{/reportes}"
+                           class="rf-btn rf-btn--cancel" th:text="#{common.cancel}"></a>
+                        <button type="submit" class="rf-btn rf-btn--save"
+                                th:text="${reporte.getClass().simpleName == 'ReporteUpdateDTO'} ? #{report.form.btn.save} : #{report.form.btn.send}">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="rf-side-col">
+            <div class="rf-card rf-card--side">
+                <p class="rf-side-title" th:text="#{report.form.tips.title}"></p>
+                <ul class="rf-tips">
+                    <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{report.form.tip1}"></span></li>
+                    <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{report.form.tip2}"></span></li>
+                    <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{report.form.tip3}"></span></li>
+                    <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{report.form.tip4}"></span></li>
+                </ul>
+            </div>
+            <div class="rf-notice">
+                <span class="rf-notice__icon">&#9888;</span>
+                <p class="rf-notice__text" th:text="#{report.form.notice}"></p>
+            </div>
+        </div>
+    </div>
 </main>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

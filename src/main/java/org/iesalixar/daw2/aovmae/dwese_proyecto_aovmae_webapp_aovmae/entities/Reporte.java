@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Entidad que representa un reporte generado por un usuario.
@@ -51,6 +52,15 @@ public class Reporte {
      */
     @Column(name = "Fecha_reporte")
     private LocalDateTime fechaReporte;
+
+    @Column(name = "validado")
+    private boolean validado = false;
+
+    @Column(name = "es_fraude")
+    private Boolean esFraude;
+
+    @OneToMany(mappedBy = "reporte", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Advertencia> advertencias;
 
     /**
      * Usuario que ha generado el reporte.

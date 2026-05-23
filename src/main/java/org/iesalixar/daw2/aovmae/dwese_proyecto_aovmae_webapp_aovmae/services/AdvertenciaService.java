@@ -70,4 +70,6 @@ public interface AdvertenciaService {
 
     Page<AdvertenciaDTO> listAll(Pageable pageable);
 
+    List<AdvertenciaDTO> listByUser(String username);
+
 }

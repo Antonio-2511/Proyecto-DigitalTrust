@@ -1,191 +1,120 @@
 <!DOCTYPE html>
-<html lang="es"
-      xmlns:th="http://www.thymeleaf.org"
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
-<head th:replace="fragments/head :: head('Detalle Reporte')"></head>
-
+<head th:replace="~{fragments/head :: head('Detalle Reporte')}"></head>
 <body>
-
-<header th:replace="fragments/header :: header"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <main class="rd-page">
 
-    <!-- BREADCRUMB -->
     <nav class="rd-breadcrumb">
-        <a th:href="@{/reportes}" class="rd-breadcrumb__link">Reportes</a>
+        <a th:href="@{/reportes}" class="rd-breadcrumb__link" th:text="#{report.detail.breadcrumb}"></a>
         <span class="rd-breadcrumb__sep">/</span>
-        <span class="rd-breadcrumb__current"
-              th:text="'Reporte #' + ${reporte.id}"></span>
+        <span class="rd-breadcrumb__current" th:text="#{report.detail.prefix} + ${reporte.id}"></span>
     </nav>
 
     <div class="rd-layout">
-
-        <!-- COLUMNA PRINCIPAL -->
         <div class="rd-main">
 
-            <!-- INFO REPORTE -->
             <div class="rd-card">
-
                 <div class="rd-card__header">
                     <div>
-                        <p class="rd-card__eyebrow"
-                           th:text="'Reporte #' + ${reporte.id}"></p>
-
-                        <h1 class="rd-card__title"
-                            th:text="${reporte.titulo}"></h1>
+                        <p class="rd-card__eyebrow" th:text="#{report.detail.prefix} + ${reporte.id}"></p>
+                        <h1 class="rd-card__title" th:text="${reporte.titulo}"></h1>
                     </div>
-
-                    <!-- ESTADO -->
-                    <span class="rd-status rd-status--pending">
-                        Pendiente
-                    </span>
+                    <span th:if="${!reporte.validado}" class="rd-status rd-status--pending"
+                          th:text="#{report.detail.status.pending}"></span>
+                    <span th:if="${reporte.validado and reporte.esFraude}" class="rd-status rd-status--fraud"
+                          th:text="#{report.detail.status.fraud}"></span>
+                    <span th:if="${reporte.validado and !reporte.esFraude}" class="rd-status rd-status--validated"
+                          th:text="#{report.detail.status.safe}"></span>
                 </div>
-
                 <div class="rd-card__section">
-                    <p class="rd-label">Descripción</p>
-                    <p class="rd-text"
-                       th:text="${reporte.descripcion}"></p>
+                    <p class="rd-label" th:text="#{report.detail.field.desc}"></p>
+                    <p class="rd-text" th:text="${reporte.descripcion}"></p>
                 </div>
-
             </div>
 
-            <!-- ADVERTENCIAS -->
             <div class="rd-card">
-
                 <div class="rd-card__header rd-card__header--flat">
-                    <h2 class="rd-card__subtitle">⚠️ Advertencias</h2>
-
+                    <h2 class="rd-card__subtitle" th:text="#{report.detail.warnings}"></h2>
                     <span class="rd-count"
-                          th:text="${reporte.advertencias != null ? reporte.advertencias.size() : 0} + ' detectadas'">
+                          th:text="${reporte.advertencias != null ? reporte.advertencias.size() : 0} + #{report.detail.warnings.detected}">
                     </span>
                 </div>
-
-                <!-- VACÍO -->
-                <div class="rd-empty"
-                     th:if="${reporte.advertencias == null or reporte.advertencias.isEmpty()}">
-
-                    <p class="rd-empty__text">
-                        ✅ Sin riesgos detectados
-                    </p>
-
+                <div class="rd-empty" th:if="${reporte.advertencias == null or reporte.advertencias.isEmpty()}">
+                    <p class="rd-empty__text" th:text="#{report.detail.warnings.empty}"></p>
                 </div>
-
-                <!-- LISTA -->
-                <div class="rd-warning-list"
-                     th:if="${reporte.advertencias != null and !reporte.advertencias.isEmpty()}">
-
-                    <div class="rd-warning"
-                         th:each="adv : ${reporte.advertencias}"
+                <div class="rd-warning-list" th:if="${reporte.advertencias != null and !reporte.advertencias.isEmpty()}">
+                    <div class="rd-warning" th:each="adv : ${reporte.advertencias}"
                          th:classappend="${adv.esEmergencia} ? 'rd-warning--emergency' : ''">
-
-                        <!-- NIVEL -->
                         <div class="rd-warning__left">
-                            <div class="rd-warning__level"
-                                 th:attr="data-level=${adv.nivelCriticidad}">
+                            <div class="rd-warning__level" th:attr="data-level=${adv.nivelCriticidad}">
                                 <span th:text="${adv.nivelCriticidad}"></span>
                             </div>
                         </div>
-
-                        <!-- INFO -->
                         <div class="rd-warning__body">
-
                             <div class="rd-warning__header">
-
                                 <strong th:text="${adv.titulo}"></strong>
-
-                                <span th:if="${adv.esEmergencia}"
-                                      class="rd-warning__emergency-tag">
-                                    🔥 Emergencia
-                                </span>
-
+                                <span th:if="${adv.esEmergencia}" class="rd-warning__emergency-tag"
+                                      th:text="#{report.detail.emergency}"></span>
                             </div>
-
                             <p th:text="${adv.descripcion}"></p>
-
                             <small th:text="${#temporals.format(adv.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></small>
-
                         </div>
-
                     </div>
                 </div>
-
             </div>
 
         </div>
 
-        <!-- SIDEBAR -->
         <aside class="rd-sidebar">
-
-            <!-- METADATA -->
             <div class="rd-card rd-card--side">
-
-                <h3>Información</h3>
-
-                <p><strong>Fecha:</strong>
-                    <span th:text="${#temporals.format(reporte.fechaReporte, 'dd/MM/yyyy HH:mm')}"></span>
-                </p>
-
-                <p><strong>Usuario:</strong>
-                    <span th:text="${reporte.nombreUsuario}"></span>
-                </p>
-
-                <p><strong>Email:</strong>
-                    <span th:text="${reporte.emailUsuario}"></span>
-                </p>
-
+                <h3 th:text="#{report.detail.info}"></h3>
+                <p><strong th:text="#{report.detail.info.date}"></strong>
+                    <span th:text="${#temporals.format(reporte.fechaReporte, 'dd/MM/yyyy HH:mm')}"></span></p>
+                <p><strong th:text="#{report.detail.info.user}"></strong>
+                    <span th:text="${reporte.nombreUsuario}"></span></p>
+                <p><strong th:text="#{report.detail.info.email}"></strong>
+                    <span th:text="${reporte.emailUsuario}"></span></p>
             </div>
 
-            <!-- ACCIONES -->
-            <div class="rd-card rd-card--side rd-card--actions">
+            <div class="rd-card rd-card--actions">
+                <h2 class="rd-card__subtitle" style="margin-bottom:10px;" th:text="#{report.detail.actions}"></h2>
 
-                <!-- EDITAR -->
                 <a th:href="@{/reportes/edit/{id}(id=${reporte.id})}"
+                   th:if="${!reporte.validado}"
                    sec:authorize="hasAnyRole('USER','ADMIN')"
-                   class="rd-btn rd-btn--primary rd-btn--full">
-                    ✏️ Editar
-                </a>
+                   class="rd-btn rd-btn--primary rd-btn--full"
+                   th:text="#{report.detail.action.edit}"></a>
 
-                <!-- VALIDAR (ADMIN) -->
-                <form sec:authorize="hasRole('ADMIN')"
-                      th:action="@{/reportes/admin/{id}/validar(id=${reporte.id})}"
-                      method="post">
+                <span sec:authorize="hasAnyRole('MODERATOR','ADMIN')" th:if="${!reporte.validado}">
+                    <form th:action="@{/reportes/admin/{id}/validar(id=${reporte.id})}" method="post">
+                        <button type="submit" name="fraude" value="true"
+                                class="rd-btn rd-btn--danger rd-btn--full"
+                                th:text="#{report.detail.action.confirmFraud}"></button>
+                    </form>
+                    <form th:action="@{/reportes/admin/{id}/validar(id=${reporte.id})}" method="post" style="margin-top:8px;">
+                        <button type="submit" name="fraude" value="false"
+                                class="rd-btn rd-btn--ghost rd-btn--full"
+                                th:text="#{report.detail.action.markSafe}"></button>
+                    </form>
+                </span>
 
-                    <button type="submit"
-                            name="fraude"
-                            value="true"
-                            class="rd-btn rd-btn--danger rd-btn--full">
-                        ✔️ Confirmar fraude
-                    </button>
-                </form>
+                <div th:if="${reporte.validado}" class="rd-validated-result">
+                    <span th:if="${reporte.esFraude}" class="badge badge-danger"
+                          th:text="#{report.detail.validated.fraud}"></span>
+                    <span th:if="${!reporte.esFraude}" class="badge badge-success"
+                          th:text="#{report.detail.validated.safe}"></span>
+                </div>
 
-                <form sec:authorize="hasRole('ADMIN')"
-                      th:action="@{/reportes/admin/{id}/validar(id=${reporte.id})}"
-                      method="post">
-
-                    <button type="submit"
-                            name="fraude"
-                            value="false"
-                            class="rd-btn rd-btn--ghost rd-btn--full">
-                        ❌ Marcar como seguro
-                    </button>
-                </form>
-
-                <!-- VOLVER -->
-                <a th:href="@{/reportes}"
-                   class="rd-btn rd-btn--ghost rd-btn--full">
-                    ⬅ Volver
-                </a>
-
+                <a th:href="@{/reportes}" class="rd-btn rd-btn--ghost rd-btn--full"
+                   th:text="#{report.detail.action.back}"></a>
             </div>
-
         </aside>
-
     </div>
-
 </main>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

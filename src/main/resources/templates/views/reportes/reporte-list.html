@@ -2,111 +2,113 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="fragments/head :: head('Reportes')">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-
+<head th:replace="~{fragments/head :: head('Reportes')}"></head>
 <body>
-
-<header th:replace="fragments/header :: header"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
 
-    <h1 class="page-title">📄 Reportes</h1>
-
-    <!-- MENSAJES -->
-    <div th:if="${param.created}" class="alert success">Reporte creado correctamente</div>
-    <div th:if="${param.updated}" class="alert info">Reporte actualizado</div>
-    <div th:if="${param.deleted}" class="alert danger">Reporte eliminado</div>
-
-    <!-- BOTÓN CREAR -->
-    <div class="actions-bar" sec:authorize="hasRole('USER')">
-        <a th:href="@{/reportes/new}" class="btn btn-primary">➕ Nuevo Reporte</a>
+    <div class="rl-page-header">
+        <div class="rl-title-block">
+            <span class="rl-eyebrow" th:text="#{reports.panel}"></span>
+            <h1 class="rl-title" th:text="#{navbar.reportes}"></h1>
+            <p class="rl-subtitle" th:text="#{reports.subtitle}"></p>
+        </div>
+        <a th:href="@{/reportes/new}" class="rl-btn-new" th:text="#{reports.new}"></a>
     </div>
 
-    <table class="table">
+    <div class="rl-wrapper">
 
-        <thead>
-        <tr>
-            <th>Título</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
+        <div class="rl-card">
+            <table class="rl-table">
+                <thead>
+                <tr>
+                    <th th:text="#{reports.col.title}"></th>
+                    <th th:text="#{reports.col.date}"></th>
+                    <th th:text="#{reports.col.status}"></th>
+                    <th th:text="#{reports.col.actions}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${page.content}">
 
-        <tbody>
+                    <td class="rl-td-title">
+                        <span class="rl-report-title" th:text="${r.titulo}"></span>
+                    </td>
 
-        <tr th:each="r : ${page.content}">
+                    <td class="rl-td-date">
+                        <span th:text="${#temporals.format(r.fechaReporte, 'dd/MM/yyyy HH:mm')}"></span>
+                    </td>
 
-            <!-- TÍTULO -->
-            <td th:text="${r.titulo}"></td>
+                    <td class="rl-td-status">
+                        <span th:if="${!r.validado}" class="rl-badge rl-badge--pending"
+                              th:text="#{reports.status.pending}"></span>
+                        <span th:if="${r.validado and r.esFraude}" class="rl-badge rl-badge--fraud"
+                              th:text="#{reports.status.fraud}"></span>
+                        <span th:if="${r.validado and !r.esFraude}" class="rl-badge rl-badge--safe"
+                              th:text="#{reports.status.safe}"></span>
+                    </td>
 
-            <!-- FECHA -->
-            <td th:text="${#temporals.format(r.fechaReporte, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="rl-td-actions">
 
-            <!-- ACCIONES -->
-            <td class="actions">
+                        <a th:href="@{/reportes/{id}(id=${r.id})}"
+                           class="rl-action rl-action--view"
+                           th:text="#{reports.action.view}"></a>
 
-                <!-- VER -->
-                <a th:href="@{/reportes/{id}(id=${r.id})}"
-                   class="btn btn-sm btn-view">
-                    👁 Ver
-                </a>
+                        <a th:if="${!r.validado}"
+                           th:href="@{/reportes/edit/{id}(id=${r.id})}"
+                           sec:authorize="hasAnyRole('USER','ADMIN')"
+                           class="rl-action rl-action--edit"
+                           th:text="#{reports.action.edit}"></a>
 
-                <!-- EDITAR -->
-                <a th:href="@{/reportes/edit/{id}(id=${r.id})}"
-                   sec:authorize="hasAnyRole('USER','ADMIN')"
-                   class="btn btn-sm btn-edit">
-                    ✏️ Editar
-                </a>
+                        <span sec:authorize="hasAnyRole('MODERATOR','ADMIN')"
+                              th:if="${!r.validado}">
+                            <form th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
+                                  method="post" style="display:inline;">
+                                <button type="submit" name="fraude" value="true"
+                                        class="rl-action rl-action--fraud"
+                                        th:text="#{reports.action.confirmFraud}"></button>
+                            </form>
+                            <form th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
+                                  method="post" style="display:inline;">
+                                <button type="submit" name="fraude" value="false"
+                                        class="rl-action rl-action--safe"
+                                        th:text="#{reports.action.notFraud}"></button>
+                            </form>
+                        </span>
 
-                <!-- VALIDAR (SOLO ADMIN) -->
-                <form sec:authorize="hasRole('ADMIN')"
-                      th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
-                      method="post"
-                      style="display:inline;">
-                    <button type="submit"
-                            name="fraude"
-                            value="true"
-                            class="btn btn-sm btn-success">
-                        ✔️ Fraude
-                    </button>
-                </form>
+                        <form sec:authorize="hasAnyRole('MODERATOR','ADMIN')"
+                              th:action="@{/reportes/delete/{id}(id=${r.id})}"
+                              method="post" style="display:inline;">
+                            <button type="submit"
+                                    class="rl-action rl-action--delete"
+                                    th:attr="onclick='return confirm(\'' + #{reports.confirm.delete} + '\')'">
+                                <span th:text="#{reports.action.delete}"></span>
+                            </button>
+                        </form>
 
-                <form sec:authorize="hasRole('ADMIN')"
-                      th:action="@{/reportes/admin/{id}/validar(id=${r.id})}"
-                      method="post"
-                      style="display:inline;">
-                    <button type="submit"
-                            name="fraude"
-                            value="false"
-                            class="btn btn-sm btn-warning">
-                        ❌ No fraude
-                    </button>
-                </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-                <!-- ELIMINAR (SOLO ADMIN) -->
-                <form sec:authorize="hasRole('ADMIN')"
-                      th:action="@{/reportes/delete/{id}(id=${r.id})}"
-                      method="post"
-                      style="display:inline;">
-                    <button type="submit"
-                            class="btn btn-sm btn-danger"
-                            onclick="return confirm('¿Seguro que quieres eliminar este reporte?');">
-                        🗑 Eliminar
-                    </button>
-                </form>
+        <div class="pagination" th:if="${page.totalPages > 1}">
+            <a th:href="@{/reportes(page=${page.number - 1})}"
+               th:classappend="${page.first} ? 'disabled'"
+               class="page-btn" th:text="#{reports.pagination.prev}"></a>
+            <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+                <a th:href="@{/reportes(page=${i})}" th:text="${i + 1}"
+                   th:classappend="${i == page.number} ? 'active'" class="page-btn"></a>
+            </span>
+            <a th:href="@{/reportes(page=${page.number + 1})}"
+               th:classappend="${page.last} ? 'disabled'"
+               class="page-btn" th:text="#{reports.pagination.next}"></a>
+        </div>
 
-            </td>
-        </tr>
-
-        </tbody>
-
-    </table>
-
+    </div>
 </main>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

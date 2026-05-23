@@ -1,87 +1,91 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="fragments/head :: head('Usuario')"></head>
-
+<head th:replace="~{fragments/head :: head('Usuario')}"></head>
 <body>
-
-<header th:replace="fragments/header :: header"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
+    <div class="uf-wrapper">
 
-    <h1 class="page-title"
-        th:text="${modo == 'crear'} ? #{users.create} : #{users.editTitle}">
-    </h1>
-
-    <form class="form-card"
-          th:action="${modo == 'crear'} ? @{/usuarios/insert} : @{/usuarios/update}"
-          th:object="${usuario}"
-          method="post">
-
-        <div th:if="${#fields.hasErrors('*')}" class="error-box">
-            <ul>
-                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-            </ul>
+        <div class="uf-header">
+            <span class="rl-eyebrow"
+                  th:text="${modo == 'crear'} ? #{users.form.eyebrow.new} : #{users.form.eyebrow.edit}"></span>
+            <h1 class="rl-title"
+                th:text="${modo == 'crear'} ? #{users.create} : #{users.editTitle}"></h1>
+            <p class="rl-subtitle"
+               th:text="${modo == 'crear'} ? #{users.form.subtitle.new} : #{users.form.subtitle.edit}"></p>
         </div>
 
-        <div class="form-group">
-            <label th:text="#{users.username}"></label>
-            <input type="text" th:field="*{username}">
+        <div class="uf-layout">
+            <div class="uf-form-col">
+                <div class="rf-card">
+                    <form th:action="${modo == 'crear'} ? @{/usuarios/insert} : @{/usuarios/update}"
+                          th:object="${usuario}" method="post">
+
+                        <div th:if="${#fields.hasErrors('*')}" class="uf-error-box">
+                            <ul>
+                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+
+                        <div class="rf-field">
+                            <label class="rf-label" th:text="#{users.username}"></label>
+                            <input class="rf-input" type="text" th:field="*{username}" />
+                        </div>
+                        <div class="rf-field">
+                            <label class="rf-label" th:text="#{users.email}"></label>
+                            <input class="rf-input" type="email" th:field="*{email}" />
+                        </div>
+                        <div class="rf-field">
+                            <label class="rf-label" th:text="#{users.phone}"></label>
+                            <input class="rf-input" type="text" th:field="*{telefono}" />
+                        </div>
+                        <div class="rf-field">
+                            <label class="rf-label" th:text="#{users.password}"></label>
+                            <input class="rf-input" type="password" th:field="*{password}" />
+                        </div>
+                        <div class="rf-field">
+                            <label class="rf-label" th:text="#{users.confirmPassword}"></label>
+                            <input class="rf-input" type="password" th:field="*{confirmPassword}" />
+                        </div>
+                        <div class="rf-field">
+                            <label class="rf-label" th:text="#{users.plan}"></label>
+                            <select class="rf-input" th:field="*{planId}">
+                                <option value="" th:text="#{users.selectPlan}"></option>
+                                <option th:each="p : ${planes}" th:value="${p.nombrePlan}" th:text="${p.nombrePlan}"></option>
+                            </select>
+                        </div>
+
+                        <div class="rf-actions">
+                            <a class="rf-btn rf-btn--cancel"
+                               th:href="${modo == 'crear'} ? @{/} : @{/usuarios/detail(username=*{username})}"
+                               th:text="#{common.cancel}"></a>
+                            <button class="rf-btn rf-btn--save" type="submit"
+                                    th:text="#{common.save}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="uf-side-col">
+                <div class="rf-card rf-card--side">
+                    <p class="rf-side-title" th:text="#{users.form.info.title}"></p>
+                    <ul class="rf-tips">
+                        <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{users.form.tip1}"></span></li>
+                        <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{users.form.tip2}"></span></li>
+                        <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{users.form.tip3}"></span></li>
+                        <li class="rf-tip"><span class="rf-tip__icon">&#9679;</span><span th:text="#{users.form.tip4}"></span></li>
+                    </ul>
+                </div>
+                <div class="rf-notice">
+                    <span class="rf-notice__icon">&#9888;</span>
+                    <p class="rf-notice__text" th:text="#{users.form.notice}"></p>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label th:text="#{users.email}"></label>
-            <input type="email" th:field="*{email}">
-        </div>
-
-        <div class="form-group">
-            <label th:text="#{users.phone}"></label>
-            <input type="text" th:field="*{telefono}">
-        </div>
-
-        <div class="form-group">
-            <label th:text="#{users.password}"></label>
-            <input type="password" th:field="*{password}">
-        </div>
-
-        <div class="form-group">
-            <label th:text="#{users.confirmPassword}"></label>
-            <input type="password" th:field="*{confirmPassword}">
-        </div>
-
-        <div class="form-group">
-            <label th:text="#{users.plan}"></label>
-
-            <select th:field="*{planId}">
-                <option value="" th:text="#{users.selectPlan}"></option>
-
-                <option th:each="p : ${planes}"
-                        th:value="${p.nombrePlan}"
-                        th:text="${p.nombrePlan}">
-                </option>
-
-            </select>
-
-        </div>
-
-        <div class="form-actions">
-
-            <button class="btn btn-primary" type="submit"
-                    th:text="#{common.save}">
-            </button>
-
-            <a class="btn btn-secondary"
-               th:href="@{/usuarios}"
-               th:text="#{common.cancel}">
-            </a>
-
-        </div>
-
-    </form>
-
+    </div>
 </main>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
