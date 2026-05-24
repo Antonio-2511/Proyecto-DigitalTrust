@@ -7,33 +7,100 @@
             <ul class="nav-links" id="navLinks">
                 <li><a th:href="@{/}" th:text="#{navbar.home}">Inicio</a></li>
                 <li><a th:href="@{/planes}" th:text="#{navbar.planes}">Planes</a></li>
-                <li><a th:href="@{/reportes}" th:text="#{navbar.reportes}">Reportes</a></li>
-                <li><a th:href="@{/advertencias}" th:text="#{navbar.advertencias}">Advertencias</a></li>
-                <li><a th:href="@{/detector-mensajes-sospechosos}" th:text="#{navbar.mensajes}">Mensajes</a></li>
-                <li><a th:href="@{/contacto}" th:text="#{navbar.contacto}">Contacto</a></li>
+                <li><a th:href="@{/tienda}" th:text="#{navbar.tienda}">Tienda</a></li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{/reportes}" th:text="#{navbar.reportes}">Reports</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{/advertencias}" th:text="#{navbar.advertencias}">Warnings</a>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/usuarios}" th:text="#{navbar.usuarios}">Users</a>
+                </li>
+                <li sec:authorize="isAuthenticated()">
+                    <a th:href="@{/detector-mensajes-sospechosos}" th:text="#{navbar.mensajes}">Mensajes</a>
+                </li>
+                <li sec:authorize="hasRole('USER')">
+                    <a th:href="@{/contacto}" th:text="#{navbar.contacto}">Contacto</a>
+                </li>
             </ul>
         </div>
 
         <div class="nav-right">
+
             <div class="nav-icons-group">
-                <a th:href="@{/carrito}" class="nav-icon" title="Carrito">🛒</a>
-                <button id="btnOpenSearch" class="nav-icon" title="Buscar">🔍</button>
+                <a th:href="@{/carrito}" class="nav-icon nav-cart" title="Carrito">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 100-2 1 1 0 000 2zm10 0a1 1 0 100-2 1 1 0 000 2z"/>
+                    </svg>
+                    <span class="cart-badge"
+                          th:if="${cartCount != null and cartCount > 0}"
+                          th:text="${cartCount}"></span>
+                </a>
+
+                <button id="btnOpenSearch" class="nav-icon" title="Buscar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                    </svg>
+                </button>
+
+                <button id="btnToggleTheme" class="nav-icon" title="Cambiar tema">
+                    <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                         style="display:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                    </svg>
+                    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
+                    </svg>
+                </button>
             </div>
 
-            <div sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="nav-icon">👤</a>
+            <!-- NO LOGUEADO -->
+            <div sec:authorize="isAnonymous()" style="display:flex; gap:8px; align-items:center;">
+                <a th:href="@{/registro}" class="nav-btn nav-btn--outline"
+                   style="border-color: rgba(255,255,255,0.5);"
+                   th:text="#{navbar.registro}">Registrarse</a>
+                <a th:href="@{/login}" class="nav-btn nav-btn--outline">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="margin-right:6px;">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span th:text="#{navbar.login}">Iniciar sesión</span>
+                </a>
             </div>
 
+            <!-- LOGUEADO -->
             <div sec:authorize="isAuthenticated()" class="user-section">
-                <span sec:authentication="name" class="user-name"></span>
+                <a th:href="@{/usuarios/detail(username=${#authentication.name})}" class="nav-user-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span sec:authentication="name"></span>
+                </a>
                 <form th:action="@{/logout}" method="post" style="margin:0;">
-                    <button type="submit" class="btn btn-exit" th:text="#{login.submit}">Salir</button>
+                    <button type="submit" class="nav-btn nav-btn--danger" th:text="#{navbar.logout}">
+                        Cerrar sesión
+                    </button>
                 </form>
             </div>
 
             <div class="lang-switch">
-                <a th:href="@{/(lang='es')}">ES</a> | <a th:href="@{/(lang='en')}">EN</a>
+                <a th:href="@{/(lang='es')}">ES</a>
+                <span>|</span>
+                <a th:href="@{/(lang='en')}">EN</a>
             </div>
+
         </div>
     </nav>
 
@@ -53,17 +120,14 @@
             { name: [[#{navbar.planes}]], url: [[@{/planes}]], keywords: ["planes", "precios"] },
             { name: [[#{navbar.reportes}]], url: [[@{/reportes}]], keywords: ["reportes", "denuncias"] },
             { name: [[#{navbar.mensajes}]], url: [[@{/detector-mensajes-sospechosos}]], keywords: ["detector", "phishing"] },
-            /* Redes Sociales */
             { name: "Instagram (DigitalTrust)", url: "https://www.instagram.com/digitaltrustes/?hl=es%2F", keywords: ["instagram", "redes", "social", "foto"] },
             { name: "Twitter / X (DigitalTrust)", url: "https://x.com/digitaltrust", keywords: ["twitter", "x", "redes", "social", "noticias"] },
             { name: "TikTok (DigitalTrust)", url: "https://www.tiktok.com/@digitaltrust", keywords: ["tiktok", "redes", "social", "video"] },
-
             { name: "DigitalTrust Business", url: [[@{/empresa}]], keywords: ["empresa", "corporativo", "vacio"] },
             { name: [[#{navbar.contacto}]], url: [[@{/contacto}]], keywords: ["contacto", "email"] },
             { name: "Tienda de Servicios", url: [[@{/tienda}]], keywords: ["tienda", "comprar", "servicios"] }
         ];
 
-        /* INYECCIÓN DINÁMICA DE SERVICIOS DESDE BD */
         /*[# th:each="s : ${servicios}"]*/
         appRoutes.push({
             name: [[${s.nombre}]],
@@ -99,5 +163,22 @@
         });
 
         document.addEventListener('keydown', (e) => { if (e.key === "Escape") btnClose.click(); });
+
+        const btnTheme = document.getElementById('btnToggleTheme');
+        const iconSun  = document.getElementById('iconSun');
+        const iconMoon = document.getElementById('iconMoon');
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            iconSun.style.display  = 'block';
+            iconMoon.style.display = 'none';
+        }
+
+        btnTheme.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            iconSun.style.display  = isDark ? 'block' : 'none';
+            iconMoon.style.display = isDark ? 'none'  : 'block';
+        });
     </script>
 </header>
