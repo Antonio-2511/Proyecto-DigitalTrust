@@ -1,5 +1,5 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.config;
-
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -34,7 +34,7 @@ public class LocaleConfig implements WebMvcConfigurer {
      */
     @Bean
     public LocaleResolver localeResolver() {
-        SessionLocaleResolver resolver = new SessionLocaleResolver();
+        CookieLocaleResolver resolver = new CookieLocaleResolver();
         resolver.setDefaultLocale(new Locale("es"));
         return resolver;
     }
@@ -62,6 +62,7 @@ public class LocaleConfig implements WebMvcConfigurer {
      *
      * @param registry registro de interceptores de Spring
      */
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }

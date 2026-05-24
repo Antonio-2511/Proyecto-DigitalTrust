@@ -1,116 +1,119 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head :: head(#{detalles.pestana})}">
-    <style>
-        body {
-            background-color: #A7F3D0;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 90vh;
-            padding-top: 80px;
-            padding-bottom: 40px;
-        }
-        .container {
-            background: white;
-            border-radius: 30px;
-            display: flex;
-            max-width: 1100px;
-            width: 90%;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            flex-wrap: wrap;
-        }
-        .left-section {
-            flex: 1.2;
-            min-width: 350px;
-            background-color: #f0fdf4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 50px;
-        }
-        .product-img {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-        }
-        .right-section {
-            flex: 1;
-            min-width: 350px;
-            padding: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .badge {
-            background-color: #064E3B;
-            color: white;
-            padding: 6px 18px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .title {
-            color: #083a4d;
-            font-size: 2.8rem;
-            margin: 25px 0 15px 0;
-        }
-        .description {
-            color: #4b5563;
-            line-height: 1.8;
-            font-size: 1.15rem;
-            margin-bottom: 40px;
-        }
-        .footer-action-area {
-            border-top: 2px solid #f3f4f6;
-            padding-top: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .price-label {
-            color: #9ca3af;
-            margin: 0;
-            font-size: 0.9rem;
-        }
-        .price-value {
-            font-size: 2.6rem;
-            font-weight: 800;
-            color: #083a4d;
-        }
-        .buttons-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: flex-end;
-        }
-        .btn-submit {
-            background-color: #083a4d;
-            color: white;
-            border: none;
-            padding: 18px 45px;
-            border-radius: 18px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .btn-back {
-            color: #083a4d;
-            text-decoration: none;
-            font-weight: 600;
-        }
-    </style>
-</head>
+<head th:replace="~{fragments/head :: head(#{detalles.pestana})}"></head>
+
+<style>
+    body {
+        background-color: #A7F3D0;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+        padding-top: 80px;
+        padding-bottom: 40px;
+    }
+    .container {
+        background: white;
+        border-radius: 30px;
+        display: flex;
+        max-width: 1100px;
+        width: 90%;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        flex-wrap: wrap;
+    }
+    .left-section {
+        flex: 1.2;
+        min-width: 350px;
+        background-color: #f0fdf4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 50px;
+    }
+    .product-img {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+    .right-section {
+        flex: 1;
+        min-width: 350px;
+        padding: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .badge {
+        background-color: #064E3B;
+        color: white;
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .title {
+        color: #083a4d;
+        font-size: 2.8rem;
+        margin: 25px 0 15px 0;
+    }
+    .description {
+        color: #4b5563;
+        line-height: 1.8;
+        font-size: 1.15rem;
+        margin-bottom: 40px;
+    }
+    .footer-action-area {
+        border-top: 2px solid #f3f4f6;
+        padding-top: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .price-label {
+        color: #9ca3af;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    .price-value {
+        font-size: 2.6rem;
+        font-weight: 800;
+        color: #083a4d;
+    }
+    .buttons-group {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-end;
+    }
+    .btn-submit {
+        background-color: #083a4d;
+        color: white;
+        border: none;
+        padding: 18px 45px;
+        border-radius: 18px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .btn-submit:hover {
+        opacity: 0.85;
+    }
+    .btn-back {
+        color: #083a4d;
+        text-decoration: none;
+        font-weight: 600;
+    }
+</style>
 
 <body>
 
@@ -127,8 +130,7 @@
         <!-- SECCIÓN DERECHA: DATOS -->
         <div class="right-section">
             <div>
-                <!-- Traducimos la categoría dinámicamente usando el nombre de la categoría como clave -->
-                <span th:text="#{ 'categoria.' + ${s.categoria} }" class="badge"></span>
+                <span th:text="#{'categoria.' + ${s.categoria}}" class="badge"></span>
 
                 <h1 th:text="${s.nombre}" class="title"></h1>
                 <p th:text="${s.descripcion}" class="description"></p>
@@ -142,7 +144,7 @@
 
                 <div class="buttons-group">
                     <form th:action="@{/carrito/add/{id}(id=${s.id})}" method="post">
-                        <button type="submit" th:text="#{carrito.añadir}" class="btn-submit"></button>
+                        <button type="submit" th:text="#{carrito.anadir}" class="btn-submit"></button>
                     </form>
 
                     <a th:href="@{/tienda}" th:text="#{detalles.volver}" class="btn-back"></a>
@@ -153,5 +155,6 @@
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
+
 </body>
 </html>
