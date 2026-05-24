@@ -1,6 +1,5 @@
 package org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.controllers;
 
-
 import jakarta.validation.Valid;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.AdvertenciaCreateDTO;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.dtos.AdvertenciaUpdateDTO;
@@ -12,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,20 +45,38 @@ public class AdvertenciaController {
     private FuenteConfiableRepository fuenteConfiableRepository;
 
     /**
-     * 🔐 SOLO MODERATOR o ADMIN
+     * Lista las advertencias paginadas.
+     * - Si el usuario es MODERATOR o ADMIN ve todas las advertencias.
+     * - Si es un usuario normal solo ve las suyas.
+     *
+     * 🔐 Autenticado
      */
     @GetMapping
-    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public String list(
             @PageableDefault(size = 10, sort = "fechaEnvio", direction = Sort.Direction.DESC)
             Pageable pageable,
-            Model model) {
+            Model model,
+            Authentication authentication) {
 
-        model.addAttribute("page", advertenciaService.list(pageable));
+        boolean esStaff = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_MODERATOR")
+                        || a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (esStaff) {
+            model.addAttribute("page", advertenciaService.list(pageable));
+            model.addAttribute("esStaff", true);
+        } else {
+            model.addAttribute("advertencias", advertenciaService.listByUser(authentication.getName()));
+            model.addAttribute("esStaff", false);
+        }
+
         return "views/advertencias/advertencia-list";
     }
 
     /**
+     * Muestra el formulario de creación de una nueva advertencia.
+     *
      * 🔐 SOLO ADMIN
      */
     @GetMapping("/new")
@@ -70,6 +88,9 @@ public class AdvertenciaController {
     }
 
     /**
+     * Procesa el formulario de creación de una nueva advertencia.
+     * Si hay errores de validación vuelve al formulario.
+     *
      * 🔐 SOLO ADMIN
      */
     @PostMapping("/insert")
@@ -89,6 +110,9 @@ public class AdvertenciaController {
     }
 
     /**
+     * Muestra el formulario de edición de una advertencia existente.
+     * Si no se encuentra la advertencia redirige al listado con mensaje de error.
+     *
      * 🔐 SOLO ADMIN
      */
     @GetMapping("/edit")
@@ -109,6 +133,10 @@ public class AdvertenciaController {
     }
 
     /**
+     * Procesa el formulario de edición y actualiza la advertencia.
+     * Si hay errores de validación vuelve al formulario.
+     * Redirige con parámetro ?adv_updated para mostrar el toast de éxito.
+     *
      * 🔐 SOLO ADMIN
      */
     @PostMapping("/update")
@@ -124,28 +152,31 @@ public class AdvertenciaController {
         }
 
         advertenciaService.update(dto);
-        return "redirect:/advertencias";
+        return "redirect:/advertencias?adv_updated";  // parámetro recogido por el fragment de toasts
     }
 
     /**
+     * Elimina una advertencia por su ID.
+     * Redirige con parámetro ?adv_deleted para mostrar el toast de confirmación.
+     *
      * 🔐 SOLO ADMIN
      */
     @PostMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public String delete(@RequestParam Long id) {
         advertenciaService.delete(id);
-        return "redirect:/advertencias";
+        return "redirect:/advertencias?adv_deleted";  // parámetro recogido por el fragment de toasts
     }
 
     /**
-     * 🔐 Usuario autenticado (lectura)
+     * Muestra el detalle de una advertencia concreta.
+     *
+     * 🔐 Autenticado
      */
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public String detail(@PathVariable Long id, Model model) {
-
         model.addAttribute("advertencia", advertenciaService.getDetail(id));
-
         return "views/advertencias/advertencia-detail";
     }
 }

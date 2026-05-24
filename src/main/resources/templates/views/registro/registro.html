@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Registro')}"></head>
+
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="auth-main">
+    <div class="auth-card">
+
+        <h1 class="auth-title">Crear cuenta</h1>
+
+        <div th:if="${error}" class="auth-alert auth-alert--error">
+            <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/registro}" th:object="${registroForm}" method="post">
+
+            <!-- DEBUG TEMPORAL -->
+            <div th:if="${#fields.hasAnyErrors()}" style="background:red;color:white;padding:10px">
+                <ul>
+                    <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label>Usuario</label>
+                <input type="text" th:field="*{username}" placeholder="Tu nombre de usuario" required>
+                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="auth-alert auth-alert--error"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" th:field="*{email}" placeholder="Tu correo electrónico" required>
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="auth-alert auth-alert--error"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Teléfono</label>
+                <input type="tel" th:field="*{telefono}" placeholder="Tu teléfono">
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" th:field="*{password}" placeholder="Tu contraseña" required>
+                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="auth-alert auth-alert--error"></span>
+            </div>
+
+            <button type="submit" class="auth-btn">Crear cuenta</button>
+
+        </form>
+
+        <div class="auth-links">
+            <a th:href="@{/login}">¿Ya tienes cuenta? Inicia sesión</a>
+        </div>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

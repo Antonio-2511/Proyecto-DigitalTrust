@@ -55,7 +55,11 @@ public class ReporteDetailDTO {
      */
     private String emailUsuario;
 
+    private boolean validado;
+
+
     private List<AdvertenciaDTO> advertencias = new ArrayList<>();
 
+    private boolean esFraude;
 
 }

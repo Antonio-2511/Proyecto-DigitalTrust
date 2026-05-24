@@ -1,0 +1,63 @@
+<div th:fragment="toasts" xmlns:th="http://www.thymeleaf.org">
+
+    <div id="toast-container" style="
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+  "></div>
+
+    <script th:inline="javascript">
+        const _success = [[${successMessage}]];
+        const _error   = [[${errorMessage}]];
+        const _warning = [[${warningMessage}]];
+
+        function showToast(message, type) {
+          const icons = { success: 'ti-circle-check', error: 'ti-alert-circle', warning: 'ti-alert-triangle' };
+          const labels = { success: 'Correcto', error: 'Error', warning: 'Aviso' };
+
+          const toast = document.createElement('div');
+          toast.className = 'dt-toast dt-toast--' + type;
+          toast.innerHTML = `
+            <i class="ti ${icons[type]} dt-toast__icon dt-toast__icon--${type}" aria-hidden="true"></i>
+            <div class="dt-toast__body">
+              <p class="dt-toast__title dt-toast__title--${type}">${labels[type]}</p>
+              <p class="dt-toast__msg">${message}</p>
+              <div class="dt-toast__bar dt-toast__bar--${type}"></div>
+            </div>
+            <button class="dt-toast__close" aria-label="Cerrar" onclick="this.closest('.dt-toast').remove()">
+              <i class="ti ti-x"></i>
+            </button>
+          `;
+          document.getElementById('toast-container').appendChild(toast);
+          setTimeout(() => toast.remove(), 4500);
+        }
+
+        if (_success) showToast(_success, 'success');
+        if (_error)   showToast(_error,   'error');
+        if (_warning) showToast(_warning, 'warning');
+
+        const _paramSuccess = /*[[${
+    param.created     != null ? 'Reporte creado correctamente' :
+    param.updated     != null ? 'Reporte actualizado'          :
+    param.validated   != null ? 'Reporte validado'             :
+    param.adv_updated != null ? 'Advertencia actualizada'      :
+    null
+}]]*/ null;
+
+const _paramDanger = /*[[${
+    param.deleted     != null ? 'Reporte eliminado'     :
+    param.adv_deleted != null ? 'Advertencia eliminada' :
+    null
+}]]*/ null;
+
+if (_paramSuccess) showToast(_paramSuccess, 'success');
+if (_paramDanger)  showToast(_paramDanger,  'error');
+
+    </script>
+
+</div>

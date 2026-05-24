@@ -147,24 +147,23 @@ public class ReporteServiceImpl implements ReporteService {
         List<Reporte> similares =
                 reporteRepository.findByDescripcion(reporte.getDescripcion());
 
-        if (similares.size() == 3) {
+        if (similares.size() >= 3) {
 
             Advertencia advertencia = new Advertencia();
-
             advertencia.setTitulo("Alerta global de fraude");
             advertencia.setDescripcion("Contenido reportado varias veces: "
                     + reporte.getDescripcion());
             advertencia.setNivelCriticidad(5);
             advertencia.setFechaEnvio(LocalDateTime.now());
             advertencia.setEsEmergencia(true);
+            advertencia.setReporte(reporte);
+            advertencia.setUser(reporte.getUser());
 
             advertenciaRepository.save(advertencia);
         }
     }
 
-    /**
-     * 🔐 Solo MODERATOR o ADMIN validan fraude
-     */
+    @Override
     @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public void validarReporte(Long id, boolean esFraude) {
 
@@ -172,6 +171,14 @@ public class ReporteServiceImpl implements ReporteService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("reporte", "id", id)
                 );
+
+        if (reporte.isValidado()) {
+            return;
+        }
+
+        reporte.setValidado(true);
+        reporte.setEsFraude(esFraude);
+        reporteRepository.save(reporte);
 
         if (esFraude) {
             crearAdvertenciaDesdeReporte(reporte);
@@ -181,13 +188,21 @@ public class ReporteServiceImpl implements ReporteService {
     private void crearAdvertenciaDesdeReporte(Reporte reporte) {
 
         Advertencia advertencia = new Advertencia();
-
-        advertencia.setTitulo("Contenido confirmado como fraude");
+        advertencia.setTitulo(reporte.getTitulo());
         advertencia.setDescripcion(reporte.getDescripcion());
         advertencia.setNivelCriticidad(5);
         advertencia.setFechaEnvio(LocalDateTime.now());
         advertencia.setEsEmergencia(true);
+        advertencia.setReporte(reporte);
+        advertencia.setUser(reporte.getUser());
 
         advertenciaRepository.save(advertencia);
+    }
+
+    @Override
+    @PreAuthorize("#username == authentication.name or hasAnyRole('MODERATOR','ADMIN')")
+    public Page<ReporteDTO> listByUser(String username, Pageable pageable) {
+        return reporteRepository.findByUser_Username(username, pageable)
+                .map(ReporteMapper::toDTO);
     }
 }

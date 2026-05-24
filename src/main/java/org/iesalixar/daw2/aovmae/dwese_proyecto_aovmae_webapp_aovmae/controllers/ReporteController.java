@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,31 +24,29 @@ public class ReporteController {
     @Autowired
     private ReporteService reporteService;
 
-    // =========================================================
-    //  LISTADO
-    // =========================================================
-
-    /**
-     * 🔐 Solo MODERATOR o ADMIN
-     */
+    // LISTADO
     @GetMapping
-    @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public String list(
             @PageableDefault(size = 10, sort = "fechaReporte", direction = Sort.Direction.DESC)
             Pageable pageable,
-            Model model) {
+            Model model,
+            Authentication authentication) {
 
-        model.addAttribute("page", reporteService.list(pageable));
+        boolean esStaff = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_MODERATOR")
+                        || a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (esStaff) {
+            model.addAttribute("page", reporteService.list(pageable));
+        } else {
+            model.addAttribute("page", reporteService.listByUser(authentication.getName(), pageable));
+        }
+
         return "views/reportes/reporte-list";
     }
 
-    // =========================================================
-    //  CREAR
-    // =========================================================
-
-    /**
-     * 🔐 Usuario autenticado
-     */
+    // CREAR
     @GetMapping("/new")
     @PreAuthorize("isAuthenticated()")
     public String showNewForm(Model model) {
@@ -55,9 +54,6 @@ public class ReporteController {
         return "views/reportes/reporte-form";
     }
 
-    /**
-     * 🔐 Usuario autenticado
-     */
     @PostMapping("/insert")
     @PreAuthorize("isAuthenticated()")
     public String insert(
@@ -72,55 +68,36 @@ public class ReporteController {
         return "redirect:/reportes?created";
     }
 
-    // =========================================================
-    //  DETALLE
-    // =========================================================
-
-    /**
-     * 🔐 Propietario o ADMIN (reforzado en service)
-     */
+    // DETALLE
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public String detail(@PathVariable Long id,
                          Model model,
                          RedirectAttributes redirectAttributes) {
-
         try {
             model.addAttribute("reporte", reporteService.getDetail(id));
             return "views/reportes/reporte-detail";
-
         } catch (ResourceNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Reporte no encontrado");
             return "redirect:/reportes";
         }
     }
 
-    // =========================================================
-    //  EDITAR
-    // =========================================================
-
-    /**
-     * 🔐 Propietario o ADMIN
-     */
+    // EDITAR
     @GetMapping("/edit/{id}")
     @PreAuthorize("isAuthenticated()")
     public String showEdit(@PathVariable Long id,
                            Model model,
                            RedirectAttributes redirectAttributes) {
-
         try {
             model.addAttribute("reporte", reporteService.getForEdit(id));
             return "views/reportes/reporte-form";
-
         } catch (ResourceNotFoundException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Reporte no encontrado");
             return "redirect:/reportes";
         }
     }
 
-    /**
-     * 🔐 Propietario o ADMIN
-     */
     @PostMapping("/update")
     @PreAuthorize("isAuthenticated()")
     public String update(
@@ -135,13 +112,7 @@ public class ReporteController {
         return "redirect:/reportes?updated";
     }
 
-    // =========================================================
-    //  ELIMINAR
-    // =========================================================
-
-    /**
-     * 🔐 MODERATOR o ADMIN
-     */
+    // ELIMINAR
     @PostMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public String delete(@PathVariable Long id) {
@@ -149,20 +120,12 @@ public class ReporteController {
         return "redirect:/reportes?deleted";
     }
 
-    // =========================================================
-    //  VALIDAR REPORTE
-    // =========================================================
-
-    /**
-     * 🔐 SOLO STAFF
-     */
+    // VALIDAR
     @PostMapping("/admin/{id}/validar")
     @PreAuthorize("hasAnyRole('MODERATOR','ADMIN')")
     public String validarReporte(@PathVariable Long id,
                                  @RequestParam boolean fraude) {
-
         reporteService.validarReporte(id, fraude);
-
         return "redirect:/reportes?validated";
     }
 }

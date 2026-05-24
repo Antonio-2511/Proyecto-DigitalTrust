@@ -7,100 +7,120 @@
 
 <div th:replace="~{fragments/header :: header}"></div>
 
+<!-- HERO -->
 <section class="hero">
+    <div class="hero-banner">
+        <img th:src="@{/images/Banner-Principal.png}"
+             src="../static/images/Banner-Principal.png"
+             alt="Seguridad Digital"
+             class="hero-banner__img">
+        <div class="hero-banner__overlay"></div>
+    </div>
 
-    <h1 th:text="#{home.title}"></h1>
-
-    <img th:src="@{/images/Banner-Principal.png}"
-         src="/images/Banner-Principal.png"
-         alt="Seguridad Digital"
-         class="hero-img">
-
-    <h3 th:text="#{home.subtitle}"></h3>
-
+    <div class="hero-content">
+        <h1 th:text="#{home.title}"></h1>
+        <p th:text="#{home.subtitle}"></p>
+        <a th:href="@{/tienda}" class="hero-btn" th:text="#{home.button}"></a>
+    </div>
 </section>
 
+<!-- REVIEWS -->
 <section class="reviews">
+    <div class="reviews-inner">
 
-    <!-- Review 1 -->
-    <div class="review">
-        <img th:src="@{/images/avatar-perfil.png}"
-             src="/images/avatar-perfil.png"
-             alt="Usuario"
-             class="review-img">
+        <div class="review-card">
+            <img th:src="@{/images/avatar-perfil.png}"
+                 src="/images/avatar-perfil.png"
+                 alt="Usuario" class="review-img">
+            <div class="review-stars">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <p th:text="#{home.review}"></p>
+        </div>
 
-        ⭐⭐⭐⭐⭐
-        <p th:text="#{home.review}"></p>
+        <div class="review-card">
+            <img th:src="@{/images/avatar-perfil-1.png}"
+                 src="/images/avatar-perfil-1.png"
+                 alt="Usuario" class="review-img">
+            <div class="review-stars">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <p th:text="#{home.review}"></p>
+        </div>
+
+        <div class="review-card">
+            <img th:src="@{/images/avatar-perfil-2.png}"
+                 src="/images/avatar-perfil-2.png"
+                 alt="Usuario" class="review-img">
+            <div class="review-stars">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+            </div>
+            <p th:text="#{home.review}"></p>
+        </div>
+
     </div>
-
-    <!-- Review 2 -->
-    <div class="review">
-        <img th:src="@{/images/avatar-perfil-1.png}"
-             src="/images/avatar-perfil-1.png"
-             alt="Usuario"
-             class="review-img">
-
-        ⭐⭐⭐⭐⭐
-        <p th:text="#{home.review}"></p>
-    </div>
-
-    <!-- Review 3 -->
-    <div class="review">
-        <img th:src="@{/images/avatar-perfil-2.png}"
-             src="/images/avatar-perfil-2.png"
-             alt="Usuario"
-             class="review-img">
-
-        ⭐⭐⭐⭐⭐
-        <p th:text="#{home.review}"></p>
-    </div>
-
 </section>
 
-<section class="info">
-
-    <p th:text="#{home.cta}"></p>
-
-    <a th:href="@{/tienda}" class="btn" th:text="#{home.button}"></a>
-
+<!-- CTA -->
+<section class="cta-banner">
+    <div class="cta-inner">
+        <p th:text="#{home.cta}"></p>
+        <a th:href="@{/tienda}" class="cta-btn" th:text="#{home.button}"></a>
+    </div>
 </section>
 
+<!-- PRODUCTOS -->
 <section class="products">
+    <div class="products-inner">
+        <h2 th:text="#{home.products.title}"></h2>
+        <p class="products-subtitle">Soluciones diseñadas para mantenerte protegido</p>
 
-    <h2 th:text="#{home.products.title}"></h2>
+        <div class="product-grid">
 
-    <div class="product-grid">
+            <div class="product-card">
+                <div class="product-card__img">
+                    <img th:src="@{/images/analisis_enlaces.png}"
+                         src="/images/analisis_enlaces.png"
+                         alt="Análisis de enlaces">
+                </div>
+                <div class="product-card__body">
+                    <p th:text="#{home.product1}"></p>
+                    <span class="product-card__price">23.99€</span>
+                    <a th:href="@{/tienda}" class="product-card__btn">Ver más</a>
+                </div>
+            </div>
 
-        <div class="product">
-            <img th:src="@{/images/analisis_enlaces.png}"
-                 src="/images/analisis_enlaces.png"
-                 alt="Análisis de sitios web">
-            <p th:text="#{home.product1}"></p>
-            <span>23.99€</span>
+            <div class="product-card">
+                <div class="product-card__img">
+                    <img th:src="@{/images/escaneo_ads.png}"
+                         src="/images/escaneo_ads.png"
+                         alt="Escaneo de anuncios">
+                </div>
+                <div class="product-card__body">
+                    <p th:text="#{home.product2}"></p>
+                    <span class="product-card__price">39.99€</span>
+                    <a th:href="@{/tienda}" class="product-card__btn">Ver más</a>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-card__img">
+                    <img th:src="@{/images/verificacion_llamadas.png}"
+                         src="/images/verificacion_llamadas.png"
+                         alt="Verificación de mensajes">
+                </div>
+                <div class="product-card__body">
+                    <p th:text="#{home.product3}"></p>
+                    <span class="product-card__price">29.99€</span>
+                    <a th:href="@{/tienda}" class="product-card__btn">Ver más</a>
+                </div>
+            </div>
+
         </div>
-
-        <div class="product">
-            <img th:src="@{/images/escaneo_ads.png}"
-                 src="/images/escaneo_ads.png"
-                 alt="Escaneo de anuncios">
-            <p th:text="#{home.product2}"></p>
-            <span>39.99€</span>
-        </div>
-
-        <div class="product">
-            <img th:src="@{/images/verificacion_llamadas.png}"
-                 src="/images/verficacion_llamadas.png"
-                 alt="Verificación de apps móviles">
-            <p th:text="#{home.product3}"></p>
-            <span>29.99€</span>
-        </div>
-
     </div>
-
 </section>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
-
 <div th:replace="fragments/scripts :: scripts"></div>
 
 </body>

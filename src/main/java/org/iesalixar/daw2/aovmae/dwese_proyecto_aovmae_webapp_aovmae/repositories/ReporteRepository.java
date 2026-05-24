@@ -21,4 +21,5 @@ public interface ReporteRepository extends JpaRepository<Reporte, Long> {
 
     List<Reporte> findByDescripcion(String descripcion);
 
+    Page<Reporte> findByUser_Username(String username, Pageable pageable);
 }

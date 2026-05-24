@@ -3,100 +3,132 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="fragments/head :: head('Advertencias')"></head>
-
+<head th:replace="~{fragments/head :: head('Advertencias')}"></head>
 <body>
-
-<header th:replace="fragments/header :: header"></header>
+<header th:replace="~{fragments/header :: header}"></header>
 
 <main class="container">
 
-    <h1 class="page-title">⚠️ Advertencias</h1>
-
-    <!-- MENSAJE -->
-    <div th:if="${param.validated}" class="alert success">
-        Advertencia generada correctamente
+    <div class="rl-page-header">
+        <div class="rl-title-block">
+            <span class="rl-eyebrow" th:text="#{warnings.panel}"></span>
+            <h1 class="rl-title" th:text="#{navbar.advertencias}"></h1>
+            <p class="rl-subtitle" th:text="#{warnings.subtitle}"></p>
+        </div>
     </div>
 
-    <!-- PROTECCIÓN: SOLO USUARIOS -->
-    <div sec:authorize="hasAnyRole('USER','ADMIN')">
+    <div class="rl-wrapper">
 
-        <table class="table">
+        <!-- VISTA STAFF -->
+        <div th:if="${esStaff}">
+            <div class="rl-card">
+                <table class="rl-table">
+                    <thead>
+                    <tr>
+                        <th th:text="#{warnings.col.title}"></th>
+                        <th th:text="#{warnings.col.desc}"></th>
+                        <th th:text="#{warnings.col.date}"></th>
+                        <th th:text="#{warnings.col.level}"></th>
+                        <th th:text="#{warnings.col.actions}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="a : ${page.content}">
 
-            <thead>
-            <tr>
-                <th>Mensaje</th>
-                <th>Fecha</th>
-                <th>Criticidad</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
+                        <td class="rl-td-title">
+                            <span class="rl-report-title" th:text="${a.titulo}"></span>
+                        </td>
+                        <td class="rl-td-desc">
+                            <span th:text="${a.descripcion}"></span>
+                        </td>
+                        <td class="rl-td-date">
+                            <span th:text="${#temporals.format(a.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></span>
+                        </td>
+                        <td class="rl-td-status">
+                            <span class="al-criticidad"
+                                  th:classappend="${a.nivelCriticidad >= 4} ? 'al-criticidad--high' :
+                                                 (${a.nivelCriticidad == 3} ? 'al-criticidad--mid' : 'al-criticidad--low')"
+                                  th:text="${a.nivelCriticidad}">
+                            </span>
+                        </td>
+                        <td class="rl-td-actions">
+                            <a th:href="@{/advertencias/{id}(id=${a.id})}"
+                               class="rl-action rl-action--view"
+                               th:text="#{warnings.action.view}"></a>
 
-            <tbody>
+                            <form sec:authorize="hasRole('ADMIN')"
+                                  th:action="@{/advertencias/delete(id=${a.id})}"
+                                  method="post" style="display:inline;">
+                                <button type="submit"
+                                        class="rl-action rl-action--delete"
+                                        th:attr="onclick='return confirm(\'' + #{warnings.confirm.delete} + '\')'">
+                                    <span th:text="#{warnings.action.delete}"></span>
+                                </button>
+                            </form>
+                        </td>
 
-            <tr th:each="a : ${page.content}">
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <!-- DESCRIPCIÓN -->
-                <td th:text="${a.descripcion}"></td>
+            <div class="pagination" th:if="${page.totalPages > 1}">
+                <a th:href="@{/advertencias(page=${page.number - 1})}"
+                   th:classappend="${page.first} ? 'disabled'"
+                   class="page-btn" th:text="#{warnings.pagination.prev}"></a>
+                <span th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}">
+                    <a th:href="@{/advertencias(page=${i})}" th:text="${i + 1}"
+                       th:classappend="${i == page.number} ? 'active'" class="page-btn"></a>
+                </span>
+                <a th:href="@{/advertencias(page=${page.number + 1})}"
+                   th:classappend="${page.last} ? 'disabled'"
+                   class="page-btn" th:text="#{warnings.pagination.next}"></a>
+            </div>
+        </div>
 
-                <!-- FECHA -->
-                <td th:text="${#temporals.format(a.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></td>
+        <!-- VISTA USUARIO -->
+        <div th:if="${!esStaff}">
 
-                <!-- NIVEL VISUAL -->
-                <td>
-                    <span class="badge"
-                          th:classappend="
-                            ${a.nivelCriticidad >= 4} ? 'badge-danger' :
-                            (${a.nivelCriticidad == 3} ? 'badge-warning' : 'badge-success')">
+            <div th:if="${advertencias == null or advertencias.isEmpty()}"
+                 class="mis-advertencias__empty"
+                 th:text="#{warnings.empty}">
+            </div>
 
-                        <span th:text="${a.nivelCriticidad}"></span>
-                    </span>
-                </td>
+            <div th:if="${advertencias != null and !advertencias.isEmpty()}"
+                 class="rl-card">
 
-                <!-- ACCIONES -->
-                <td>
+                <div th:each="adv : ${advertencias}"
+                     class="al-user-item"
+                     th:classappend="${adv.esEmergencia} ? 'al-user-item--emergency' : ''">
 
-                    <!-- VER -->
-                    <a th:href="@{/advertencias/{id}(id=${a.id})}"
-                       class="btn btn-sm btn-view">
-                        👁 Ver
-                    </a>
+                    <div class="al-user-item__nivel"
+                         th:classappend="${adv.nivelCriticidad >= 4} ? 'al-criticidad--high' :
+                                        (${adv.nivelCriticidad == 3} ? 'al-criticidad--mid' : 'al-criticidad--low')"
+                         th:text="${adv.nivelCriticidad}">
+                    </div>
 
-                    <!-- ELIMINAR (SOLO ADMIN) -->
-                    <form sec:authorize="hasRole('ADMIN')"
-                          th:action="@{/advertencias/delete(id=${a.id})}"
-                          method="post"
-                          style="display:inline;">
+                    <div class="al-user-item__body">
+                        <div class="al-user-item__header">
+                            <strong th:text="${adv.titulo}"></strong>
+                            <span th:if="${adv.esEmergencia}"
+                                  class="rl-badge rl-badge--fraud"
+                                  th:text="#{warnings.emergency}"></span>
+                        </div>
+                        <p th:text="${adv.descripcion}"></p>
+                        <small th:text="${#temporals.format(adv.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></small>
+                    </div>
 
-                        <button type="submit"
-                                class="btn btn-sm btn-danger"
-                                onclick="return confirm('¿Eliminar advertencia?');">
-                            🗑
-                        </button>
+                    <a th:href="@{/advertencias/{id}(id=${adv.id})}"
+                       class="rl-action rl-action--view"
+                       th:text="#{warnings.action.view}"></a>
 
-                    </form>
+                </div>
+            </div>
 
-                </td>
-
-            </tr>
-
-            </tbody>
-
-        </table>
-
+        </div>
     </div>
-
-    <!-- MENSAJE SI NO TIENE PERMISOS -->
-    <div sec:authorize="!hasAnyRole('USER','ADMIN')"
-         class="alert danger">
-
-        🚫 No tienes permisos para ver advertencias
-
-    </div>
-
 </main>
 
-<footer th:replace="fragments/footer :: footer"></footer>
-
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

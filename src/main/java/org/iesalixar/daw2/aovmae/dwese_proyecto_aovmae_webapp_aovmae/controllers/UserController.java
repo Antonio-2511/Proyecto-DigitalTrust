@@ -8,6 +8,7 @@ import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.exceptions.
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.exceptions.ResourceNotFoundException;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.repositories.PlanRepository;
 import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services.UserService;
+import org.iesalixar.daw2.aovmae.dwese_proyecto_aovmae_webapp_aovmae.services.AdvertenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,6 +58,9 @@ public class UserController {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private AdvertenciaService advertenciaService;
 
     /**
      * 🔐 SOLO ADMIN
@@ -112,7 +117,7 @@ public class UserController {
                     messageSource.getMessage("msg.usuario.created", null, locale)
             );
 
-            return "redirect:/login";
+            return "redirect:/usuarios";
 
         } catch (DuplicateResourceException ex) {
 
@@ -174,7 +179,8 @@ public class UserController {
             BindingResult result,
             RedirectAttributes redirectAttributes,
             Model model,
-            Locale locale) {
+            Locale locale,
+            Authentication authentication) {  // <-- añade este parámetro
 
         if (result.hasErrors()) {
             model.addAttribute("planes", planRepository.findAll());
@@ -191,10 +197,17 @@ public class UserController {
                     messageSource.getMessage("msg.usuario.updated", null, locale)
             );
 
-            return "redirect:/usuarios";
+            // Si es admin redirige al listado, si es el propio usuario a su perfil
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+            if (isAdmin) {
+                return "redirect:/usuarios";
+            } else {
+                return "redirect:/usuarios/detail?username=" + dto.getUsername();
+            }
 
         } catch (DuplicateResourceException ex) {
-
             redirectAttributes.addFlashAttribute(
                     "errorMessage",
                     messageSource.getMessage(
@@ -204,7 +217,6 @@ public class UserController {
                             locale
                     )
             );
-
             return "redirect:/usuarios/edit?username=" + dto.getUsername();
         }
     }
@@ -258,6 +270,7 @@ public class UserController {
         try {
 
             model.addAttribute("usuario", userService.getDetail(username));
+            model.addAttribute("advertencias", advertenciaService.listByUser(username));
             return "views/usuarios/usuario-detail";
 
         } catch (ResourceNotFoundException ex) {

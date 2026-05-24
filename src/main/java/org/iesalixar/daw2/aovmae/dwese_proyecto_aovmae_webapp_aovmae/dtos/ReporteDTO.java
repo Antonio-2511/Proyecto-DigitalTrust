@@ -44,4 +44,9 @@ public class ReporteDTO {
      */
     private String nombreUsuario;
 
+    private boolean validado;
+
+
+    private Boolean esFraude;
+
 }

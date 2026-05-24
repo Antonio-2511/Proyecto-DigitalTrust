@@ -1,34 +1,80 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Detalle de Advertencia</title>
-</head>
-
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head('Detalle Advertencia')"></head>
 <body>
+<header th:replace="fragments/header :: header"></header>
 
-<h2 th:text="#{warning.detail}"></h2>
+<main class="rd-page">
 
-<p><strong th:text="#{common.id}"></strong>: <span th:text="${advertencia.id}"></span></p>
+    <nav class="rd-breadcrumb">
+        <a th:href="@{/advertencias}" class="rd-breadcrumb__link" th:text="#{warning.detail.breadcrumb}"></a>
+        <span class="rd-breadcrumb__sep">/</span>
+        <span class="rd-breadcrumb__current" th:text="#{warning.detail.prefix} + ${advertencia.id}"></span>
+    </nav>
 
-<p><strong th:text="#{warning.message}"></strong>:
-    <span th:text="${advertencia.descripcion}"></span>
-</p>
+    <div class="rd-layout">
+        <div class="rd-main">
+            <div class="rd-card">
+                <div class="rd-card__header">
+                    <div>
+                        <p class="rd-card__eyebrow" th:text="#{warning.detail.prefix} + ${advertencia.id}"></p>
+                        <h1 class="rd-card__title" th:text="${advertencia.titulo}"></h1>
+                    </div>
+                    <span th:if="${advertencia.esEmergencia}" class="rd-warning__emergency-tag"
+                          th:text="#{warning.detail.emergency}"></span>
+                </div>
+                <div class="rd-card__section">
+                    <p class="rd-label" th:text="#{warning.detail.field.desc}"></p>
+                    <p class="rd-text" th:text="${advertencia.descripcion}"></p>
+                </div>
+                <div class="rd-card__section"
+                     th:if="${advertencia.nombresFuentesConfiables != null and !advertencia.nombresFuentesConfiables.isEmpty()}">
+                    <p class="rd-label" th:text="#{warning.detail.field.sources}"></p>
+                    <ul style="margin:0; padding-left:20px;">
+                        <li th:each="f : ${advertencia.nombresFuentesConfiables}" th:text="${f}"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-<p><strong th:text="#{warning.date}"></strong>:
-    <span th:text="${advertencia.fechaEnvio}"></span>
-</p>
+        <aside class="rd-sidebar">
+            <div class="rd-card rd-card--side">
+                <h3 th:text="#{warning.detail.info}"></h3>
+                <p><strong th:text="#{warning.detail.info.date}"></strong>
+                    <span th:text="${#temporals.format(advertencia.fechaEnvio, 'dd/MM/yyyy HH:mm')}"></span></p>
+                <p><strong th:text="#{warning.detail.info.level}"></strong>
+                    <span class="badge"
+                          th:classappend="${advertencia.nivelCriticidad >= 4} ? 'badge-danger' :
+                                         (${advertencia.nivelCriticidad == 3} ? 'badge-warning' : 'badge-success')"
+                          th:text="${advertencia.nivelCriticidad}"></span></p>
+                <p><strong th:text="#{warning.detail.info.user}"></strong>
+                    <span th:text="${advertencia.nombreUsuario}"></span></p>
+            </div>
 
-<p><strong th:text="#{warning.source}"></strong>:</p>
+            <div class="rd-card rd-card--side rd-card--actions">
+                <h3 th:text="#{warning.detail.actions}"></h3>
 
-<ul>
-    <li th:each="f : ${advertencia.nombresFuentesConfiables}"
-        th:text="${f}">
-    </li>
-</ul>
+                <a th:href="@{/advertencias/edit(id=${advertencia.id})}"
+                   sec:authorize="hasRole('ADMIN')"
+                   class="rd-btn rd-btn--primary rd-btn--full"
+                   th:text="#{warning.detail.action.edit}"></a>
 
-<a th:href="@{/advertencias}" th:text="#{common.back}"></a>
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:action="@{/advertencias/delete(id=${advertencia.id})}" method="post">
+                    <button type="submit" class="rd-btn rd-btn--danger rd-btn--full"
+                            th:text="#{warning.detail.action.delete}"
+                            th:attr="onclick='return confirm(\'' + #{warning.detail.confirm.delete} + '\')'">
+                    </button>
+                </form>
 
+                <a th:href="@{/advertencias}" class="rd-btn rd-btn--ghost rd-btn--full"
+                   th:text="#{warning.detail.action.back}"></a>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<footer th:replace="fragments/footer :: footer"></footer>
 </body>
 </html>
