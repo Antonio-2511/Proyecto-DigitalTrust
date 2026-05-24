@@ -45,7 +45,6 @@ public class DetectorPalabrasController {
 
         if (contenidoTexto != null && !contenidoTexto.isBlank()) {
 
-            // 🔥 OBTENER USUARIO DESDE SECURITY (MEJOR QUE PRINCIPAL)
             String username = SecurityContextHolder
                     .getContext()
                     .getAuthentication()

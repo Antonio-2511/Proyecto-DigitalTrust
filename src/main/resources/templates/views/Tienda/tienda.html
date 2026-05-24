@@ -1,29 +1,249 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/head :: head(#{tienda.pestana})}"></head>
-<body style="background-color: #A7F3D0;">
+<head>
+  <div th:replace="~{fragments/head :: head(#{tienda.pestana})}"></div>
+
+  <style>
+    /* TRUCO DEFINITIVO: Convertimos el body en un contenedor estructurado */
+    .body-tienda {
+        background-color: #A7F3D0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Obliga a la página a medir el total de la pantalla */
+    }
+
+    .main-tienda {
+        padding-top: 120px;
+        flex: 1 0 auto; /* Esto estira el main de forma infinita hacia abajo y empuja el footer */
+        padding-bottom: 60px;
+    }
+
+    .container-tienda {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .seccion-filtros {
+        background: rgba(255, 255, 255, 0.4);
+        padding: 25px;
+        border-radius: 25px;
+        margin-bottom: 40px;
+        backdrop-filter: blur(5px);
+    }
+
+    .form-filtros {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .filtro-nombre {
+        text-align: left;
+        flex: 1;
+        min-width: 200px;
+        max-width: 300px;
+    }
+
+    .label-filtros {
+        color: #083a4d;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-left: 5px;
+    }
+
+    .input-nombre {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        margin-top: 5px;
+        outline: none;
+    }
+
+    .filtro-categoria {
+        text-align: left;
+        flex: 1;
+        min-width: 180px;
+        max-width: 250px;
+    }
+
+    .select-categoria {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        margin-top: 5px;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .filtro-precio {
+        text-align: left;
+        flex: 1;
+        min-width: 180px;
+        max-width: 250px;
+    }
+
+    .input-range {
+        width: 100%;
+        margin-top: 15px;
+        cursor: pointer;
+        accent-color: #083a4d;
+    }
+
+    .contenedor-acciones {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-submit {
+        background: #083a4d;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-reset {
+        background: white;
+        color: #083a4d;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
+
+    .titulo-principal {
+        color: #083a4d;
+        margin-bottom: 10px;
+    }
+
+    .subtitulo-principal {
+        color: #064E3B;
+        margin-bottom: 40px;
+    }
+
+    .product-grid {
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding-bottom: 50px;
+    }
+
+    .sin-resultados {
+        padding: 40px;
+        color: #083a4d;
+        width: 100%;
+    }
+
+    .tarjeta-producto {
+        background: #ccfbf1;
+        padding: 30px;
+        border-radius: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        width: 280px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .contenedor-img {
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .img-producto {
+        width: 150px;
+        height: auto;
+    }
+
+    .fila-info {
+        width: 100%;
+        border-top: 2px solid #083a4d;
+        padding-top: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .h3-producto {
+        font-size: 0.9rem;
+        color: #083a4d;
+        margin: 0;
+        text-align: left;
+        max-width: 70%;
+    }
+
+    .span-precio {
+        font-weight: bold;
+        color: #083a4d;
+        font-size: 1rem;
+    }
+
+    .form-carrito {
+        width: 100%;
+        margin: 0;
+    }
+
+    .btn-carrito {
+        background-color: #083a4d;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 15px;
+        width: 100%;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    /* SECTOR AISLADO PARA EL FOOTER */
+    .footer-container-fix {
+        flex-shrink: 0; /* Impide que el footer se encoja o acepte elementos raros */
+        width: 100%;
+        display: block;
+        clear: both;
+    }
+  </style>
+</head>
+
+<body class="body-tienda">
 
 <div th:replace="~{fragments/header :: header}"></div>
 
-<main class="products" style="padding-top: 120px; min-height: 80vh;">
-  <div class="container" style="max-width: 1200px; margin: 0 auto; text-align: center; padding: 0 20px;">
+<main class="products main-tienda">
+  <div class="container container-tienda">
 
-    <!-- SECCIÓN DE FILTROS -->
-    <div style="background: rgba(255, 255, 255, 0.4); padding: 25px; border-radius: 25px; margin-bottom: 40px; backdrop-filter: blur(5px);">
-      <form th:action="@{/tienda}" method="get" style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end; justify-content: center;">
+    <div class="seccion-filtros">
+      <form th:action="@{/tienda}" method="get" class="form-filtros">
 
-        <!-- Filtro: Nombre -->
-        <div style="text-align: left; flex: 1; min-width: 200px; max-width: 300px;">
-          <label th:text="#{filtro.buscar}" style="color: #083a4d; font-weight: bold; font-size: 0.9rem; margin-left: 5px;"></label>
-          <input type="text" name="q" th:value="${query}" th:placeholder="#{filtro.placeholder}"
-                 style="width: 100%; padding: 12px; border: none; border-radius: 12px; margin-top: 5px; outline: none;">
+        <div class="filtro-nombre">
+          <label th:text="#{filtro.buscar}" class="label-filtros"></label>
+          <input type="text" name="q" th:value="${query}" th:placeholder="#{filtro.placeholder}" class="input-nombre">
         </div>
 
-        <!-- Filtro: Categoría -->
-        <div style="text-align: left; flex: 1; min-width: 180px; max-width: 250px;">
-          <label th:text="#{filtro.categoria}" style="color: #083a4d; font-weight: bold; font-size: 0.9rem; margin-left: 5px;"></label>
-          <select name="categoria" style="width: 100%; padding: 12px; border: none; border-radius: 12px; margin-top: 5px; outline: none; cursor: pointer;">
+        <div class="filtro-categoria">
+          <label th:text="#{filtro.categoria}" class="label-filtros"></label>
+          <select name="categoria" class="select-categoria">
             <option value="" th:text="#{filtro.cat.todas}"></option>
             <option value="Analisis" th:selected="${catSeleccionada == 'Analisis'}" th:text="#{categoria.Analisis}"></option>
             <option value="Publicidad" th:selected="${catSeleccionada == 'Publicidad'}" th:text="#{categoria.Publicidad}"></option>
@@ -32,61 +252,52 @@
           </select>
         </div>
 
-        <!-- Filtro: Precio -->
-        <div style="text-align: left; flex: 1; min-width: 180px; max-width: 250px;">
-          <label style="color: #083a4d; font-weight: bold; font-size: 0.9rem; margin-left: 5px;">
+        <div class="filtro-precio">
+          <label class="label-filtros">
             <span th:text="#{filtro.precio}"></span>: <span id="priceValue" th:text="${precioSeleccionado != null ? precioSeleccionado : '100'}">100</span>€
           </label>
           <input type="range" name="precio" min="10" max="100" step="1"
                  th:value="${precioSeleccionado != null ? precioSeleccionado : 100}"
                  oninput="document.getElementById('priceValue').innerText = this.value"
-                 style="width: 100%; margin-top: 15px; cursor: pointer; accent-color: #083a4d;">
+                 class="input-range">
         </div>
 
-        <!-- Acciones -->
-        <div style="display: flex; gap: 10px;">
-          <button type="submit" th:text="#{filtro.boton}" style="background: #083a4d; color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;"
+        <div class="contenedor-acciones">
+          <button type="submit" th:text="#{filtro.boton}" class="btn-submit"
                   onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
           </button>
-          <a th:href="@{/tienda}" th:text="#{filtro.restablecer}" style="background: white; color: #083a4d; text-decoration: none; padding: 12px 20px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center;">
+          <a th:href="@{/tienda}" th:text="#{filtro.restablecer}" class="btn-reset">
           </a>
         </div>
       </form>
     </div>
 
-    <!-- TÍTULOS -->
-    <h1 th:text="#{tienda.titulo}" style="color: #083a4d; margin-bottom: 10px;"></h1>
-    <p th:text="#{tienda.subtitulo}" style="color: #064E3B; margin-bottom: 40px;"></p>
+    <h1 th:text="#{tienda.titulo}" class="titulo-principal"></h1>
+    <p th:text="#{tienda.subtitulo}" class="subtitulo-principal"></p>
 
-    <!-- GRID DE PRODUCTOS -->
-    <div class="product-grid" style="display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; padding-bottom: 50px;">
+    <div class="product-grid">
 
-      <!-- Mensaje si no hay resultados -->
-      <div th:if="${#lists.isEmpty(servicios)}" style="padding: 40px; color: #083a4d; width: 100%;">
+      <div th:if="${#lists.isEmpty(servicios)}" class="sin-resultados">
         <h3 th:text="#{tienda.no_resultados}"></h3>
         <p th:text="#{tienda.no_resultados_sub}"></p>
       </div>
 
-      <!-- Tarjetas de servicio -->
-      <div th:each="s : ${servicios}" class="product"
+      <div th:each="s : ${servicios}" class="product tarjeta-producto"
            th:onclick="|window.location.href='/tienda/producto/' + ${s.id}|"
-           style="background: #ccfbf1; padding: 30px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-                      width: 280px; cursor: pointer; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center;"
            onmouseover="this.style.transform='translateY(-10px)'"
            onmouseout="this.style.transform='translateY(0)'">
 
-        <div style="flex-grow: 1; display: flex; align-items: center; margin-bottom: 30px;">
-          <img th:src="@{'/images/' + ${s.imagenUrl}}" style="width: 150px; height: auto;" alt="Icono">
+        <div class="contenedor-img">
+          <img th:src="@{'/images/' + ${s.imagenUrl}}" class="img-producto" alt="Icono">
         </div>
 
-        <div style="width: 100%; border-top: 2px solid #083a4d; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h3 th:text="${s.nombre}" style="font-size: 0.9rem; color: #083a4d; margin: 0; text-align: left; max-width: 70%;"></h3>
-          <span th:text="${s.precio} + '€'" style="font-weight: bold; color: #083a4d; font-size: 1rem;"></span>
+        <div class="fila-info">
+          <h3 th:text="${s.nombre}" class="h3-producto"></h3>
+          <span th:text="${s.precio} + '€'" class="span-precio"></span>
         </div>
 
-        <form th:action="@{/carrito/add/{id}(id=${s.id})}" method="post" style="width: 100%; margin: 0;">
-          <button type="submit" th:text="#{carrito.sumar}"
-                  style="background-color: #083a4d; color: white; border: none; padding: 12px; border-radius: 15px; width: 100%; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: all 0.3s ease;"
+        <form th:action="@{/carrito/add/{id}(id=${s.id})}" method="post" class="form-carrito">
+          <button type="submit" th:text="#{carrito.sumar}" class="btn-carrito"
                   onmouseover="this.style.backgroundColor='#059669';"
                   onmouseout="this.style.backgroundColor='#083a4d';"
                   onclick="event.stopPropagation();">
@@ -98,7 +309,9 @@
   </div>
 </main>
 
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div class="footer-container-fix">
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
 
 </body>
 </html>
